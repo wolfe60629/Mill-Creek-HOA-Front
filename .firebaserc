@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "mill-creek-community"
+  },
+  "targets": {
+    "mill-creek-community": {
+      "hosting": {
+        "dgm-app": [
+          "mill-creek-community"
+        ]
+      }
+    }
+  }
+}

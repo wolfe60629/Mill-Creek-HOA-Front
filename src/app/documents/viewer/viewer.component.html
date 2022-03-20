@@ -1,0 +1,8 @@
+<!-- The Modal -->
+<div class="modal fade" [ngClass]="{'show-modal': showViewerModal}"  id="myModal" class="modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
+        <iframe class="iframe" [src]="src"></iframe>
+    </div>
+</div>

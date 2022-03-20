@@ -1,0 +1,56 @@
+<app-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-upload>
+<app-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml"></app-viewer>
+<div class = "outer">
+  <div class="inner">
+<div class="container">
+
+    <!-- Title -->
+  <div class="row">
+    <h1 class="black-text text-darken-3 animated fadeIn fast">
+      <b>Documents</b>
+    </h1>
+  </div>
+
+    <!-- File Upload -->
+    <div class="form-group">
+    <input type="file"
+           accept="application/pdf"
+           id="file"
+           (change)="handleFileInput($event.target.files)">
+
+    </div>
+
+
+    <!-- Document Acordian -->
+         <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects">
+             <p-accordionTab *ngFor="let currCategory of listOfCategories" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="true">
+                 <div class="card-container">
+                    <ng-container *ngFor="let document of this.documents; let i = index">
+                         <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(document.value)" target="_blank">
+                             <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
+                             <span class="card-title">
+                                <div class="card-title-content">
+                                   <h5 class="project-title">{{ document.name }}</h5>
+                                   <span *ngIf="document" class="badge grey darken-3 white-text hide-on-med-and-down">
+                                       <i class="fa fa-terminal" aria-hidden="true"></i>{{ document.fileName }}
+                                   </span>
+                                </div>
+                             </span>
+                                 <p class="project-description flow-text">{{ document.description }}</p>
+                          </div>
+                        </a>
+                    </ng-container>
+                 </div>
+          </p-accordionTab>
+      </p-accordion>
+
+  <ng-template #elseBlock>
+    <div class="card-panel animated zoomIn faster">
+      <p class="not-found-title">projects not found</p>
+    </div>
+  </ng-template>
+</div>
+  </div>
+</div>
+
+

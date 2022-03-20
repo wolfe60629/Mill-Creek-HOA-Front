@@ -1,0 +1,16 @@
+<!-- The Modal -->
+<div *ngIf="showUploadModal" id="myModal" class="modal" style='display: block' xmlns="http://www.w3.org/1999/html">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span (click)="setShowUploadModal(false)" class="close">&times;</span>
+        <p>{{fileToUpload.name}}</p>
+
+        <div class = "modal-inputs">
+        <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true"/>
+        <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true"/>
+            <p-dropdown [options]="categoryOptions" [(ngModel)]="category"  placeholder="Select a Category" optionLabel="name" [showClear]="true"></p-dropdown>
+        </div>
+
+        <button class="btn blue" (click)="onSubmit()">Submit</button>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+.left-align-text {
+  text-align: left;
+}
+.collapsible-body {
+  border-bottom: none;
+  background: var(--color-secondary);
+}
+.collapsible-header {
+  background-color: var(--color-secondary);
+  transition: all 150ms ease-in-out;
+  border-top: 4px solid white !important;
+  border-bottom: 0px solid white !important;
+}
+.collapsible-header:hover {
+  background-color: rgba(2, 119, 189, 0.15);
+  transition: all 150ms ease-in-out;
+}
+td a {
+  text-decoration: none;
+}
+td a:hover {
+  text-decoration: underline;
+}
+.container .row {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin-bottom: 0;
+}
+#description {
+  margin-bottom: 0px !important;
+}
+#downloadButton:hover {
+  transform: translate(0.75rem, 0.75rem);
+}
+#downloadButton {
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
+  border-radius: 0px;
+  transition: transform 150ms ease-in-out !important;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.card-link {
+  background-color: var(--color-primary) !important;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.inner {
+  background-color: rgba(255,255,255,.8);
+  border-radius: 10px;
+  width: 92%;
+  transform: translate(4%,30px);
+  padding: 10px 10px 30px 30px;
+}
+.outer {
+  background: url(src/assets/background.jpg) no-repeat;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  min-height: 1000px;
+}
+
