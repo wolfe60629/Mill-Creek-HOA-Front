@@ -20,8 +20,6 @@ import { AccordionModule } from 'primeng/accordion';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
-import {AngularFireModule} from '@angular/fire/compat';
-import {AngularFireDatabaseModule} from '@angular/fire/compat/database';
 import {DropdownModule} from 'primeng/dropdown';
 import { ViewerComponent } from './documents/viewer/viewer.component';
 
@@ -72,8 +70,6 @@ const appRoutes: Routes = [
     BrowserModule,
     MaterializeModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule,
     FormsModule,
     AccordionModule,
     BrowserAnimationsModule,

@@ -1,35 +1,27 @@
 import { Injectable } from '@angular/core';
-import {observable, Observable, Subscription} from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { map, flatMap } from 'rxjs/operators';
 
+import { HttpClient } from '@angular/common/http';
 import {Doc} from './document';
-import {AngularFireDatabase} from '@angular/fire/compat/database';
+import {environment} from '../../environments/environment';
+import {Observable, Subscription} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class DocumentsService {
-uploadedFiles: String[];
+     host = environment.backend + '/documents';
 
-  constructor(private httpSvc: HttpClient, private db: AngularFireDatabase) { }
+
+  constructor(private httpSvc: HttpClient) { }
 
 
   public saveToStorage(doc: Doc) {
-    const ref = this.db.list('uploaded_files');
-
-
-    ref.push(doc).then(() => {
-          console.log('Successfully Saved File: ' + doc.fileName);
-        }, (error) => {
-          console.log(error);
-        }
-    );
+      this.httpSvc.post(this.host + '/new', doc).subscribe(response => console.log(response));
   }
 
-  public getAllAsJson(): Promise<any>  {
-     return this.db.list('uploaded_files').query.get().then(data => data.toJSON());
+  public getAllDocuments() {
+     return this.httpSvc.get(this.host + '');
   }
 
 }

@@ -1,9 +1,9 @@
 import {Component, Inject, Injectable, OnInit, Output} from '@angular/core';
-import { DocumentsService } from './documents.service'
+import { DocumentsService } from './documents.service';
 import {Observable, ReplaySubject} from 'rxjs';
-import {Doc, DocumentContainer} from './document';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ViewerComponent} from './viewer/viewer.component';
+import {Doc} from './document';
 
 
 @Component({
@@ -25,22 +25,19 @@ export class DocumentsComponent implements OnInit {
   constructor(private documentsService: DocumentsService, private sanitizer: DomSanitizer) {}
 
   public ngOnInit() {
-    this.documentsService.getAllAsJson().then((jsonObject) => {
-      // Get the document container
-      const documentContainer = {docmap: jsonObject} as DocumentContainer;
+    this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {
+      this.documents = result;
 
-      // Add all documents in array
-      for (const key in documentContainer.docmap) {
-        this.documents.push(documentContainer.docmap[key]);
-      }
-      console.log(this.documents);
-
-      // List of all categories
-      this.listOfCategories = [...new Set(this.documents.map(document => document.category))];
-      });
-    }
+      this.listOfCategories = [... new Set(result.map(item => item.category))];
+    });
+  }
 
   handleFileInput(files: FileList) {
+    // Limit file size to 5MB
+    if (files.item(0).size > 5000000 ) {
+      return;
+    }
+
     // Open Confirm Modal
     this.fileToUpload = files.item(0);
     this.showUploadModal = true;

@@ -34,10 +34,10 @@ export class UploadComponent implements OnInit {
     this.setShowUploadModal(false);
     this.convertFile(this.fileToUpload).subscribe((converted) => {
        this.documentsService.saveToStorage({
-         name: this.documentName,
-         fileName: this.fileToUpload.name,
+         friendlyName: this.documentName,
+         name: this.fileToUpload.name,
          description: this.description,
-         value: converted,
+         item: converted,
            category: this.category.name
        });
     });

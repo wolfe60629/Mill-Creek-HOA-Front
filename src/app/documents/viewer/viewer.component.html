@@ -4,5 +4,6 @@
     <div class="modal-content">
         <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
         <iframe class="iframe" [src]="src"></iframe>
+        <button (click)="submit()">Submit</button>
     </div>
 </div>

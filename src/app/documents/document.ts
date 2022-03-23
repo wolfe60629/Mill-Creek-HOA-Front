@@ -1,11 +1,9 @@
 export class Doc {
-    name?: String;
-    fileName: String;
-    description?: String;
-    value: String;
+    id?: Number;
+    friendlyName: String;
+    name: String;
+    description: String;
+    item?: String;
     category: String;
 }
 
-export class DocumentContainer {
-    docmap: Map<String, Doc>;
-}

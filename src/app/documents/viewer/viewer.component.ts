@@ -15,6 +15,7 @@ export class ViewerComponent implements OnInit, OnChanges {
   @Output() manifestHtmlChange = new EventEmitter<String>();
 
   src: SafeResourceUrl;
+  first: string = '';
 
   constructor(private sanitizer: DomSanitizer) { }
 
@@ -32,4 +33,13 @@ export class ViewerComponent implements OnInit, OnChanges {
     return this.sanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + url);
   }
 
+  submit() {
+    if (this.first === '')  {
+      this.first = this.src.toString();
+      console.log('Saved First');
+    } else {
+      console.log(this.src.toString() === this.first);
+    }
+
+  }
 }
