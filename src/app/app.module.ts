@@ -22,6 +22,7 @@ import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
 import {DropdownModule} from 'primeng/dropdown';
 import { ViewerComponent } from './documents/viewer/viewer.component';
+import { RequestsComponent } from './requests/requests.component';
 
 
 
@@ -47,6 +48,11 @@ const appRoutes: Routes = [
     data: { title: 'Contact' },
   },
   {
+    path: 'requests',
+    component: RequestsComponent,
+    data: { title: 'Requests' },
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
@@ -63,7 +69,8 @@ const appRoutes: Routes = [
     HomeComponent,
     AboutComponent,
     UploadComponent,
-    ViewerComponent
+    ViewerComponent,
+    RequestsComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, { enableTracing: false, relativeLinkResolution: 'legacy' }),
