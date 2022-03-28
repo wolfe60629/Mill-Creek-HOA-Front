@@ -3,7 +3,8 @@ export class Doc {
     friendlyName: String;
     name: String;
     description: String;
-    item?: String;
+    item: String;
     category: String;
+    editableColumns?: String;
 }
 

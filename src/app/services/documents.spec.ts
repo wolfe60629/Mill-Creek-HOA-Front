@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { DocumentsComponent } from './documents.component'
+import { DocumentsComponent } from '../documents/documents.component'
 
 describe('ProjectsComponent', () => {
   let component: DocumentsComponent

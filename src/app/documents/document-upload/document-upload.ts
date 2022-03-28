@@ -1,16 +1,16 @@
 import {Component, Injectable, Input, OnInit, Output} from '@angular/core';
 import {DocumentsComponent} from '../documents.component';
 import {Observable, ReplaySubject} from 'rxjs';
-import {DocumentsService} from '../documents.service';
+import {DocumentsService} from '../../services/documents.service';
 
 @Injectable({ providedIn: 'root' })
 
 @Component({
-  selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css']
+  selector: 'app-document-upload',
+  templateUrl: './document-upload.component.html',
+  styleUrls: ['./document-upload.component.css']
 })
-export class UploadComponent implements OnInit {
+export class DocumentUploadComponent implements OnInit {
    @Input() showUploadModal;
    @Input() fileToUpload: File;
    @Output() documentName = '';

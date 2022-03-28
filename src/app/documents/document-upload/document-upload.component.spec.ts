@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { UploadComponent } from './upload.component';
+import { UploadComponent } from './document-upload';
 
 describe('UploadComponent', () => {
   let component: UploadComponent;

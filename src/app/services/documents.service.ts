@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
-import {Doc} from './document';
+import {Doc} from '../types/document';
 import {environment} from '../../environments/environment';
 import {Observable, Subscription} from 'rxjs';
 

@@ -14,7 +14,6 @@ import { AboutComponent } from './about/about.component'
 import { FooterComponent } from './footer/footer.component'
 import { HomeComponent } from './home/home.component'
 import {environment} from '../environments/environment.prod';
-import {UploadComponent} from './documents/upload/upload.component';
 import {FormsModule} from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -23,6 +22,11 @@ import {ToastModule} from 'primeng/toast';
 import {DropdownModule} from 'primeng/dropdown';
 import { ViewerComponent } from './documents/viewer/viewer.component';
 import { RequestsComponent } from './requests/requests.component';
+import { RequestUploadComponent } from './requests/request-upload/request-upload.component';
+import { RequestViewerComponent } from './requests/request-viewer/request-viewer.component';
+import {DocumentUploadComponent} from './documents/document-upload/document-upload';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 
 
@@ -57,7 +61,7 @@ const appRoutes: Routes = [
     redirectTo: '',
     pathMatch: 'full',
   },
-]
+];
 
 @NgModule({
   declarations: [
@@ -68,22 +72,26 @@ const appRoutes: Routes = [
     FooterComponent,
     HomeComponent,
     AboutComponent,
-    UploadComponent,
+    DocumentUploadComponent,
     ViewerComponent,
-    RequestsComponent
+    RequestsComponent,
+    RequestUploadComponent,
+    RequestViewerComponent
   ],
-  imports: [
-    RouterModule.forRoot(appRoutes, { enableTracing: false, relativeLinkResolution: 'legacy' }),
-    BrowserModule,
-    MaterializeModule,
-    HttpClientModule,
-    FormsModule,
-    AccordionModule,
-    BrowserAnimationsModule,
-    ButtonModule,
-    ToastModule,
-    DropdownModule
-  ],
+    imports: [
+        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+        BrowserModule,
+        MaterializeModule,
+        HttpClientModule,
+        FormsModule,
+        AccordionModule,
+        BrowserAnimationsModule,
+        ButtonModule,
+        ToastModule,
+        DropdownModule,
+        MultiSelectModule,
+        AutoCompleteModule
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

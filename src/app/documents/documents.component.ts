@@ -1,9 +1,9 @@
 import {Component, Inject, Injectable, OnInit, Output} from '@angular/core';
-import { DocumentsService } from './documents.service';
+import { DocumentsService } from '../services/documents.service';
 import {Observable, ReplaySubject} from 'rxjs';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ViewerComponent} from './viewer/viewer.component';
-import {Doc} from './document';
+import {Doc} from '../types/document';
 
 
 @Component({
