@@ -4,6 +4,7 @@ import {DocumentsService} from '../../services/documents.service';
 import {Observable, ReplaySubject} from 'rxjs';
 import {RequestsComponent} from '../requests.component';
 import {RequestsService} from '../../services/requests.service';
+import {PDFDocument} from 'pdf-lib';
 
 @Component({
   selector: 'app-request-upload',
@@ -33,14 +34,25 @@ export class RequestUploadComponent implements OnInit {
 
   onSubmit() {
     this.setShowUploadModal(false);
+
     this.convertFile(this.fileToUpload).subscribe((converted) => {
-      this.requestsService.saveToStorage({
-        friendlyName: this.documentName,
-        name: this.fileToUpload.name,
-        description: this.description,
-        item: converted,
-        category: this.category.name,
-        editableColumns: JSON.stringify(this.editableColumns)
+      PDFDocument.load(converted).then(doc => {
+        const fieldMap = new Map;
+         doc.getForm().getFields().forEach(field => {
+           const type = field.constructor.name;
+           const name = field.getName();
+           fieldMap.set(name, type);
+         });
+         return fieldMap;
+      }).then (fieldMap => {
+        this.requestsService.saveToStorage({
+          friendlyName: this.documentName,
+          name: this.fileToUpload.name,
+          description: this.description,
+          item: converted,
+          category: this.category.name,
+          editableColumns: JSON.stringify(Array.from(fieldMap))
+        });
       });
     });
   }

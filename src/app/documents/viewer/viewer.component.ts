@@ -22,7 +22,6 @@ export class ViewerComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
        if (changes.manifestHtml) {
          this.src = this.updateSrc(changes.manifestHtml.currentValue);
-        // this.createPdf(changes.manifestHtml.currentValue).then();
          console.log(this.src.toString());
        }
 
@@ -32,7 +31,7 @@ export class ViewerComponent implements OnInit, OnChanges {
   }
 
   updateSrc(url): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + url);
+    return this.sanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' + url.toString());
   }
 
 /*  async createPdf(url) {

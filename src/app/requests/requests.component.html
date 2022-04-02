@@ -1,4 +1,5 @@
 <app-request-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-request-upload>
+<app-request-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml"></app-request-viewer>
 
 <div class = "outer">
     <div class="inner">
@@ -25,13 +26,13 @@
                 <p-accordionTab *ngFor="let currCategory of listOfCategories" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="true">
                     <div class="card-container">
                         <ng-container *ngFor="let request of this.requests; let i = index">
-                            <a *ngIf="request.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(request.item)" target="_blank">
+                            <a *ngIf="request.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(request)" target="_blank">
                                 <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
                              <span class="card-title">
                                 <div class="card-title-content">
-                                   <h5 class="project-title">{{ request.name }}</h5>
+                                   <h5 class="project-title">{{ request.friendlyName }}</h5>
                                    <span *ngIf="request" class="badge grey darken-3 white-text hide-on-med-and-down">
-                                       <i class="fa fa-terminal" aria-hidden="true"></i>{{ request.fileName }}
+                                       <i class="" aria-hidden="true"></i>{{ request.name }}
                                    </span>
                                 </div>
                              </span>

@@ -35,3 +35,10 @@ body::-webkit-scrollbar {
 .indicator {
   border-bottom: 5px solid var(--color-primary);
 }
+
+[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+  position: unset;
+  opacity: unset;
+  pointer-events: unset;
+}
+

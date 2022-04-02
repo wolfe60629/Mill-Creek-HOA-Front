@@ -1,8 +1,9 @@
-import {Component, OnInit, Output} from '@angular/core';
+import {Component, OnInit, Output, SecurityContext} from '@angular/core';
 import {Doc} from '../types/document';
 import {DocumentsService} from '../services/documents.service';
-import {DomSanitizer} from '@angular/platform-browser';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {RequestsService} from '../services/requests.service';
+import {PDFDocument} from 'pdf-lib';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class RequestsComponent implements OnInit {
   listOfCategories: String[];
   fileToUpload: File | null = null;
   mainfestHtml: String;
-
+  pdfDocument: PDFDocument;
 
   @Output() showUploadModal: Boolean;
   showViewerModal: Boolean;
@@ -42,10 +43,41 @@ export class RequestsComponent implements OnInit {
     this.showUploadModal = true;
   }
 
-  showFile(base64: String) {
-    if (base64) {
-      this.mainfestHtml = base64;
+  showFile(doc: Doc) {
+    if (doc.item) {
+      this.mainfestHtml = doc.item;
       this.showViewerModal = true;
     }
+  }
+
+  showFile1 (doc: Doc) {
+    const pdfDoc =  PDFDocument.load(doc.item.toString()).then(document => {
+      const editableColumns: String[] = JSON.parse(doc.editableColumns.toString());
+
+      // // Edit The PDF
+      // const documentForm = document.getForm();
+      // editableColumns.forEach(column => {
+      //   documentForm.getTextField(column.toString()).setText('Test');
+      // });
+
+
+      const documentForm = document.getForm();
+      const fields = documentForm.getFields();
+
+      fields.forEach(field => {
+        const type = field.constructor.name;
+        const name = field.getName();
+        console.log(`${type}: ${name}`);
+      });
+
+      document.save();
+
+      // Show the pdf in another window
+      document.saveAsBase64().then(b64 => {
+       const pdfWindow = window.open('data:application/pdf;base64,' + b64, '_blank');
+       pdfWindow.document.write('<iframe width=\'100%\' height=\'100%\' src=\'data:application/pdf;base64, ' + encodeURI(b64) + '\'></iframe>');
+      });
+    });
+
   }
 }

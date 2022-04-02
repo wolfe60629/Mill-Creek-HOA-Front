@@ -27,7 +27,7 @@ import { RequestViewerComponent } from './requests/request-viewer/request-viewer
 import {DocumentUploadComponent} from './documents/document-upload/document-upload';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {AutoCompleteModule} from 'primeng/autocomplete';
-
+import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 
 
 const appRoutes: Routes = [
@@ -78,20 +78,21 @@ const appRoutes: Routes = [
     RequestUploadComponent,
     RequestViewerComponent
   ],
-    imports: [
-        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
-        BrowserModule,
-        MaterializeModule,
-        HttpClientModule,
-        FormsModule,
-        AccordionModule,
-        BrowserAnimationsModule,
-        ButtonModule,
-        ToastModule,
-        DropdownModule,
-        MultiSelectModule,
-        AutoCompleteModule
-    ],
+  imports: [
+    RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+    BrowserModule,
+    MaterializeModule,
+    HttpClientModule,
+    FormsModule,
+    AccordionModule,
+    BrowserAnimationsModule,
+    ButtonModule,
+    ToastModule,
+    DropdownModule,
+    MultiSelectModule,
+    AutoCompleteModule,
+    NgxExtendedPdfViewerModule
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
