@@ -2,6 +2,8 @@ import {Component, Injectable, Input, OnInit, Output} from '@angular/core';
 import {DocumentsComponent} from '../documents.component';
 import {Observable, ReplaySubject} from 'rxjs';
 import {DocumentsService} from '../../services/documents.service';
+import {MessageService} from 'primeng/api';
+import {Doc} from '../../types/document';
 
 @Injectable({ providedIn: 'root' })
 
@@ -19,9 +21,9 @@ export class DocumentUploadComponent implements OnInit {
        name: ''
    };
 
-    categoryOptions = [{ name: 'Meeting Minutes' }, {name: 'Bi-laws'}];
+    private output: String[];
 
-  constructor(private documentsComponent: DocumentsComponent, private documentsService: DocumentsService) { }
+  constructor(private documentsComponent: DocumentsComponent, private documentsService: DocumentsService, private messageService: MessageService) { }
 
   ngOnInit(): void {
   }
@@ -39,7 +41,14 @@ export class DocumentUploadComponent implements OnInit {
          description: this.description,
          item: converted,
            category: this.category.name
-       });
+       }).subscribe(response => {
+               this.messageService.add({severity: 'success', summary: 'Document Uploaded Successfully'});
+           this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {
+               this.documentsComponent.documents = result;
+               this.documentsComponent.listOfCategories = [... new Set(result.map(item => item.category))];
+           });
+           }
+       );
     });
   }
 
@@ -49,5 +58,9 @@ export class DocumentUploadComponent implements OnInit {
       reader.readAsBinaryString(file);
       reader.onload = (event) => result.next(btoa(event.target.result.toString()));
       return result;
+    }
+
+    search(event) {
+        this.output = this.documentsComponent.listOfCategories.filter(c => c.startsWith(event.query));
     }
 }

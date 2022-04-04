@@ -28,6 +28,9 @@ import {DocumentUploadComponent} from './documents/document-upload/document-uplo
 import {MultiSelectModule} from 'primeng/multiselect';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
+import {MessageService} from 'primeng/api';
+import {AnnoncementComponent} from './announcements/annoncement.component';
+import { AmenitiesComponent } from './amenities/amenities.component';
 
 
 const appRoutes: Routes = [
@@ -39,7 +42,7 @@ const appRoutes: Routes = [
   {
     path: 'about',
     component: AboutComponent,
-    data: { title: 'About me' },
+    data: { title: 'About the Community' },
   },
   {
     path: 'documents',
@@ -55,6 +58,16 @@ const appRoutes: Routes = [
     path: 'requests',
     component: RequestsComponent,
     data: { title: 'Requests' },
+  },
+  {
+    path: 'announcements',
+    component: AnnoncementComponent,
+    data: { title: 'Announcements' },
+  },
+  {
+    path: 'amenities',
+    component: AmenitiesComponent,
+    data: { title: 'Amenity Information' },
   },
   {
     path: '**',
@@ -76,7 +89,9 @@ const appRoutes: Routes = [
     ViewerComponent,
     RequestsComponent,
     RequestUploadComponent,
-    RequestViewerComponent
+    RequestViewerComponent,
+    AnnoncementComponent,
+    AmenitiesComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
@@ -99,6 +114,7 @@ const appRoutes: Routes = [
       useClass: HttpErrorInterceptor,
       multi: true,
     },
+    MessageService
   ],
   bootstrap: [AppComponent],
 })

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Doc} from '../types/document';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class RequestsService {
 
   constructor(private httpSvc: HttpClient) { }
 
-  public saveToStorage(doc: Doc) {
-    this.httpSvc.post(this.host + '/new', doc).subscribe(response => console.log(response));
+  public saveToStorage(doc: Doc): Observable<Object> {
+   return this.httpSvc.post(this.host + '/new', doc);
   }
 
   public getAllRequests() {

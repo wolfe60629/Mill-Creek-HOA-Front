@@ -8,13 +8,6 @@
         <div class = "modal-inputs">
             <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true"/>
             <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true"/>
-            <input [(ngModel)]="currentEditableColumnValue" id = "editableColumnsInput" inputmode="text" placeholder="Add Editable Column Name" required="true">
-            <div class="right-align">
-                <button class = "btn black " (click)="addEditableColumn()">Add</button>
-                <button class = "btn black center-align" (click)="resetEditableColumns()">Reset</button>
-            </div>
-
-            <input [value]="editableColumns.toLocaleString()" class="center-align" id = "editableColumns" inputmode="text" placeholder="" readonly="true" disabled="true">
         </div>
         <button class="btn blue" (click)="onSubmit()">Submit</button>
     </div>

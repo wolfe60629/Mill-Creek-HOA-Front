@@ -4,6 +4,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ViewerComponent} from './viewer/viewer.component';
 import {Doc} from '../types/document';
+import {MessageService} from 'primeng/api';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class DocumentsComponent implements OnInit {
   @Output() showUploadModal: Boolean;
   showViewerModal: Boolean;
 
-  constructor(private documentsService: DocumentsService, private sanitizer: DomSanitizer) {}
+  constructor(private documentsService: DocumentsService, private sanitizer: DomSanitizer, private messageService: MessageService) {}
 
   public ngOnInit() {
     this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {

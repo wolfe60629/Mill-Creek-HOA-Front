@@ -16,8 +16,8 @@ export class DocumentsService {
   constructor(private httpSvc: HttpClient) { }
 
 
-  public saveToStorage(doc: Doc) {
-      this.httpSvc.post(this.host + '/new', doc).subscribe(response => console.log(response));
+  public saveToStorage(doc: Doc): Observable<Object> {
+     return this.httpSvc.post(this.host + '/new', doc);
   }
 
   public getAllDocuments() {

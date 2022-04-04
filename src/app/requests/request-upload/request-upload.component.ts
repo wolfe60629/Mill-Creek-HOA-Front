@@ -5,6 +5,8 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {RequestsComponent} from '../requests.component';
 import {RequestsService} from '../../services/requests.service';
 import {PDFDocument} from 'pdf-lib';
+import {Doc} from '../../types/document';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-request-upload',
@@ -20,10 +22,7 @@ export class RequestUploadComponent implements OnInit {
     name: 'Request'
   };
 
-  editableColumns = [];
-  currentEditableColumnValue: String = '';
-
-  constructor(private requestsComponent: RequestsComponent, private requestsService: RequestsService) { }
+  constructor(private requestsComponent: RequestsComponent, private requestsService: RequestsService, private messageService: MessageService) { }
 
   ngOnInit(): void {
   }
@@ -52,6 +51,12 @@ export class RequestUploadComponent implements OnInit {
           item: converted,
           category: this.category.name,
           editableColumns: JSON.stringify(Array.from(fieldMap))
+        }).subscribe(() => {
+          this.requestsService.getAllRequests().subscribe((requests: Doc[]) => {
+            this.messageService.add({severity: 'success', summary: 'Document Uploaded Successfully'});
+            this.requestsComponent.requests = requests;
+            this.requestsComponent.listOfCategories = [... new Set(requests.map(item => item.category))];
+          });
         });
       });
     });
@@ -63,17 +68,5 @@ export class RequestUploadComponent implements OnInit {
     reader.readAsBinaryString(file);
     reader.onload = (event) => result.next(btoa(event.target.result.toString()));
     return result;
-  }
-
-  addEditableColumn () {
-    if (this.currentEditableColumnValue.trim().length > 0) {
-    this.editableColumns.push(this.currentEditableColumnValue.trim());
-    this.currentEditableColumnValue = '';
-    }
-  }
-
-  resetEditableColumns() {
-    this.editableColumns = [];
-    this.currentEditableColumnValue = '';
   }
 }

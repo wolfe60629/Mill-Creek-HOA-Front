@@ -6,9 +6,10 @@
         <p>{{fileToUpload.name}}</p>
 
         <div class = "modal-inputs">
-        <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true"/>
-        <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true"/>
-            <p-dropdown [options]="categoryOptions" [(ngModel)]="category"  placeholder="Select a Category" optionLabel="name" [showClear]="true"></p-dropdown>
+        <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
+        <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true" autocomplete="off"/>
+            <p-autoComplete [(ngModel)]="category.name" [suggestions]="this.output" (completeMethod)="search($event)"
+                            placeholder="Enter a Category"></p-autoComplete>
         </div>
 
         <button class="btn blue" (click)="onSubmit()">Submit</button>

@@ -3,6 +3,18 @@
     <!-- Modal content -->
     <div class="modal-content">
         <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
-        <iframe class="iframe" [src]="src"></iframe>
+        <div class = "pdfView">
+            <ngx-extended-pdf-viewer [showOpenFileButton]="false"
+                                     [showSidebarButton]="false"
+                                     [showRotateButton]="false"
+                                     [showPropertiesButton]="false"
+                                     [zoom]="140"
+                                     height="115"
+                                     [base64Src]="src"
+                                     #pdfViewer>
+
+            </ngx-extended-pdf-viewer>
+
+        </div>
     </div>
 </div>

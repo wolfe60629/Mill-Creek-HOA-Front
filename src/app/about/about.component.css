@@ -63,3 +63,19 @@ td a:hover {
   min-height: 1000px;
 }
 
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+h5 {
+  font-size: 1.4rem;
+}
+
+
+@media only screen and (min-width: 993px) {
+  .container {
+    width: 85%;
+  }
+}

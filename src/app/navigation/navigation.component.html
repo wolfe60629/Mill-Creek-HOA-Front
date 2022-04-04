@@ -3,8 +3,9 @@
     <div id="navbar" class="nav-wrapper">
       <a routerLink="/" class="brand-logo black-text"></a> <a materialize="sideNav" [materializeParams]="[{edge: 'left', closeOnClick: true}]" class="sidenav-trigger button-collapse left hide-on-large-only" href="#" data-activates="mobile-version" data-target="nav-mobile" > <i class="material-icons light-blue-text text-darken-3">menu</i> </a>
       <ul class="right hide-on-med-and-down">
-        <li [ngClass]="route==='/' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/">Home</a > </li>
+<!--        <li [ngClass]="route==='/' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/">Home</a > </li>-->
         <li [ngClass]="route==='/about' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/about">About the Community</a > </li>
+        <li [ngClass]="route==='/amenities' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/amenities">Amenities</a > </li>
         <li [ngClass]="route==='/announcements' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/announcements">Announcements</a > </li>
         <li [ngClass]="route==='/documents' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/documents">Documents</a > </li>
         <li [ngClass]="route==='/requests' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/requests" >Requests</a > </li>
@@ -14,8 +15,9 @@
   </nav>
 </div>
 <ul class="side-nav" id="mobile-version">
-  <li class="sidenav-close" [ngClass]="route==='/' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/" >Home</a > </li>
+<!--  <li class="sidenav-close" [ngClass]="route==='/' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/" >Home</a > </li>-->
   <li class="sidenav-close" [ngClass]="route==='/about' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/about" >About</a > </li>
+  <li class="sidenav-close" [ngClass]="route==='/amenities' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/about" >Amenities</a > </li>
   <li class="sidenav-close" [ngClass]="route==='/announcements' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/announcements" >Announcements</a > </li>
   <li class="sidenav-close" [ngClass]="route==='/documents' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/documents" >Documents</a > </li>
   <li class="sidenav-close" [ngClass]="route==='/requests' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/requests" >Requests</a> </li>

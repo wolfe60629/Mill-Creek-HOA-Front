@@ -91,3 +91,9 @@ span.badge.new {
 .card-container {
   #display: flex;
 }
+
+@media only screen and (min-width: 993px) {
+  .container {
+    width: 85%;
+  }
+}

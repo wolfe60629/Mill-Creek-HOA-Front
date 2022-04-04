@@ -45,7 +45,9 @@
     margin-bottom: 10px;
 }
 
-.iframe {
-    height:95%;
+
+.pdfView {
+    margin-top:0px;
     width:100%;
+    display: inline-block;
 }

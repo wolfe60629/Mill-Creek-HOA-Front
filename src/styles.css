@@ -42,3 +42,8 @@ body::-webkit-scrollbar {
   pointer-events: unset;
 }
 
+.p-toast {
+  position:absolute;
+  bottom:0px;
+}
+
