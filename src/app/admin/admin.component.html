@@ -1,0 +1,39 @@
+<div class="outer">
+<div class="p-m-4 pane inner">
+
+    <!-- Left Pane -->
+    <div>
+        <p-listbox class = "reference-group-list"
+                   [options]="referenceGroups"
+                   [(ngModel)]="selectedReferenceGroup"
+                   styleClass="reference-group-list"
+                   [filter]="false"
+                   (onClick)="onReferenceGroupSelected()">
+        </p-listbox>
+    </div>
+
+    <!-- Right Pane -->
+    <div class="container">
+        <ng-container *ngIf="selectedReferenceGroup.groupCode == 'board_members'">
+            <button class="btn btn-primary right" ><i class="pi pi-plus"></i></button>
+            <p-table>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Board Member Title</th>
+                        <th>Member Name</th>
+                        <th>Member Email</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body">
+                    <tr>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </ng-container>
+    </div>
+</div>
+</div>
+
+
+

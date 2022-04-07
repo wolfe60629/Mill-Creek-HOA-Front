@@ -11,6 +11,7 @@ import {
 import {DocumentsService} from '../../services/documents.service';
 import {Doc} from '../../types/document';
 import {EmailService} from '../../services/email.service';
+import {ConfirmationService, MessageService} from 'primeng/api';
 
 
 @Component({
@@ -38,7 +39,9 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   constructor(private sanitizer: DomSanitizer,
               private ngxService: NgxExtendedPdfViewerService,
               private documentsService: DocumentsService,
-              private emailService: EmailService) {
+              private emailService: EmailService,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService) {
 
     pdfDefaultOptions.enableScripting = false;
     pdfDefaultOptions.renderForms = true;
@@ -69,20 +72,29 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   }
 
   submitDocument() {
-    this.downloadAsBlob().then(() => {
-      this.emailService.sendNewRequest( {
-        friendlyName: '',
-        name: '',
-        description: '',
-        item: this.submitedForm,
-        category: ''
+
+    this.confirmationService.confirm({
+      header: 'Ready to submit?',
+      key: 'confirm',
+      accept: () => {
+        this.downloadAsBlob().then(() => {
+        this.emailService.sendNewRequest( {
+          friendlyName: '',
+          name: '',
+          description: '',
+          item: this.submitedForm,
+          category: ''
+        });
+      }).then( () => {
+        this.showViewerModalChange.emit(false);
+          this.messageService.add({severity: 'success', summary: 'Request Submitted Successfully!'});
       });
-    }).then( () => {this.showViewerModal = false; });
+      }
+    });
+
   }
 
   dataChange(changes: FormDataType) {
-    console.log();
-
   }
 
   public async downloadAsBlob(): Promise<void> {

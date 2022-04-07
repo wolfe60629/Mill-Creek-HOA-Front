@@ -13,7 +13,7 @@
             </div>
 
             <!-- File Upload -->
-            <div class="form-group">
+            <div class="form-group" *ngIf="isAdmin">
                 <input type="file"
                        accept="application/pdf"
                        id="file"

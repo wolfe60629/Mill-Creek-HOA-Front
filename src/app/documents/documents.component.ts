@@ -5,6 +5,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ViewerComponent} from './viewer/viewer.component';
 import {Doc} from '../types/document';
 import {MessageService} from 'primeng/api';
+import {LoginService} from '../services/login.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import {MessageService} from 'primeng/api';
   providers: [DocumentsService],
 })
 export class DocumentsComponent implements OnInit {
-  tabOption = 0;
+  isAdmin: boolean;
   documents: Doc[] = [];
   listOfCategories: String[];
   fileToUpload: File | null = null;
@@ -23,14 +24,21 @@ export class DocumentsComponent implements OnInit {
   @Output() showUploadModal: Boolean;
   showViewerModal: Boolean;
 
-  constructor(private documentsService: DocumentsService, private sanitizer: DomSanitizer, private messageService: MessageService) {}
+  constructor(private documentsService: DocumentsService,
+              private sanitizer: DomSanitizer,
+              private messageService: MessageService,
+              private loginService: LoginService) {}
 
   public ngOnInit() {
+    this.loginService.checkAuthToken();
+
     this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {
       this.documents = result;
 
       this.listOfCategories = [... new Set(result.map(item => item.category))];
     });
+
+    this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
   }
 
   handleFileInput(files: FileList) {

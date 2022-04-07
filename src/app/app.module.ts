@@ -28,9 +28,16 @@ import {DocumentUploadComponent} from './documents/document-upload/document-uplo
 import {MultiSelectModule} from 'primeng/multiselect';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {AnnoncementComponent} from './announcements/annoncement.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
+import { LoginComponent } from './login/login.component';
+import {TokenInterceptor} from './services/TokenInterceptor';
+import { AdminComponent } from './admin/admin.component';
+import { LogoutComponent } from './logout/logout.component';
+import {TableModule} from 'primeng/table';
+import {ListboxModule} from 'primeng/listbox';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 
 const appRoutes: Routes = [
@@ -43,6 +50,11 @@ const appRoutes: Routes = [
     path: 'about',
     component: AboutComponent,
     data: { title: 'About the Community' },
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    data: { title: 'Admin PanelS' },
   },
   {
     path: 'documents',
@@ -70,6 +82,16 @@ const appRoutes: Routes = [
     data: { title: 'Amenity Information' },
   },
   {
+    path: 'login',
+    component: LoginComponent,
+    data: { title: 'Login' },
+  },
+  {
+    path: 'logout',
+    component: LogoutComponent,
+    data: { title: 'Logout' },
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
@@ -91,7 +113,10 @@ const appRoutes: Routes = [
     RequestUploadComponent,
     RequestViewerComponent,
     AnnoncementComponent,
-    AmenitiesComponent
+    AmenitiesComponent,
+    LoginComponent,
+    AdminComponent,
+    LogoutComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
@@ -106,7 +131,10 @@ const appRoutes: Routes = [
     DropdownModule,
     MultiSelectModule,
     AutoCompleteModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
+    TableModule,
+    ListboxModule,
+    ConfirmDialogModule
   ],
   providers: [
     {
@@ -114,7 +142,13 @@ const appRoutes: Routes = [
       useClass: HttpErrorInterceptor,
       multi: true,
     },
-    MessageService
+    MessageService,
+      ConfirmationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
 })

@@ -25,6 +25,7 @@ export class RequestUploadComponent implements OnInit {
   constructor(private requestsComponent: RequestsComponent, private requestsService: RequestsService, private messageService: MessageService) { }
 
   ngOnInit(): void {
+
   }
 
   setShowUploadModal (bool) {
