@@ -17,6 +17,6 @@ describe('AppComponent', () => {
   it(`should have as title 'dgm-website-angular'`, waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent)
     const app = fixture.debugElement.componentInstance
-    expect(app.title).toEqual('dgm-website-angular')
+    expect(app.title).toEqual('Mill-Creek-Website')
   }))
 })
