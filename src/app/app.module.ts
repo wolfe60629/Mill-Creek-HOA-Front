@@ -125,7 +125,7 @@ const appRoutes: Routes = [
     CalendarComponent
   ],
   imports: [
-    RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+    RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy',  useHash: true}),
     BrowserModule,
     MaterializeModule,
     HttpClientModule,
