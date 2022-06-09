@@ -5,6 +5,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {RequestsService} from '../services/requests.service';
 import {PDFDocument} from 'pdf-lib';
 import {LoginService} from '../services/login.service';
+import {ConfirmationService, MessageService} from 'primeng/api';
 
 
 @Component({
@@ -25,7 +26,10 @@ export class RequestsComponent implements OnInit {
 
   constructor(private requestsService: RequestsService,
               private sanitizer: DomSanitizer,
-              private loginService: LoginService) {}
+              private loginService: LoginService,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService) {
+  }
 
   public ngOnInit() {
     this.loginService.checkAuthToken();
@@ -34,7 +38,7 @@ export class RequestsComponent implements OnInit {
     this.requestsService.getAllRequests().subscribe((result: Doc[]) => {
       this.requests = result;
 
-      this.listOfCategories = [... new Set(result.map(item => item.category))];
+      this.listOfCategories = [...new Set(result.map(item => item.category))];
     });
 
     this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
@@ -42,7 +46,7 @@ export class RequestsComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     // Limit file size to 5MB
-    if (files.item(0).size > 5000000 ) {
+    if (files.item(0).size > 5000000) {
       return;
     }
 
@@ -54,7 +58,21 @@ export class RequestsComponent implements OnInit {
   showFile(doc: Doc) {
     if (doc.item) {
       this.mainfestHtml = doc.item;
-      this.showViewerModal = true;
+        this.showViewerModal = true;
     }
+  }
+
+  onDelete(doc: Doc) {
+    this.confirmationService.confirm({
+      header: 'Are you sure you want to delete?',
+      key: 'confirm',
+      accept: () => {
+        this.showViewerModal = false;
+        this.requestsService.deleteRequest(doc).subscribe(() => {
+          this.messageService.add({severity: 'success', summary: 'Request Deleted Successfully!'});
+        }
+      );
+      }
+    });
   }
 }

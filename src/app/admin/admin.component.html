@@ -1,5 +1,9 @@
 <div class="outer">
-<div class="p-m-4 pane inner">
+    <div class="inner">
+        <div class="col s12 animated fadeIn">
+            <h5 class="text-darken-3 center-align">Admin Dashboard</h5>
+        </div>
+        <div class="p-m-4 pane">
 
     <!-- Left Pane -->
     <div>
@@ -14,9 +18,70 @@
 
     <!-- Right Pane -->
     <div class="container">
+        <ng-container *ngIf="selectedReferenceGroup.groupCode == 'community_events'">
+            <button class="add-new-row btn red" (click)="addNewEventRow()"><i class="pi pi-plus"></i></button>
+
+            <p-table [value]="communityEvents"  [resizableColumns]="true" [autoLayout]="true">>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Event Description</th>
+                        <th>Event Location</th>
+                        <th>Event Date</th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-communityEvent>
+                        <tr>
+                            <td>
+                                <input *ngIf="!communityEvent.readonly" type="text"  [(ngModel)]="communityEvent.eventName"/>
+                                <ng-container *ngIf="communityEvent.readonly">{{communityEvent.eventName}}</ng-container>
+                            </td>
+                            <td>
+                                <input *ngIf="!communityEvent.readonly" type="text" [(ngModel)]="communityEvent.description"/>
+                                <ng-container *ngIf="communityEvent.readonly">
+                                    <p style="white-space: normal;">{{communityEvent.description}}</p>
+                                    </ng-container>
+                            </td>
+                            <td>
+                                <input *ngIf="!communityEvent.readonly" type="text" [(ngModel)]="communityEvent.location"/>
+                                <ng-container *ngIf="communityEvent.readonly">{{communityEvent.location}}</ng-container>
+                            </td>
+                            <td>
+                                <input *ngIf="!communityEvent.readonly" type="datetime-local" [(ngModel)]="communityEvent.date"/>
+                                <p *ngIf="communityEvent.readonly">{{formatAMPM(communityEvent.date)}}</p>
+                            </td>
+
+                            <td class="center-align">
+                                <ng-container *ngIf="communityEvent.readonly==null?true:communityEvent.readonly">
+                                    <button class = "btn blue center-align center" (click)="editRow(communityEvent)"><i class="pi pi-user-edit"></i></button>
+                                    <button class = "btn blue center-align center" (click)="onDeleteCommunityEvent(communityEvent)"><i class="pi pi-trash"></i></button>
+                                </ng-container>
+                                <ng-container *ngIf="communityEvent.readonly==false">
+                                    <button class = "btn blue center-align center" (click)="onEventSave(communityEvent)"><i class="pi pi-check"></i></button>
+                                    <button class = "btn blue center-align center" (click)="cancelEdit(communityEvent)"><i class="pi pi-times"></i></button>
+                                </ng-container>
+                            </td>
+                        </tr>
+                </ng-template>
+            </p-table>
+        </ng-container>
+
+
+
+        <ng-container *ngIf="selectedReferenceGroup.groupCode == 'request_settings'">
+            <p>Request Recipient Email</p>
+            <input type="email" id="request_email" placeholder="example@example.com">
+
+
+            <button type="submit" class="btn btn-grey grey right darken-3">Save</button>
+        </ng-container>
+
+
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'board_members'">
-            <button class="btn btn-primary right" ><i class="pi pi-plus"></i></button>
-            <p-table>
+            <button class="add-new-row btn red" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i></button>
+
+            <p-table [value]="boardMembers"  [resizableColumns]="true" [autoLayout]="true">>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Board Member Title</th>
@@ -25,14 +90,39 @@
                         <th>Action</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body">
+                <ng-template pTemplate="body" let-boardMember>
                     <tr>
+                        <td>
+                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.title"/>
+                            <ng-container *ngIf="boardMember.readonly">{{boardMember.title}}</ng-container>
+                        </td>
+                        <td>
+                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.name"/>
+                            <ng-container *ngIf="boardMember.readonly">{{boardMember.name}}</ng-container>
+                        </td>
+                        <td>
+                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.email"/>
+                            <ng-container *ngIf="boardMember.readonly">{{boardMember.email}}</ng-container>
+                        </td>
+
+                        <td class="center-align">
+                            <ng-container *ngIf="boardMember.readonly==null?true:boardMember.readonly">
+                                <button class = "btn blue center-align center" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
+                                <button class = "btn blue center-align center"><i class="pi pi-trash"></i></button>
+                            </ng-container>
+                            <ng-container *ngIf="boardMember.readonly==false">
+                                <button class = "btn blue center-align center"><i class="pi pi-check"></i></button>
+                                <button class = "btn blue center-align center" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
+                            </ng-container>
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>
         </ng-container>
+
     </div>
 </div>
+    </div>
 </div>
 
 

@@ -6,6 +6,7 @@ import {ViewerComponent} from './viewer/viewer.component';
 import {Doc} from '../types/document';
 import {MessageService} from 'primeng/api';
 import {LoginService} from '../services/login.service';
+import {asNumber} from 'pdf-lib';
 
 
 @Component({
@@ -34,6 +35,8 @@ export class DocumentsComponent implements OnInit {
 
     this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {
       this.documents = result;
+      this.documents.sort((a, b) => (a.id > b.id) ? 1 : (a.id === b.id) ? ((a.id > b.id) ? 1 : -1) : -1 );
+
 
       this.listOfCategories = [... new Set(result.map(item => item.category))];
     });

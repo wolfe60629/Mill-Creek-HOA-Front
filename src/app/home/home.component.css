@@ -6,7 +6,6 @@
 }
 .rsp {
   min-width: 100%;
-  opacity: 0.8;
   z-index: -1;
 }
 .sublink:hover {
@@ -15,7 +14,7 @@
 }
 .sublink {
   transition: all 150ms ease-in-out;
-  padding: 1rem 2rem;
+ padding: 1rem;
   font-weight: 400;
 }
 h1 {
@@ -24,7 +23,7 @@ h1 {
 .link-container {
   display: flex;
   justify-content: space-around;
-  background-color: rgba(1, 81, 127, 0.5);
+  background-color: rgba(8, 53, 79, 0.88);
   padding-top: 10px;
   padding-bottom: 10px;
 
@@ -32,7 +31,7 @@ h1 {
 
 .home-text {
   width:100%;
-  background-color: rgba(255,255,255,.5);
+  background-color: rgba(255,255,255,.7);
   border-radius: 10px;
 }
 

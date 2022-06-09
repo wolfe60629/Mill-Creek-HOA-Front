@@ -21,4 +21,8 @@ export class RequestsService {
     return this.httpSvc.get(this.host + '');
   }
 
+  public deleteRequest(request: Doc) {
+    return this.httpSvc.post(this.host + '/delete', request);
+  }
+
 }

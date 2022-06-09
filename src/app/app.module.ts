@@ -38,6 +38,11 @@ import { LogoutComponent } from './logout/logout.component';
 import {TableModule} from 'primeng/table';
 import {ListboxModule} from 'primeng/listbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarComponent } from './announcements/calendar/calendar.component';
 
 
 const appRoutes: Routes = [
@@ -116,7 +121,8 @@ const appRoutes: Routes = [
     AmenitiesComponent,
     LoginComponent,
     AdminComponent,
-    LogoutComponent
+    LogoutComponent,
+    CalendarComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
@@ -134,7 +140,8 @@ const appRoutes: Routes = [
     NgxExtendedPdfViewerModule,
     TableModule,
     ListboxModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    FullCalendarModule
   ],
   providers: [
     {
@@ -152,4 +159,6 @@ const appRoutes: Routes = [
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+
+}

@@ -31,9 +31,9 @@
                              <span class="card-title">
                                 <div class="card-title-content">
                                    <h5 class="project-title">{{ request.friendlyName }}</h5>
-                                   <span *ngIf="request" class="badge grey darken-3 white-text hide-on-med-and-down">
-                                       <i class="" aria-hidden="true"></i>{{ request.name }}
-                                   </span>
+                                    <span>
+                                        <i *ngIf="isAdmin" class="pi pi-trash" (click)="onDelete(request)"></i>
+                                    </span>
                                 </div>
                              </span>
                                     <p class="project-description flow-text">{{ request.description }}</p>

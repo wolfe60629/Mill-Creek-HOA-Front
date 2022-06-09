@@ -22,13 +22,15 @@
 
         </div>
 
-        <input type="file"
+        <input class = "hiddendiv"
+               type="file"
                    accept="application/pdf"
                    id="file"
                    (change)="handleFileInput($event.target.files)">
 
         <div class = "center-align">
-            <button class = "btn btn-primary red" (click)="submitDocument()">Submit</button>
+            <button class = "btn btn-primary grey" style = "margin-right:5px" onclick="document.getElementById('file').click();">Attach a Document</button>
+            <button class = "btn btn-primary red" style = "" (click)="submitDocument()">Submit</button>
         </div>
     </div>
 </div>

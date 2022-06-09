@@ -6,5 +6,6 @@ export class Doc {
     item: String;
     category: String;
     editableColumns?: String;
+    crt_ts?: Date;
 }
 

@@ -19,10 +19,12 @@ export class RequestUploadComponent implements OnInit {
   @Output() documentName = '';
   @Output() description = '';
   @Output() category = {
-    name: 'Request'
+    name: 'Requests'
   };
 
-  constructor(private requestsComponent: RequestsComponent, private requestsService: RequestsService, private messageService: MessageService) { }
+  constructor(private requestsComponent: RequestsComponent,
+              private requestsService: RequestsService,
+              private messageService: MessageService) { }
 
   ngOnInit(): void {
 

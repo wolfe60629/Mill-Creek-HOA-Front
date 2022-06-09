@@ -1,10 +1,8 @@
-export class Doc {
+export class BoardMember {
     id?: Number;
-    friendlyName: String;
-    name: String;
-    description: String;
-    item: String;
-    category: String;
-    editableColumns?: String;
+    name: string;
+    email: string;
+    title: string;
+    readonly?: boolean;
 }
 

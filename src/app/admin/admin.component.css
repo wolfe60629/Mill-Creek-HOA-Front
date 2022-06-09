@@ -5,6 +5,10 @@
     height: 100%;
 }
 
+.add-new-row {
+    padding: 0rem 1rem;
+}
+
 .pane {
     display: flex;
 }
