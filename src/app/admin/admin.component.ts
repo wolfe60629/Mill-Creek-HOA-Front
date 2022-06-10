@@ -100,7 +100,8 @@ export class AdminComponent implements OnInit {
     const newEvent = new CommunityEvent();
     newEvent.eventName = '';
     newEvent.description = '';
-    newEvent.date = null;
+    newEvent.startDate = null;
+    newEvent.endDate = null;
     newEvent.readonly = false;
     this.communityEvents.unshift(newEvent);
   }

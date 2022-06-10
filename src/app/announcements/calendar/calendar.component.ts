@@ -34,7 +34,8 @@ export class CalendarComponent implements OnInit {
         return {
           id: event.id,
           title: event.eventName,
-          start: new Date(event.date),
+          start: new Date(event.startDate),
+          end: new Date(event.endDate),
           description: event.description,
           location: event.location
         };

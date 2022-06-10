@@ -3,7 +3,8 @@ export class CommunityEvent {
     eventName: string;
     description?: string;
     location?: string;
-    date: Date;
+    startDate: Date;
+    endDate: Date;
     readonly?: boolean;
 }
 

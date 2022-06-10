@@ -34,7 +34,11 @@ export class AnnoncementComponent implements OnInit {
       this.events = events.slice(0, 3);
 
       this.events.forEach(event => {
-        event.date = new Date(event.date);
+        event.startDate = new Date(event.startDate);
+
+        if (event.endDate) {
+            event.endDate = new Date(event.endDate);
+        }
       });
 
       this.events = [...this.events];
