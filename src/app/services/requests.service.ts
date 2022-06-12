@@ -21,6 +21,10 @@ export class RequestsService {
     return this.httpSvc.get(this.host + '');
   }
 
+  public getRequestById(id: Number) {
+    return this.httpSvc.get(this.host + '/' + id);
+  }
+
   public deleteRequest(request: Doc) {
     return this.httpSvc.post(this.host + '/delete', request);
   }

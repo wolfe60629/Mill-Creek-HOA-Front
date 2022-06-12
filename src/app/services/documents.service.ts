@@ -24,4 +24,8 @@ export class DocumentsService {
      return this.httpSvc.get(this.host + '');
   }
 
+  public getDocumentById(id: Number) {
+      return this.httpSvc.get(this.host + '/' + id);
+  }
+
 }

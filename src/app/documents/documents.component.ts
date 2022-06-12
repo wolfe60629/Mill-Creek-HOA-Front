@@ -55,9 +55,12 @@ export class DocumentsComponent implements OnInit {
     this.showUploadModal = true;
   }
 
-  showFile(base64: String) {
-      if (base64) {
-        this.mainfestHtml = base64;
+  showFile(id: Number) {
+      if (id) {
+        this.documentsService.getDocumentById(id).subscribe((document: Doc) => {
+          this.mainfestHtml = document.item;
+        });
+
         this.showViewerModal = true;
       }
     }

@@ -56,8 +56,10 @@ export class RequestsComponent implements OnInit {
   }
 
   showFile(doc: Doc) {
-    if (doc.item) {
-      this.mainfestHtml = doc.item;
+    if (doc.id) {
+      this.requestsService.getRequestById(doc.id).subscribe((request: Doc) => {
+        this.mainfestHtml = request.item;
+      });
         this.showViewerModal = true;
     }
   }

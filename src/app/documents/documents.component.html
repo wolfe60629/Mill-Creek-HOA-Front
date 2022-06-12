@@ -27,7 +27,7 @@
              <p-accordionTab *ngFor="let currCategory of listOfCategories; let j=index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="j==0">
                  <div class="card-container">
                     <ng-container *ngFor="let document of this.documents; let i = index">
-                         <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(document.item)" target="_blank">
+                         <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(document.id)" target="_blank">
                              <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
                              <span class="card-title">
                                 <div class="card-title-content">
