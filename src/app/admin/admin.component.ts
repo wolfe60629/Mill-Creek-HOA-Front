@@ -7,6 +7,7 @@ import {CommunityEvent} from '../types/communityEvent';
 import {RequestsService} from '../services/requests.service';
 import {EventService} from '../services/event.service';
 import {MessageService} from 'primeng/api';
+import {GeneralService} from '../services/general.service';
 
 @Component({
   selector: 'app-admin',
@@ -32,7 +33,8 @@ export class AdminComponent implements OnInit {
               private boardMemberService: BoardMemberService,
               private router: Router,
               private eventService: EventService,
-              private messageService: MessageService) { }
+              private messageService: MessageService,
+              private generalService: GeneralService) { }
 
   ngOnInit(): void {
     // Check if authentication has happened
@@ -133,24 +135,6 @@ export class AdminComponent implements OnInit {
     }, (err) => {
       this.messageService.add({severity: 'warn', summary: err});
     });
-  }
-
-
-  formatAMPM(date) {
-    const newDate = new Date(date);
-
-    let hours = newDate.getHours();
-    let minutes = newDate.getMinutes();
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? 0 + minutes : minutes;
-    const strTime = hours + ':' + (minutes === 0 ? '00' : minutes) + ' ' + ampm;
-    const strMonth = newDate.getUTCMonth() + 1;
-    const strDay = newDate.getDate();
-    const strYear = newDate.getFullYear();
-    const strDate = strMonth + '/' + strDay + '/' + strYear;
-    return strDate + ' ' + strTime;
   }
 }
 

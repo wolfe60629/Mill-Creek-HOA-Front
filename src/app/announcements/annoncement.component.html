@@ -62,7 +62,7 @@
                                 <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
                             </div>
                             <div class = "eventTime">
-                                <p>{{formatAMPM(event.startDate)}}</p>
+                                <p>{{generalService.formatTime(event.startDate)}}</p>
                             </div>
                             <div class="details">
                                 <h5>{{event.eventName}}</h5>

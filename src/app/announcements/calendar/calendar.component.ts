@@ -7,6 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import {CommunityEvent} from '../../types/communityEvent';
 import {EventService} from '../../services/event.service';
+import {GeneralService} from '../../services/general.service';
 
 declare var $: any;
 
@@ -23,8 +24,10 @@ export class CalendarComponent implements OnInit {
   @ViewChild('modalTitle') modalTitle: ElementRef;
   @ViewChild('modalDescription') modalDescription: ElementRef;
   @ViewChild('modalLocation') modalLocation: ElementRef;
+  @ViewChild('modalDate') modalDate: ElementRef;
   communityEvents = [];
-  constructor(private eventService: EventService) {
+  constructor(private eventService: EventService,
+              private generalService: GeneralService) {
     const name = Calendar.name;
   }
 
@@ -63,6 +66,8 @@ export class CalendarComponent implements OnInit {
         // Show Modal
         this.fullCalModal.nativeElement.style.display = 'unset';
         this.modalTitle.nativeElement.innerText = event.event.title;
+        const startDate = event.event._instance.range.start;
+        const endDate  = event.event._instance.range.end;
 
         // Add description and location of event
         if (event.event.extendedProps.description) {
@@ -75,6 +80,11 @@ export class CalendarComponent implements OnInit {
           this.modalLocation.nativeElement.innerText = event.event.extendedProps.location;
         } else {
           this.modalLocation.nativeElement.innerText = 'A location has not been set';
+        }
+
+        this.modalDate.nativeElement.innerText =  this.generalService.formatUTCTimeAndUTCDate(startDate);
+        if (endDate) {
+          this.modalDate.nativeElement.innerText += ' - ' + this.generalService.formatUTCTimeAndUTCDate(endDate);
         }
       },
       eventMouseLeave: (event) => {

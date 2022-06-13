@@ -4,6 +4,7 @@ import {CommunityEvent} from '../types/communityEvent';
 import {EventService} from '../services/event.service';
 import {NewslettersService} from '../services/newsletters.service';
 import {LoginService} from '../services/login.service';
+import {GeneralService} from '../services/general.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class AnnoncementComponent implements OnInit {
 
   constructor(private eventService: EventService,
               private newslettersService: NewslettersService,
-              private loginService: LoginService) {
+              private loginService: LoginService,
+              private generalService: GeneralService) {
   }
 
   ngOnInit(): void {
@@ -63,16 +65,6 @@ export class AnnoncementComponent implements OnInit {
     // this.showUploadModal = true;
   }
 
-   formatAMPM(date: Date) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? 0 + minutes : minutes;
-    const strTime = hours + ':' + (minutes === 0 ? '00' : minutes) + ' ' + ampm;
-    return strTime;
-  }
 
 }
 

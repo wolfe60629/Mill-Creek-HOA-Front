@@ -49,10 +49,10 @@
                             </td>
                             <td>
                                <input *ngIf="!communityEvent.readonly" type="datetime-local" [(ngModel)]="communityEvent.startDate"/>
-                                        <p *ngIf="communityEvent.readonly">{{formatAMPM(communityEvent.startDate)}}</p>
+                                        <p *ngIf="communityEvent.readonly">{{generalService.formatTimeAndDate(communityEvent.startDate)}}</p>
                                 <br>
                                 <input *ngIf="!communityEvent.readonly" type="datetime-local" [(ngModel)]="communityEvent.endDate"/>
-                                        <p *ngIf="communityEvent.readonly && communityEvent.endDate">{{formatAMPM(communityEvent.endDate)}}</p>
+                                        <p *ngIf="communityEvent.readonly && communityEvent.endDate">{{generalService.formatTimeAndDate(communityEvent.endDate)}}</p>
                             </td>
 
                             <td class="center-align">
