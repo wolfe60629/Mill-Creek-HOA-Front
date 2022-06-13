@@ -96,25 +96,25 @@
                 <ng-template pTemplate="body" let-boardMember>
                     <tr>
                         <td>
-                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.title"/>
+                            <input *ngIf="!boardMember.readonly" type="text" [(ngModel)]="boardMember.title"/>
                             <ng-container *ngIf="boardMember.readonly">{{boardMember.title}}</ng-container>
                         </td>
                         <td>
-                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.name"/>
+                            <input *ngIf="!boardMember.readonly" type="text" [(ngModel)]="boardMember.name"/>
                             <ng-container *ngIf="boardMember.readonly">{{boardMember.name}}</ng-container>
                         </td>
                         <td>
-                            <input *ngIf="!boardMember.readonly" type="text" [value]="boardMember.email"/>
+                            <input *ngIf="!boardMember.readonly" type="text" [(ngModel)]="boardMember.email"/>
                             <ng-container *ngIf="boardMember.readonly">{{boardMember.email}}</ng-container>
                         </td>
 
                         <td class="center-align">
                             <ng-container *ngIf="boardMember.readonly==null?true:boardMember.readonly">
                                 <button class = "btn blue center-align center" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
-                                <button class = "btn blue center-align center"><i class="pi pi-trash"></i></button>
+                                <button class = "btn blue center-align center" (click)="onDeleteBoardMember(boardMember)"><i class="pi pi-trash"></i></button>
                             </ng-container>
                             <ng-container *ngIf="boardMember.readonly==false">
-                                <button class = "btn blue center-align center"><i class="pi pi-check"></i></button>
+                                <button class = "btn blue center-align center" (click)="onBoardMemberSave(boardMember)"><i class="pi pi-check"></i></button>
                                 <button class = "btn blue center-align center" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
                             </ng-container>
                         </td>

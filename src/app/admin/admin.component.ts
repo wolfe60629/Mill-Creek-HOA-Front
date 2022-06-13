@@ -114,8 +114,21 @@ export class AdminComponent implements OnInit {
     }
 
     this.eventService.saveNewEvent(communityEvent).subscribe(() => {
-      this.messageService.add({severity: 'success', summary: 'Event Added Successfully!'});
+      this.messageService.add({severity: 'success', summary: 'Event Saved Successfully!'});
       communityEvent.readonly = true;
+    }, (err) => {
+      this.messageService.add({severity: 'warn', summary: err});
+    });
+  }
+
+  onBoardMemberSave(boardMember: BoardMember) {
+    if (!boardMember) {
+      return;
+    }
+
+    this.boardMemberService.saveNewBoardMember(boardMember).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Board Member Saved Successfully!'});
+      boardMember.readonly = true;
     }, (err) => {
       this.messageService.add({severity: 'warn', summary: err});
     });
@@ -136,7 +149,27 @@ export class AdminComponent implements OnInit {
       this.messageService.add({severity: 'warn', summary: err});
     });
   }
+
+
+  onDeleteBoardMember(boardMember: BoardMember) {
+    if (!boardMember) {
+      return;
+    }
+
+    this.boardMemberService.deleteBoardMember(boardMember).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Board Member Deleted Successfully!'});
+      this.boardMemberService.getAllBoardMembers().subscribe((boardMembers: BoardMember[]) => {
+        boardMembers.forEach((board) => {board.readonly = true; });
+        this.boardMembers = boardMembers;
+      });
+    }, (err) => {
+      this.messageService.add({severity: 'warn', summary: err});
+    });
+  }
 }
+
+
+
 
 class ReferenceGroup {
   label: String;

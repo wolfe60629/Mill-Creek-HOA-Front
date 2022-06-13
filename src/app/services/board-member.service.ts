@@ -21,4 +21,7 @@ export class BoardMemberService {
     return this.httpSvc.get(this.host + '');
   }
 
+  public deleteBoardMember(boardMember: BoardMember): Observable<any> {
+    return this.httpSvc.post(this.host + '/delete', boardMember);
+  }
 }
