@@ -45,7 +45,6 @@ export class LoginService {
           .subscribe((isTokenValid: boolean) => {
               if (!isTokenValid) {
                   this.logout();
-                  this.router.navigate(['/login']);
               }
           });
 
@@ -53,7 +52,8 @@ export class LoginService {
 
   logout (): String {
       localStorage.clear();
-     return this.authenicationToken = '';
+      this.router.navigate(['/login']);
+      return this.authenicationToken = '';
   }
 }
 
