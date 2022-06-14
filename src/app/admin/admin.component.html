@@ -48,11 +48,17 @@
                                 <ng-container *ngIf="communityEvent.readonly">{{communityEvent.location}}</ng-container>
                             </td>
                             <td>
-                               <input *ngIf="!communityEvent.readonly" type="datetime-local" [(ngModel)]="communityEvent.startDate"/>
-                                        <p *ngIf="communityEvent.readonly">{{generalService.formatTimeAndDate(communityEvent.startDate)}}</p>
-                                <br>
-                                <input *ngIf="!communityEvent.readonly" type="datetime-local" [(ngModel)]="communityEvent.endDate"/>
-                                        <p *ngIf="communityEvent.readonly && communityEvent.endDate">{{generalService.formatTimeAndDate(communityEvent.endDate)}}</p>
+                                <ng-container *ngIf="!communityEvent.readonly">
+                                    <input type="datetime-local" [(ngModel)]="communityEvent.startDate"/>
+                                    <br>
+                                    <input type="datetime-local" [(ngModel)]="communityEvent.endDate"/>
+                                </ng-container>
+
+                                <p *ngIf="communityEvent.readonly">{{generalService.formatTimeAndDate(communityEvent.startDate)}}</p>
+                                <ng-container *ngIf="communityEvent.endDate">
+                                    <br>
+                                    <p *ngIf="communityEvent.readonly">{{generalService.formatTimeAndDate(communityEvent.endDate)}}</p>
+                                </ng-container>
                             </td>
 
                             <td class="center-align">
