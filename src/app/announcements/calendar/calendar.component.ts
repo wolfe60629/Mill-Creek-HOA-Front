@@ -88,7 +88,13 @@ export class CalendarComponent implements OnInit {
         }
       },
       eventMouseLeave: (event) => {
-        this.fullCalModal.nativeElement.style.display = 'none';
+        if (!this.fullCalModal.nativeElement.matches(':hover')) {
+          this.fullCalModal.nativeElement.style.display = 'none';
+        }
+
+        this.fullCalModal.nativeElement.addEventListener('mouseleave', e => {
+          this.fullCalModal.nativeElement.style.display = 'none';
+        });
       }
     };
   }
