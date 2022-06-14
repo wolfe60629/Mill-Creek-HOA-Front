@@ -3,6 +3,7 @@ import {Doc} from '../types/document';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable, Subscription} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class LoginService {
   host = environment.backend + '/login';
   private authenicationToken: String = '';
 
-  constructor(private httpSvc: HttpClient) { }
+  constructor(private httpSvc: HttpClient,
+              private router: Router) { }
 
   public getAuthToken(username: String, password: String): Subscription {
     return this.httpSvc.post(this.host, {'username': username, 'password': password})
@@ -43,6 +45,7 @@ export class LoginService {
           .subscribe((isTokenValid: boolean) => {
               if (!isTokenValid) {
                   this.logout();
+                  this.router.navigate(['/login']);
               }
           });
 

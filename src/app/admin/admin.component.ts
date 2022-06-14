@@ -31,17 +31,12 @@ export class AdminComponent implements OnInit {
 
   constructor(private loginService: LoginService,
               private boardMemberService: BoardMemberService,
-              private router: Router,
               private eventService: EventService,
               private messageService: MessageService,
               private generalService: GeneralService) { }
 
   ngOnInit(): void {
     // Check if authentication has happened
-    const tokenValue = this.loginService.getAuthorizationHeaderValue();
-    if (tokenValue == null || tokenValue === '') {
-      this.router.navigate(['/login']);
-    }
     this.loginService.checkAuthToken();
 
     // Load Possible Reference Groups
