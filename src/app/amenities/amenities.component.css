@@ -80,3 +80,20 @@ h5 {
         width: 85%;
     }
 }
+
+ul:not(.browser-default) > li {
+    list-style-type: decimal;
+    font-size:1.4rem;
+}
+
+ul {
+    padding-left:30px;
+}
+
+td, th {
+    vertical-align: top;
+}
+
+h5 {
+    text-align: center!important;
+}

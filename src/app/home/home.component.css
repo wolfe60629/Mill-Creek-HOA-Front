@@ -38,9 +38,12 @@ h1 {
 
 @media( max-width: 1092px) {
   .link-container {
-    display: inline-block;
+    display: -webkit-inline-box;
     width: 100%;
     margin-top: 20px;
+    flex-flow: wrap;
+    height: 150px;
+    -webkit-box-pack: center;
   }
 }
 
