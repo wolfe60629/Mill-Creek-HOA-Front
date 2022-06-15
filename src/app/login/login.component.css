@@ -13,6 +13,8 @@
     transform: translate(2%,30px);
     padding: 10px 10px 30px 30px;
     box-shadow: 0 0 100px 11px #0006;
+    overflow-wrap: break-word;
+
 }
 .form-group {
     margin-bottom:10px;
