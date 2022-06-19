@@ -43,6 +43,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarComponent } from './announcements/calendar/calendar.component';
+import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
 
 
 const appRoutes: Routes = [
@@ -122,7 +123,8 @@ const appRoutes: Routes = [
     LoginComponent,
     AdminComponent,
     LogoutComponent,
-    CalendarComponent
+    CalendarComponent,
+    NewsletterUploadComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),

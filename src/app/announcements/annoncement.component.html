@@ -1,3 +1,5 @@
+<app-newsletter-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-newsletter-upload>
+
 <div class = "outer">
     <div class="inner">
         <div class = "page-container">
@@ -22,9 +24,9 @@
                                                  [showSidebarButton]="false"
                                                  [showRotateButton]="false"
                                                  [showPropertiesButton]="false"
-                                                 [zoom]="140"
+                                                 [zoom]="100"
                                                  height="90"
-                                                 [base64Src]=""
+                                                 [base64Src]="src"
                                                  #pdfViewer>
 
                         </ngx-extended-pdf-viewer>
@@ -33,10 +35,10 @@
 
                     <!-- Newsletter Acordian -->
                     <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects">
-                        <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="false">
+                        <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="true">
                             <div class="card-container">
                                 <ng-container *ngFor="let document of this.documents; let i = index">
-                                    <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(document.item)" target="_blank">
+                                    <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showNewsletter(document)" target="_blank">
                                         <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
                              <span class="card-title">
                                 <div class="card-title-content">
