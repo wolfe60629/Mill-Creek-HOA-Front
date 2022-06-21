@@ -20,7 +20,6 @@ html {
   user-select: none;
 }
 body {
-  font-family: "Rubik", sans-serif;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }

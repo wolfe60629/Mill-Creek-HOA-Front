@@ -14,13 +14,12 @@ import {MessageService} from 'primeng/api';
   styleUrls: ['./request-upload.component.css']
 })
 export class RequestUploadComponent implements OnInit {
+  categories = ['Requests', 'Information'];
   @Input() showUploadModal;
   @Input() fileToUpload: File;
   @Output() documentName = '';
   @Output() description = '';
-  @Output() category = {
-    name: 'Requests'
-  };
+  @Output() category = 'Requests';
 
   constructor(private requestsComponent: RequestsComponent,
               private requestsService: RequestsService,
@@ -52,7 +51,7 @@ export class RequestUploadComponent implements OnInit {
           name: this.fileToUpload.name,
           description: this.description,
           item: converted,
-          category: this.category.name,
+          category: this.category,
           editableColumns: JSON.stringify(Array.from(fieldMap))
         }).subscribe(() => {
           this.requestsService.getAllRequests().subscribe((requests: Doc[]) => {

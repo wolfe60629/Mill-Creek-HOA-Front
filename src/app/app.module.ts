@@ -44,6 +44,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarComponent } from './announcements/calendar/calendar.component';
 import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 
 const appRoutes: Routes = [
@@ -143,7 +144,8 @@ const appRoutes: Routes = [
     TableModule,
     ListboxModule,
     ConfirmDialogModule,
-    FullCalendarModule
+    FullCalendarModule,
+    RadioButtonModule
   ],
   providers: [
     {

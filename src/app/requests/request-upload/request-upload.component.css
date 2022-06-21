@@ -44,3 +44,7 @@
 .editable-column-container {
     display: flex;
 }
+
+.radioGroup {
+    margin-bottom: 10px;
+}

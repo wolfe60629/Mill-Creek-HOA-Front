@@ -50,7 +50,6 @@ export class CalendarComponent implements OnInit {
     this.calendarOptions = {
       editable: true,
       themeSystem: 'standard',
-      eventBackgroundColor: 'red',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',

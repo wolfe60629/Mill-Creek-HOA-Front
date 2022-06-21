@@ -8,6 +8,8 @@ import {RequestsService} from '../services/requests.service';
 import {EventService} from '../services/event.service';
 import {MessageService} from 'primeng/api';
 import {GeneralService} from '../services/general.service';
+import {Setting} from '../types/setting';
+import {SettingsService} from '../services/settings.service';
 
 @Component({
   selector: 'app-admin',
@@ -25,7 +27,7 @@ export class AdminComponent implements OnInit {
   readOnlyMode: boolean;
   loading = false;
   addLabel: string;
-
+  requestEmail: Setting;
 
   confirmationDialogKey = 'admin-values-confirmation-dialog';
 
@@ -34,7 +36,8 @@ export class AdminComponent implements OnInit {
               private router: Router,
               private eventService: EventService,
               private messageService: MessageService,
-              private generalService: GeneralService) { }
+              private generalService: GeneralService,
+              private settingsService: SettingsService) { }
 
   ngOnInit(): void {
     // Check if authentication has happened
@@ -47,8 +50,8 @@ export class AdminComponent implements OnInit {
     // Load Possible Reference Groups
     this.referenceGroups = [
         {label: 'Board Members', groupCode: 'board_members'},
-        {label: 'Request Settings', groupCode: 'request_settings'},
-        {label: 'Community Events', groupCode: 'community_events'}
+      {label: 'Community Events', groupCode: 'community_events'},
+        {label: 'Request Settings', groupCode: 'request_settings'}
       ];
 
       this.selectedReferenceGroup = this.referenceGroups[0];
@@ -70,6 +73,13 @@ export class AdminComponent implements OnInit {
           this.communityEvents = events;
         });
       });
+
+      // Load Current Request Email
+    this.settingsService.getSettingByName('requestEmail').subscribe((setting: Setting) => {
+      if (setting) {
+        this.requestEmail = setting;
+      }
+    });
   }
 
   addValue() {
@@ -131,6 +141,18 @@ export class AdminComponent implements OnInit {
       boardMember.readonly = true;
     }, (err) => {
       this.messageService.add({severity: 'warn', summary: err});
+    });
+  }
+
+
+  saveRequestEmail () {
+    if (this.requestEmail.value === '') {
+      this.messageService.add({severity: 'error', summary: 'Request email cannot be blank'});
+      return;
+    }
+
+    this.settingsService.saveSetting(this.requestEmail).subscribe(() => {
+      this.messageService.add({severity: 'success', summary: 'Request Email Updated Successfully!'});
     });
   }
 

@@ -1,5 +1,5 @@
 <!-- The Modal -->
-<p-confirmDialog key="confirm"></p-confirmDialog>
+<p-confirmDialog key="confirm"><input type="text"></p-confirmDialog>
 
 
 <div class="modal fade" [ngClass]="{'show-modal': showViewerModal}" id="myModal" class="modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -7,7 +7,10 @@
     <div class="modal-content">
         <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
 
-        <div class = "pdfView">
+        <ng-container *ngIf="isOnFinalStep == false">
+            <p>1 of 2</p>
+
+            <div class = "pdfView">
             <ngx-extended-pdf-viewer [showOpenFileButton]="false"
                                      [showSidebarButton]="false"
                                      [showRotateButton]="false"
@@ -27,10 +30,34 @@
                    accept="application/pdf"
                    id="file"
                    (change)="handleFileInput($event.target.files)">
+        </ng-container>
 
-        <div class = "center-align">
-            <button class = "btn btn-primary grey" style = "margin-right:5px" onclick="document.getElementById('file').click();">Attach a Document</button>
-            <button class = "btn btn-primary red" style = "" (click)="submitDocument()">Submit</button>
+        <ng-container *ngIf="isOnFinalStep">
+            <p>2 of 2</p>
+            <div class ="container">
+                <label for = "requestName">* Name: </label>
+                <input type="text" id="requestName" [(ngModel)]="requestName">
+
+                <label for = "requestEmail">* Email Address: </label>
+                <input type="email" id="requestEmail" [(ngModel)]="this.requestEmail">
+            </div>
+        </ng-container>
+
+
+
+
+        <div class = "modal-footer">
+            <ng-container *ngIf="isOnFinalStep == false">
+                <button class = "btn btn-primary grey" style = "margin-right:5px" onclick="document.getElementById('file').click();">Attach a Document</button>
+                <button class = "btn btn-primary green" style = "" (click)="this.goToFinalStep()">Next Step</button>
+            </ng-container>
+            <ng-container *ngIf="isOnFinalStep == true">
+                <button class = "btn btn-primary red" style = "" (click)="submitDocument()" type="submit">Submit</button>
+            </ng-container>
+
+
         </div>
+
+
     </div>
 </div>

@@ -34,7 +34,10 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   pdfDocument: PDFDocument;
   b64: string;
   formData: FormDataType;
+  requestName: String = '';
+  requestEmail: String = '';
   private submitedForm: string;
+  private isOnFinalStep;
 
   constructor(private sanitizer: DomSanitizer,
               private ngxService: NgxExtendedPdfViewerService,
@@ -62,9 +65,15 @@ export class RequestViewerComponent implements OnInit, OnChanges {
       });
     }
 
+    if (changes.showViewerModal.currentValue === true) {
+      this.requestName = '';
+      this.requestEmail = '';
+      this.isOnFinalStep = false;
+    }
   }
 
   ngOnInit(): void {
+    this.isOnFinalStep = false;
   }
 
   updateSrc(url): SafeResourceUrl {
@@ -72,23 +81,28 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   }
 
   submitDocument() {
+    if (!(this.requestEmail && this.requestName)) {
+      this.messageService.add({severity: 'error', summary: 'Name/Email Not Provided'});
+      return;
+    }
+
 
     this.confirmationService.confirm({
-      header: 'Ready to submit?',
+      header: 'Submit ARC Request?',
+      message: 'Are you sure you want to continue?',
       key: 'confirm',
       accept: () => {
-        this.downloadAsBlob().then(() => {
         this.emailService.sendNewRequest( {
           friendlyName: '',
           name: '',
           description: '',
           item: this.submitedForm,
           category: ''
-        });
-      }).then( () => {
+        }, this.requestName, this.requestEmail);
+
         this.showViewerModalChange.emit(false);
-          this.messageService.add({severity: 'success', summary: 'Request Submitted Successfully!'});
-      });
+        this.messageService.add({severity: 'success', summary: 'Request Submitted Successfully!'});
+
       }
     });
 
@@ -143,5 +157,11 @@ export class RequestViewerComponent implements OnInit, OnChanges {
     await mergedPdf.save();
 
     this.b64 = await mergedPdf.saveAsBase64();
+  }
+
+  goToFinalStep () {
+    this.downloadAsBlob().then(() => {
+      this.isOnFinalStep = true;
+    } );
   }
 }

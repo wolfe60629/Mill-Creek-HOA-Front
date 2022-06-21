@@ -50,3 +50,7 @@
     width:100%;
     display: inline-block;
 }
+
+.modal-footer {
+    text-align: center;
+}

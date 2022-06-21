@@ -3,11 +3,18 @@
     <!-- Modal content -->
     <div class="modal-content">
         <span (click)="setShowUploadModal(false)" class="close">&times;</span>
-        <p>{{fileToUpload.name}}</p>
+        <p class = "center-align">{{fileToUpload.name}}</p>
 
         <div class = "modal-inputs">
-            <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true"/>
+            <div class = "radioGroup">
+                <ng-container *ngFor="let cat of categories">
+                    <p-radioButton [inputId]="cat" name="category" [value]="cat" [(ngModel)]="category" checked></p-radioButton>
+                    <label [for]="cat">{{cat}} </label>
+                </ng-container>
+            <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Request Name" required="true"/>
             <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true"/>
+            </div>
+
         </div>
         <button class="btn blue" (click)="onSubmit()">Submit</button>
     </div>

@@ -80,10 +80,9 @@
 
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'request_settings'">
             <p>Request Recipient Email</p>
-            <input type="email" id="request_email" placeholder="example@example.com">
+            <input type="email" id="request_email" placeholder="example@example.com" [(ngModel)]="requestEmail.value">
 
-
-            <button type="submit" class="btn btn-grey grey right darken-3">Save</button>
+            <button type="submit" class="btn btn-grey red right darken-3" (click)="this.saveRequestEmail()">Save</button>
         </ng-container>
 
 

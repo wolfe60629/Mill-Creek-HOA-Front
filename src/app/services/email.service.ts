@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Doc} from '../types/document';
+import {Subscription} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class EmailService {
 
   constructor(private httpSvc: HttpClient) { }
 
-  public sendNewRequest(doc: Doc) {
-    this.httpSvc.post(this.host + '/newRequest', doc).subscribe(response => console.log(response));
+  public sendNewRequest(doc: Doc, requestName: String, requestEmail: String): Subscription{
+     return this.httpSvc.post(this.host + '/newRequest?name=' + requestName + '&email=' + requestEmail,
+        doc).subscribe();
   }
 }
