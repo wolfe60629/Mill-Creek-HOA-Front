@@ -7,7 +7,7 @@
     <div class="modal-content">
         <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
 
-        <ng-container *ngIf="isOnFinalStep == false">
+        <ng-container *ngIf="this.isOnFinalStep == false">
             <p>1 of 2</p>
 
             <div class = "pdfView">
@@ -32,7 +32,7 @@
                    (change)="handleFileInput($event.target.files)">
         </ng-container>
 
-        <ng-container *ngIf="isOnFinalStep">
+        <ng-container *ngIf="this.isOnFinalStep">
             <p>2 of 2</p>
             <div class ="container">
                 <label for = "requestName">* Name: </label>
@@ -47,11 +47,11 @@
 
 
         <div class = "modal-footer">
-            <ng-container *ngIf="isOnFinalStep == false">
+            <ng-container *ngIf="this.isOnFinalStep == false">
                 <button class = "btn btn-primary grey" style = "margin-right:5px" onclick="document.getElementById('file').click();">Attach a Document</button>
                 <button class = "btn btn-primary green" style = "" (click)="this.goToFinalStep()">Next Step</button>
             </ng-container>
-            <ng-container *ngIf="isOnFinalStep == true">
+            <ng-container *ngIf="this.isOnFinalStep == true">
                 <button class = "btn btn-primary red" style = "" (click)="submitDocument()" type="submit">Submit</button>
             </ng-container>
 
