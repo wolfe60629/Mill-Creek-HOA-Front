@@ -37,7 +37,7 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   requestName: String = '';
   requestEmail: String = '';
   private submitedForm: string;
-  private isOnFinalStep;
+  isOnFinalStep;
 
   constructor(private sanitizer: DomSanitizer,
               private ngxService: NgxExtendedPdfViewerService,
