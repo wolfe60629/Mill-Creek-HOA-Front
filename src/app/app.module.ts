@@ -45,6 +45,8 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarComponent } from './announcements/calendar/calendar.component';
 import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import {SpinnerModule} from 'primeng/spinner';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 
 const appRoutes: Routes = [
@@ -145,7 +147,9 @@ const appRoutes: Routes = [
     ListboxModule,
     ConfirmDialogModule,
     FullCalendarModule,
-    RadioButtonModule
+    RadioButtonModule,
+    SpinnerModule,
+    ProgressSpinnerModule
   ],
   providers: [
     {

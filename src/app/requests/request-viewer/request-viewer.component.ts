@@ -38,6 +38,7 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   requestEmail: String = '';
   private submitedForm: string;
   isOnFinalStep;
+  isLoading = false;
 
   constructor(private sanitizer: DomSanitizer,
               private ngxService: NgxExtendedPdfViewerService,
@@ -52,8 +53,6 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-
     if (changes.manifestHtml) {
       this.b64 = changes.manifestHtml.currentValue;
       PDFDocument.load(changes.manifestHtml.currentValue).then(pdf => {
@@ -86,23 +85,26 @@ export class RequestViewerComponent implements OnInit, OnChanges {
       return;
     }
 
-
     this.confirmationService.confirm({
       header: 'Submit ARC Request?',
       message: 'Are you sure you want to continue?',
       key: 'confirm',
       accept: () => {
+        this.isLoading = true;
         this.emailService.sendNewRequest( {
           friendlyName: '',
           name: '',
           description: '',
           item: this.submitedForm,
           category: ''
-        }, this.requestName, this.requestEmail);
-
-        this.showViewerModalChange.emit(false);
-        this.messageService.add({severity: 'success', summary: 'Request Submitted Successfully!'});
-
+        }, this.requestName, this.requestEmail).subscribe(() => {
+          this.isLoading = false;
+          this.showViewerModalChange.emit(false);
+          this.messageService.add({severity: 'success', summary: 'Request Submitted Successfully!'});
+        }, (err) => {
+          this.isLoading = false;
+          this.messageService.add({severity: 'error', summary: err});
+        });
       }
     });
 

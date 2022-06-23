@@ -1,7 +1,5 @@
 <!-- The Modal -->
 <p-confirmDialog key="confirm"><input type="text"></p-confirmDialog>
-
-
 <div class="modal fade" [ngClass]="{'show-modal': showViewerModal}" id="myModal" class="modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <!-- Modal content -->
     <div class="modal-content">
@@ -52,6 +50,7 @@
                 <button class = "btn btn-primary green" style = "" (click)="this.goToFinalStep()">Next Step</button>
             </ng-container>
             <ng-container *ngIf="this.isOnFinalStep == true">
+                <p-progressSpinner *ngIf="isLoading" class="center center-align"></p-progressSpinner><br>
                 <button class = "btn btn-primary red" style = "" (click)="submitDocument()" type="submit">Submit</button>
             </ng-container>
 
