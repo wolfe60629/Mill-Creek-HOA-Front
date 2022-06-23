@@ -18,6 +18,7 @@ export class RequestsComponent implements OnInit {
   listOfCategories: String[];
   fileToUpload: File | null = null;
   mainfestHtml: String;
+  isRequest: boolean;
   pdfDocument: PDFDocument;
 
   @Output() showUploadModal: Boolean;
@@ -59,6 +60,7 @@ export class RequestsComponent implements OnInit {
     if (doc.id) {
       this.requestsService.getRequestById(doc.id).subscribe((request: Doc) => {
         this.mainfestHtml = request.item;
+        this.isRequest = request.category === 'Requests';
       });
         this.showViewerModal = true;
     }

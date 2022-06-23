@@ -27,6 +27,9 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   @Input() manifestHtml: String;
   @Output() manifestHtmlChange = new EventEmitter<String>();
 
+  @Input() isRequest: boolean;
+  @Output() isRequestChange = new EventEmitter<boolean>();
+
   @ViewChild('pdfViewer') pdfViewer: NgxExtendedPdfViewerComponent;
 
 
@@ -62,6 +65,10 @@ export class RequestViewerComponent implements OnInit, OnChanges {
           this.src = this.updateSrc(saved);
         });
       });
+    }
+
+    if (changes.isRequest) {
+      this.isRequest = changes.isRequest.currentValue;
     }
 
     if (changes.showViewerModal.currentValue === true) {

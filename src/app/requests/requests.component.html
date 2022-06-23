@@ -1,5 +1,5 @@
 <app-request-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-request-upload>
-<app-request-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml"></app-request-viewer>
+<app-request-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml" [(isRequest)]="this.isRequest"></app-request-viewer>
 
 <div class = "outer">
     <div class="inner">

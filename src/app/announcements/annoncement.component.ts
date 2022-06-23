@@ -38,7 +38,7 @@ export class AnnoncementComponent implements OnInit {
       this.listOfCategories = [...new Set(newsletters.map(item => item.category))];
 
       // Get the most recent newsletter and show it
-      this.showNewsletter(this.documents[0]);
+      this.newslettersService.getNewsletterById(this.documents[0].id).subscribe((newsletter: Doc) => this.showNewsletter(newsletter));
     });
     this.eventService.getAllEvents().subscribe((events: CommunityEvent[]) => {
       this.events = events.slice(0, 3);
@@ -58,7 +58,13 @@ export class AnnoncementComponent implements OnInit {
   }
 
   showNewsletter(document: Doc) {
-    this.src = document.item;
+    if (document.item === '') {
+      this.newslettersService.getNewsletterById(document.id).subscribe((requestedDocument: Doc) => {
+        this.src = requestedDocument.item;
+      });
+    } else {
+      this.src = document.item;
+    }
   }
 
 

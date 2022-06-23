@@ -21,4 +21,8 @@ export class NewslettersService {
   public getAllNewsletters() {
     return this.httpSvc.get(this.host + '');
   }
+
+  public getNewsletterById(id) {
+    return this.httpSvc.get(this.host + '/' + id);
+  }
 }

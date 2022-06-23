@@ -44,7 +44,7 @@
 
 
 
-        <div class = "modal-footer">
+        <div class = "modal-footer" *ngIf="isRequest">
             <ng-container *ngIf="this.isOnFinalStep == false">
                 <button class = "btn btn-primary grey" style = "margin-right:5px" onclick="document.getElementById('file').click();">Attach a Document</button>
                 <button class = "btn btn-primary green" style = "" (click)="this.goToFinalStep()">Next Step</button>
