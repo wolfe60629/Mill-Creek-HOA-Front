@@ -100,3 +100,8 @@ td, th {
 h5 {
     text-align: center!important;
 }
+
+th {
+ padding: unset;
+}
+

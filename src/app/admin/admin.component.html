@@ -1,7 +1,7 @@
 <div class="outer">
     <div class="inner">
         <div class="col s12 animated fadeIn">
-            <h5 class="text-darken-3 center-align">Admin Dashboard</h5>
+            <h3 class="text-darken-3 center-align">Admin Dashboard</h3>
         </div>
         <div class="p-m-4 pane">
 
@@ -80,9 +80,12 @@
 
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'request_settings'">
             <p>Request Recipient Email</p>
-            <input type="email" id="request_email" placeholder="example@example.com" [(ngModel)]="requestEmail.value">
+            <input *ngIf="!isRequestEmailEdit" type="email" placeholder="example@example.com" [(ngModel)]="requestEmail.value" disabled="false">
+            <input *ngIf="isRequestEmailEdit" type="email"  placeholder="example@example.com" [(ngModel)]="requestEmail.value">
 
-            <button type="submit" class="btn btn-grey red right darken-3" (click)="this.saveRequestEmail()">Save</button>
+            <button *ngIf="isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.saveRequestEmail()">Save</button>
+            <button *ngIf="!isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.isRequestEmailEdit = true">Edit <i class = "pi pi-user-edit"></i></button>
+
         </ng-container>
 
 

@@ -24,7 +24,7 @@ export class AdminComponent implements OnInit {
   communityEvents: CommunityEvent[];
 
   selectedReferenceGroup: ReferenceGroup;
-  readOnlyMode: boolean;
+  isRequestEmailEdit: boolean = false;
   loading = false;
   addLabel: string;
   requestEmail: Setting;
@@ -153,6 +153,7 @@ export class AdminComponent implements OnInit {
 
     this.settingsService.saveSetting(this.requestEmail).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Request Email Updated Successfully!'});
+      this.isRequestEmailEdit = false;
     });
   }
 
