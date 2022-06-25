@@ -23,7 +23,9 @@ export class DocumentUploadComponent implements OnInit {
 
     private output: String[];
 
-  constructor(private documentsComponent: DocumentsComponent, private documentsService: DocumentsService, private messageService: MessageService) { }
+  constructor(private documentsComponent: DocumentsComponent,
+              private documentsService: DocumentsService,
+              private messageService: MessageService) { }
 
   ngOnInit(): void {
   }

@@ -28,4 +28,8 @@ export class DocumentsService {
       return this.httpSvc.get(this.host + '/' + id);
   }
 
+    public deleteDocument(document: Doc): Observable<Object> {
+        return this.httpSvc.post(this.host + '/delete', document);
+    }
+
 }

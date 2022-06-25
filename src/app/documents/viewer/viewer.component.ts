@@ -24,7 +24,10 @@ export class ViewerComponent implements OnInit, OnChanges {
          this.src = changes.manifestHtml.currentValue;
        }
 
-    }
+       if (changes.showViewerModal) {
+           this.showViewerModal = changes.showViewerModal.currentValue;
+       }
+   }
 
   ngOnInit(): void {
   }

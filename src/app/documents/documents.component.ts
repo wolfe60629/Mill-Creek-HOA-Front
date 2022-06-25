@@ -4,7 +4,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ViewerComponent} from './viewer/viewer.component';
 import {Doc} from '../types/document';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {LoginService} from '../services/login.service';
 import {asNumber} from 'pdf-lib';
 
@@ -20,7 +20,7 @@ export class DocumentsComponent implements OnInit {
   listOfCategories: String[];
   fileToUpload: File | null = null;
   mainfestHtml: String;
-
+  isTryingToDelete: boolean = false;
 
   @Output() showUploadModal: Boolean;
   showViewerModal: Boolean;
@@ -28,15 +28,14 @@ export class DocumentsComponent implements OnInit {
   constructor(private documentsService: DocumentsService,
               private sanitizer: DomSanitizer,
               private messageService: MessageService,
-              private loginService: LoginService) {}
+              private loginService: LoginService,
+              private confirmationService: ConfirmationService) {}
 
   public ngOnInit() {
     this.loginService.checkAuthToken();
 
     this.documentsService.getAllDocuments().subscribe((result: Doc[]) => {
       this.documents = result;
-      this.documents.sort((a, b) => (a.id > b.id) ? 1 : (a.id === b.id) ? ((a.id > b.id) ? 1 : -1) : -1 );
-
 
       this.listOfCategories = [... new Set(result.map(item => item.category))];
     });
@@ -56,12 +55,36 @@ export class DocumentsComponent implements OnInit {
   }
 
   showFile(id: Number) {
-      if (id) {
-        this.documentsService.getDocumentById(id).subscribe((document: Doc) => {
-          this.mainfestHtml = document.item;
-        });
+    if (!this.isTryingToDelete && id) {
+      this.documentsService.getDocumentById(id).subscribe((document: Doc) => {
+        this.mainfestHtml = document.item;
+      });
 
-        this.showViewerModal = true;
-      }
+      this.showViewerModal = true;
     }
+    }
+
+  onDelete(doc: Doc) {
+    this.isTryingToDelete = true;
+    this.confirmationService.confirm({
+      header: 'Are you sure you want to delete?',
+      key: 'confirm',
+      accept: () => {
+        this.showViewerModal = false;
+        this.documentsService.deleteDocument(doc).subscribe(() => {
+              this.messageService.add({severity: 'success', summary: 'Request Deleted Successfully!'});
+              this.documentsService.getAllDocuments().subscribe(((documentArr: Doc[]) => {
+                this.documents = documentArr;
+              }));
+            }
+        , (err) => {
+              this.messageService.add({severity: 'error', summary: err});
+            });
+        this.isTryingToDelete  = false;
+      },
+      reject: () => {
+        this.isTryingToDelete = false;
+      }
+    });
+  }
   }

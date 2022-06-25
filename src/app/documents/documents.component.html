@@ -1,5 +1,6 @@
 <app-document-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-document-upload>
 <app-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml"></app-viewer>
+<p-confirmDialog key="confirm"><input type="text"></p-confirmDialog>
 <div class = "outer">
   <div class="inner">
 <div class="container">
@@ -34,7 +35,9 @@
                              <span class="card-title">
                                 <div class="card-title-content">
                                    <h5 class="project-title">{{ document.friendlyName }}</h5>
-
+                                    <span>
+                                        <i *ngIf="isAdmin" class="pi pi-trash" (click)="onDelete(document)"></i>
+                                    </span>
                                 </div>
                              </span>
                                  <p class="project-description flow-text">{{ document.description }}</p>
