@@ -1,12 +1,13 @@
 .reference-group-list {
-    max-width: 20%;
+    max-width: 30%;
     display: block;
     min-width: 300px;
     height: 100%;
 }
 
 .add-new-row {
-    padding: 0rem 1rem;
+    padding: 0rem 2rem;
+    height: fit-content;
 }
 
 .pane {

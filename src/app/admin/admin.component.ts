@@ -49,9 +49,9 @@ export class AdminComponent implements OnInit {
 
     // Load Possible Reference Groups
     this.referenceGroups = [
-        {label: 'Board Members', groupCode: 'board_members'},
-      {label: 'Community Events', groupCode: 'community_events'},
-        {label: 'Request Settings', groupCode: 'request_settings'}
+        {label: '👥 Board Members', groupCode: 'board_members'},
+      {label: '📅 Community Events', groupCode: 'community_events'},
+        {label: '📝 Request Settings ', groupCode: 'request_settings'}
       ];
 
       this.selectedReferenceGroup = this.referenceGroups[0];

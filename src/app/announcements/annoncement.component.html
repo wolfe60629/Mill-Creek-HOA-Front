@@ -5,6 +5,16 @@
 
         <div class = "page-container">
                 <div class="leftBox">
+                    <!-- File Upload -->
+                    <div class="form-group" *ngIf="isAdmin">
+                        <input type="file"
+                               style=""
+                               accept="application/pdf"
+                               id="file"
+                               (change)="handleFileInput($event.target.files)">
+
+                    </div>
+
                     <div class = "pdfView">
                         <ngx-extended-pdf-viewer [showOpenFileButton]="false"
                                                  [showSidebarButton]="false"
@@ -17,15 +27,7 @@
                         </ngx-extended-pdf-viewer>
 
                     </div>
-                    <!-- File Upload -->
-                    <div class="form-group" *ngIf="isAdmin">
-                        <input type="file"
-                               style=""
-                               accept="application/pdf"
-                               id="file"
-                               (change)="handleFileInput($event.target.files)">
 
-                    </div>
                     <!-- Newsletter Acordian -->
                     <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects">
                         <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="false">

@@ -1,18 +1,18 @@
-import { BrowserModule } from '@angular/platform-browser'
-import { NgModule } from '@angular/core'
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
-import { HttpErrorInterceptor } from './http-error.interceptor'
+import { BrowserModule } from '@angular/platform-browser';
+import {Injectable, NgModule} from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './http-error.interceptor';
 
-import { AppComponent } from './app.component'
-import { RouterModule, Routes } from '@angular/router'
-import { MaterializeModule } from 'angular2-materialize'
+import { AppComponent } from './app.component';
+import { RouterModule, Routes } from '@angular/router';
+import { MaterializeModule } from 'angular2-materialize';
 
-import { NavigationComponent } from './navigation/navigation.component'
-import { DocumentsComponent } from './documents/documents.component'
-import { ContactComponent } from './contact/contact.component'
-import { AboutComponent } from './about/about.component'
-import { FooterComponent } from './footer/footer.component'
-import { HomeComponent } from './home/home.component'
+import { NavigationComponent } from './navigation/navigation.component';
+import { DocumentsComponent } from './documents/documents.component';
+import { ContactComponent } from './contact/contact.component';
+import { AboutComponent } from './about/about.component';
+import { FooterComponent } from './footer/footer.component';
+import { HomeComponent } from './home/home.component';
 import {environment} from '../environments/environment.prod';
 import {FormsModule} from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
@@ -47,7 +47,7 @@ import { NewsletterUploadComponent } from './announcements/newsletter-upload/new
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
-
+import {CardModule} from 'primeng/card';
 
 const appRoutes: Routes = [
   {
@@ -129,28 +129,29 @@ const appRoutes: Routes = [
     CalendarComponent,
     NewsletterUploadComponent
   ],
-  imports: [
-    RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
-    BrowserModule,
-    MaterializeModule,
-    HttpClientModule,
-    FormsModule,
-    AccordionModule,
-    BrowserAnimationsModule,
-    ButtonModule,
-    ToastModule,
-    DropdownModule,
-    MultiSelectModule,
-    AutoCompleteModule,
-    NgxExtendedPdfViewerModule,
-    TableModule,
-    ListboxModule,
-    ConfirmDialogModule,
-    FullCalendarModule,
-    RadioButtonModule,
-    SpinnerModule,
-    ProgressSpinnerModule
-  ],
+    imports: [
+        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+        BrowserModule,
+        MaterializeModule,
+        HttpClientModule,
+        FormsModule,
+        AccordionModule,
+        BrowserAnimationsModule,
+        ButtonModule,
+        ToastModule,
+        DropdownModule,
+        MultiSelectModule,
+        AutoCompleteModule,
+        NgxExtendedPdfViewerModule,
+        TableModule,
+        ListboxModule,
+        ConfirmDialogModule,
+        FullCalendarModule,
+        RadioButtonModule,
+        SpinnerModule,
+        ProgressSpinnerModule,
+        CardModule
+    ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

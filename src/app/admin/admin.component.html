@@ -1,7 +1,9 @@
 <div class="outer">
     <div class="inner">
-        <div class="col s12 animated fadeIn">
-            <h3 class="text-darken-3 center-align">Admin Dashboard</h3>
+        <div class="row center">
+            <div class="col s12 animated fadeIn">
+                <h2 class="blue-grey-text text-darken-3"><b>Admin Dashboard</b></h2>
+            </div>
         </div>
         <div class="p-m-4 pane">
 
@@ -19,7 +21,7 @@
     <!-- Right Pane -->
     <div class="container">
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'community_events'">
-            <button class="add-new-row btn red" (click)="addNewEventRow()"><i class="pi pi-plus"></i></button>
+            <button class="add-new-row btn blue-grey" (click)="addNewEventRow()"><i class="pi pi-plus"></i> Add</button>
 
             <p-table [value]="communityEvents"  [resizableColumns]="true" [autoLayout]="true">>
                 <ng-template pTemplate="header">
@@ -73,7 +75,11 @@
                             </td>
                         </tr>
                 </ng-template>
+
             </p-table>
+            <div *ngIf="this.communityEvents.length == 0" class = "white center-align" style = "padding-top: 1px; padding-bottom: 1px;">
+                <p> No Community Events </p>
+            </div>
         </ng-container>
 
 
@@ -90,7 +96,7 @@
 
 
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'board_members'">
-            <button class="add-new-row btn red" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i></button>
+            <button class="add-new-row btn blue-grey" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i> Add</button>
 
             <p-table [value]="boardMembers"  [resizableColumns]="true" [autoLayout]="true">>
                 <ng-template pTemplate="header">

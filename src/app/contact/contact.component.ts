@@ -21,13 +21,13 @@ export class ContactComponent implements OnInit {
 
       this.staticPages.push(...[
           new Contact(
-              'Facebook Page',
+              'Facebook',
               'https://www.facebook.com/groups/407921640614324',
               'Facebook',
               'facebook'),
           new Contact(
               'Instagram',
-              '',
+              'https://www.instagram.com/millcreekcommunityhoa',
               'Instagram',
               'instagram')]
         );
