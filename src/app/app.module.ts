@@ -53,57 +53,58 @@ const appRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    data: { title: 'Home' },
+    data: { title: 'Mill Creek Community | Home' },
   },
   {
     path: 'about',
     component: AboutComponent,
-    data: { title: 'About the Community' },
+    data: { title: 'Mill Creek Community | About' },
   },
   {
     path: 'admin',
     component: AdminComponent,
-    data: { title: 'Admin PanelS' },
+    data: { title: 'Mill Creek Community | Admin' },
   },
   {
     path: 'documents',
     component: DocumentsComponent,
-    data: { title: 'Documents' },
+    data: { title: 'Mill Creek Community | Documents' },
   },
   {
     path: 'contact',
     component: ContactComponent,
-    data: { title: 'Contact' },
+    data: { title: 'Mill Creek Community | Contact Us' },
   },
   {
     path: 'requests',
     component: RequestsComponent,
-    data: { title: 'Requests' },
+    data: { title: 'Mill Creek Community | Requests' },
   },
   {
     path: 'announcements',
     component: AnnoncementComponent,
-    data: { title: 'Announcements' },
+    data: { title: 'Mill Creek Community | Announcements' },
   },
   {
     path: 'amenities',
     component: AmenitiesComponent,
-    data: { title: 'Amenity Information' },
+    data: { title: 'Mill Creek Community | Amenities' },
   },
   {
     path: 'login',
     component: LoginComponent,
-    data: { title: 'Login' },
+    data: { title: 'Mill Creek Community | Login' },
   },
   {
     path: 'logout',
     component: LogoutComponent,
-    data: { title: 'Logout' },
+    data: { title: 'Mill Creek Community | Logout' },
   },
   {
     path: '**',
     redirectTo: '',
     pathMatch: 'full',
+    data: {title: '404 Page Not Found'}
   },
 ];
 
