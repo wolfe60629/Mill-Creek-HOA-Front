@@ -45,6 +45,10 @@ h1 {
     height: 150px;
     -webkit-box-pack: center;
   }
+
+  .home-text {
+    top: 40%!important;
+  }
 }
 
 

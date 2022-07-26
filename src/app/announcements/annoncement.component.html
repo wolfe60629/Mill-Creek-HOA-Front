@@ -2,17 +2,15 @@
 
 <div class = "outer">
     <div class="inner">
-
         <div class = "page-container">
                 <div class="leftBox">
                     <!-- File Upload -->
-                    <div class="form-group" *ngIf="isAdmin">
+                    <div class="form-group center-align" *ngIf="isAdmin">
                         <input type="file"
-                               style=""
+                               style="margin: 10px;"
                                accept="application/pdf"
                                id="file"
                                (change)="handleFileInput($event.target.files)">
-
                     </div>
 
                     <div class = "pdfView">
@@ -20,12 +18,10 @@
                                                  [showSidebarButton]="false"
                                                  [showRotateButton]="false"
                                                  [showPropertiesButton]="false"
-                                                 height="90"
                                                  [base64Src]="src"
                                                  #pdfViewer>
 
                         </ngx-extended-pdf-viewer>
-
                     </div>
 
                     <!-- Newsletter Acordian -->

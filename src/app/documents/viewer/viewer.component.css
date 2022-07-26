@@ -51,3 +51,15 @@
     width:100%;
     display: inline-block;
 }
+
+@media (max-width: 1024px) {
+
+    .modal-content {
+        height: 70%;
+        width: 95%
+    }
+
+    ::ng-deep ngx-extended-pdf-viewer .html {
+        height: 60%!important;
+    }
+}

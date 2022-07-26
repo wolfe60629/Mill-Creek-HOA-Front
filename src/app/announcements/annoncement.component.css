@@ -157,7 +157,7 @@ the events section */
 /* Styling the hover effect
     of events section */
 .events ul li:hover .time {
-    background: #e91e63;
+    background: #0b6bb8;
 }
 
 /* Styling the header of time
@@ -226,9 +226,9 @@ class of events section */
 
 /* Styling the details class's hover effect */
 .events ul li .details a:hover {
-    background: #e91e63;
+    background: #0b6bb8;
     color: #fff;
-    border-color: #e91e63;
+    border-color: #000000;
 }
 
 
@@ -335,11 +335,29 @@ span.badge.new {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     max-width: 41px;
-    background-color: #e91e63;
+    background-color: #0b6bb8;
     color: white;
     font-weight: bold;
     height: 100%;
     text-align: center;
     margin-right: -7px;
     padding-left: 45px;
+}
+
+@media (max-width: 896px) {
+    ::ng-deep ngx-extended-pdf-viewer .html {
+        height: 55%!important;
+    }
+
+    .events {
+        width: 60%;
+    }
+    .leftBox {
+        width: 40%;
+    }
+
+    .events ul {
+        padding: 40px 10px 10px 10px;
+    }
+
 }
