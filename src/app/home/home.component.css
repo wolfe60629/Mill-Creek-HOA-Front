@@ -10,7 +10,7 @@
 }
 .sublink:hover {
   color: var(--color-pure-white) !important;
-  background-color: var(--color-primary) !important;
+  background-color: #892a04!important;
 }
 .sublink {
   transition: all 150ms ease-in-out;
@@ -23,7 +23,7 @@ h1 {
 .link-container {
   display: flex;
   justify-content: space-around;
-  background-color: rgba(8, 53, 79, 0.88);
+  background-color: black;
   padding-top: 10px;
   padding-bottom: 10px;
 

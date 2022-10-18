@@ -46,3 +46,7 @@ body::-webkit-scrollbar {
   bottom:0px;
 }
 
+
+.light-blue-text.text-darken-3 {
+  color: black!important;
+}
