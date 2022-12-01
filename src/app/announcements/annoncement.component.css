@@ -1,3 +1,15 @@
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.rsp {
+    min-width: 100%;
+    z-index: -1;
+}
+
+
 .left-align-text {
     text-align: left;
 }
@@ -60,7 +72,6 @@ td a:hover {
 }
 
 .outer {
-    background: url(src/assets/background.jpg) no-repeat;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
