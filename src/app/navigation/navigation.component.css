@@ -10,6 +10,7 @@
   display: inline-block;
   height: 100%;
 }
+
 .brand-logo img:hover {
   opacity: 0.65;
 }
@@ -29,6 +30,7 @@ nav ul li a {
 nav ul li.active a {
   box-shadow: inset 0 -5px 0 var(--color-primary);
 }
+
 nav ul li a:hover {
   background-color: transparent !important;
 }
@@ -46,4 +48,15 @@ nav ul li a:hover {
 
 ul{
   background-color: white;
+}
+
+
+@media only screen and (min-width: 993px) {
+  nav {
+    display: flex;
+    justify-content: center;
+    border-radius: 25px;
+    width:98%;
+    margin-left:1%;
+  }
 }

@@ -8,14 +8,15 @@
 
 .inner {
     background-color: #ffffffe0;
-    border-radius: 10px;
-    width: 96%;
-    transform: translate(2%,30px);
+    border-radius: 25px;
+    width: 98%;
+    transform: translate(0%,30px);
     padding: 10px 10px 30px 30px;
     box-shadow: 0 0 100px 11px #0006;
     overflow-wrap: break-word;
-
+    margin:auto;
 }
+
 .form-group {
     margin-bottom:10px;
 }
