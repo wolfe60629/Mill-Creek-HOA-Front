@@ -138,34 +138,72 @@ export class RequestViewerComponent implements OnInit, OnChanges {
   }
 
   async handleFileInput(files: FileList) {
-    // Limit file size to 5MB
-    if (files.item(0).size > 5000000) {
+    // Limit file size to 10MB
+    if (files.item(0).size > 10000000) {
+      this.messageService.add({severity: 'error', summary: 'File Not Uploaded: File Size is Too Large'});
       return;
     }
 
     const fileToAppend = files[0];
+    console.log(fileToAppend.type);
 
+    // Handle if pdf attached
+    if (fileToAppend.type === 'application/pdf') {
+      // Load a PDFDocument from each of the existing PDFs
+      const pdf1 = await PDFDocument.load(await this.ngxService.getCurrentDocumentAsBlob().then((blob: Blob) => {
+        return this.blobToBase64(blob);
+      }));
+      const pdf2 = await fileToAppend.arrayBuffer().then(buffer => {
+        return PDFDocument.load(buffer);
+      });
 
-    // Load a PDFDocument from each of the existing PDFs
-    const pdf1 = await PDFDocument.load(await this.ngxService.getCurrentDocumentAsBlob().then((blob: Blob) => {
-     return this.blobToBase64(blob);
-    }));
-    const pdf2 = await fileToAppend.arrayBuffer().then(buffer => {
-      return PDFDocument.load(buffer);
-    });
+      // Create a new PDFDocument
+      const mergedPdf = await PDFDocument.create();
 
-    // Create a new PDFDocument
-    const mergedPdf = await PDFDocument.create();
+      const copiedPagesA = await mergedPdf.copyPages(pdf1, pdf1.getPageIndices());
+      copiedPagesA.forEach((page) => mergedPdf.addPage(page));
 
-    const copiedPagesA = await mergedPdf.copyPages(pdf1, pdf1.getPageIndices());
-    copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+      const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
+      copiedPagesB.forEach((page) => mergedPdf.addPage(page));
 
-    const copiedPagesB = await mergedPdf.copyPages(pdf2, pdf2.getPageIndices());
-    copiedPagesB.forEach((page) => mergedPdf.addPage(page));
+      await mergedPdf.save();
 
-    await mergedPdf.save();
+      this.b64 = await mergedPdf.saveAsBase64();
+    } else if (fileToAppend.type === 'image/png') {
+      const pdf1 = await PDFDocument.load(await this.ngxService.getCurrentDocumentAsBlob().then((blob: Blob) => {
+        return this.blobToBase64(blob);
+      }));
 
-    this.b64 = await mergedPdf.saveAsBase64();
+      const jpgImage = await pdf1.embedPng(await fileToAppend.arrayBuffer());
+      const newPage = pdf1.addPage();
+
+      newPage.drawImage(jpgImage, {
+      });
+
+      // Serialize the PDFDocument to bytes (a Uint8Array)
+      pdf1.save();
+      this.b64 = await pdf1.saveAsBase64();
+    } else if (fileToAppend.type === 'image/jpeg') {
+      const pdf1 = await PDFDocument.load(await this.ngxService.getCurrentDocumentAsBlob().then((blob: Blob) => {
+        return this.blobToBase64(blob);
+      }));
+
+      const jpgImage = await pdf1.embedJpg(await fileToAppend.arrayBuffer());
+      const newPage = pdf1.addPage();
+
+      newPage.drawImage(jpgImage, {
+      });
+
+      // Serialize the PDFDocument to bytes (a Uint8Array)
+      pdf1.save();
+      this.b64 = await pdf1.saveAsBase64();
+    } else {
+      this.messageService.add({severity: 'error', summary: 'File Not Uploaded: Uploaded File is Not An Acceptable File Type'});
+      return;
+    }
+
+    // Success Message
+    this.messageService.add({severity: 'success', summary: 'Attachment Uploaded Successfully'});
   }
 
   goToFinalStep () {

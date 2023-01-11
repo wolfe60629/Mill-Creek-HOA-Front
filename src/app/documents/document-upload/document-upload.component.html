@@ -5,11 +5,30 @@
         <span (click)="setShowUploadModal(false)" class="close">&times;</span>
         <p>{{fileToUpload.name}}</p>
 
+
         <div class = "modal-inputs">
-        <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
+            <div class = "radioGroup">
+                <p-radioButton id="Meeting Minutes" name="category" value="Meeting Minutes" [(ngModel)]="categoryType" checked></p-radioButton>
+                <label for="Meeting Minutes">Meeting Minutes</label>
+
+
+                <p-radioButton id="Bylaws" name="category" value="Bylaws" [(ngModel)]="categoryType" checked></p-radioButton>
+                <label for="Bylaws">Bylaws</label>
+
+                <p-radioButton id="Other" name="category" value="Other" [(ngModel)]="categoryType" checked></p-radioButton>
+                <label for="Other">Other</label>
+            </div>
+
+            <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
         <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true" autocomplete="off"/>
-            <p-autoComplete [(ngModel)]="category.name" [suggestions]="this.output" (completeMethod)="search($event)"
+
+
+
+            <p-autoComplete *ngIf="categoryType==='Other'" [(ngModel)]="category.name" [suggestions]="this.output" (completeMethod)="search($event)"
                             placeholder="Enter a Category"></p-autoComplete>
+
+            <p-autoComplete *ngIf="categoryType==='Meeting Minutes'" [(ngModel)]="category.name" type="number"  minLength="4" maxlength="4"
+                            placeholder="Meeting Year"></p-autoComplete>
         </div>
 
         <button class="btn blue" (click)="onSubmit()">Submit</button>

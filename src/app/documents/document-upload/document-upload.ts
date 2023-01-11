@@ -22,6 +22,7 @@ export class DocumentUploadComponent implements OnInit {
    };
 
     private output: String[];
+    private categoryType: string;
 
   constructor(private documentsComponent: DocumentsComponent,
               private documentsService: DocumentsService,
@@ -36,6 +37,11 @@ export class DocumentUploadComponent implements OnInit {
 
   onSubmit() {
     this.setShowUploadModal(false);
+
+    if (this.categoryType === 'Meeting Minutes') {
+        this.category.name =  this.category.name + ' Meeting Minutes';
+    }
+
     this.convertFile(this.fileToUpload).subscribe((converted) => {
        this.documentsService.saveToStorage({
          friendlyName: this.documentName,

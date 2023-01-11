@@ -80,7 +80,8 @@ td a:hover {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    min-height: 1000px;
+    height: 100vh;
+    overflow: auto;
 }
 
 
