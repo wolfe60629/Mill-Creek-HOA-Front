@@ -175,9 +175,14 @@ export class RequestViewerComponent implements OnInit, OnChanges {
       }));
 
       const jpgImage = await pdf1.embedPng(await fileToAppend.arrayBuffer());
+      const jpgDims = jpgImage.scale(0.5);
       const newPage = pdf1.addPage();
 
       newPage.drawImage(jpgImage, {
+        x: newPage.getWidth() / 2 - jpgDims.width / 2,
+        y: newPage.getHeight() / 2 - jpgDims.height / 2,
+        width: jpgDims.width,
+        height: jpgDims.height,
       });
 
       // Serialize the PDFDocument to bytes (a Uint8Array)
@@ -189,9 +194,14 @@ export class RequestViewerComponent implements OnInit, OnChanges {
       }));
 
       const jpgImage = await pdf1.embedJpg(await fileToAppend.arrayBuffer());
+      const jpgDims = jpgImage.scale(0.5);
       const newPage = pdf1.addPage();
 
       newPage.drawImage(jpgImage, {
+        x: newPage.getWidth() / 2 - jpgDims.width / 2,
+        y: newPage.getHeight() / 2 - jpgDims.height / 2,
+        width: jpgDims.width,
+        height: jpgDims.height,
       });
 
       // Serialize the PDFDocument to bytes (a Uint8Array)
