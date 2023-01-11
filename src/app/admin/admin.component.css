@@ -15,7 +15,7 @@
 }
 
 .outer {
-    background: url(src/assets/background.jpg) no-repeat;
+    background: url(src/assets/background.png) no-repeat;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
