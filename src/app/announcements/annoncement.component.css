@@ -362,19 +362,19 @@ span.badge.new {
 }
 
 @media (max-width: 896px) {
-    ::ng-deep ngx-extended-pdf-viewer .html {
-        height: 55%!important;
-    }
-
     .events {
-        width: 60%;
+        width: 100%;
     }
     .leftBox {
-        width: 40%;
+        width: 100%;
     }
 
     .events ul {
         padding: 40px 10px 10px 10px;
+    }
+
+    app-calendar {
+        display:none;
     }
 
 }
