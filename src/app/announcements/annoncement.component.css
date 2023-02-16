@@ -369,6 +369,11 @@ span.badge.new {
         width: 100%;
     }
 
+    .page-container {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
     .events ul {
         padding: 40px 10px 10px 10px;
     }

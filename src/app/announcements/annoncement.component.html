@@ -4,23 +4,6 @@
     <img class = 'rsp centered' src="./assets/background.png">
     <div class="inner">
         <div class = "page-container">
-            <div class="events">
-                    <ul>
-                        <app-calendar (communityEvents)="this.events"></app-calendar>
-                        <li *ngFor="let event of events">
-                            <div class="time">
-                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
-                            </div>
-                            <div class = "eventTime">
-                                <p>{{generalService.formatTime(event.startDate)}}</p>
-                            </div>
-                            <div class="details">
-                                <h5>{{event.eventName}}</h5>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </li>
-                    </ul>
-                </div>
             <div class="leftBox">
                 <!-- File Upload -->
                 <div class="form-group center-align" *ngIf="isAdmin">
@@ -62,6 +45,24 @@
                         </div>
                     </p-accordionTab>
                 </p-accordion>
+            </div>
+
+            <div class="events">
+                    <ul>
+                        <app-calendar (communityEvents)="this.events"></app-calendar>
+                        <li *ngFor="let event of events">
+                            <div class="time">
+                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
+                            </div>
+                            <div class = "eventTime">
+                                <p>{{generalService.formatTime(event.startDate)}}</p>
+                            </div>
+                            <div class="details">
+                                <h5>{{event.eventName}}</h5>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </li>
+                    </ul>
             </div>
         </div>
     </div>
