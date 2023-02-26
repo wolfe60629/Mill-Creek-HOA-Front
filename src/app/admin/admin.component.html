@@ -1,8 +1,9 @@
 <div class="outer">
+    <img class = 'rsp centered' src="./assets/background.png">
     <div class="inner">
         <div class="row center">
             <div class="col s12 animated fadeIn">
-                <h2 class="blue-grey-text text-darken-3"><b>Admin Dashboard</b></h2>
+                <h2 class="white-text text-darken-3"><b>Admin Dashboard</b></h2>
             </div>
         </div>
         <div class="p-m-4 pane">
@@ -64,14 +65,14 @@
                             </td>
 
                             <td class="center-align">
-                                <ng-container *ngIf="communityEvent.readonly==null?true:communityEvent.readonly">
-                                    <button class = "btn blue center-align center" (click)="editRow(communityEvent)"><i class="pi pi-user-edit"></i></button>
-                                    <button class = "btn blue center-align center" (click)="onDeleteCommunityEvent(communityEvent)"><i class="pi pi-trash"></i></button>
-                                </ng-container>
-                                <ng-container *ngIf="communityEvent.readonly==false">
-                                    <button class = "btn blue center-align center" (click)="onEventSave(communityEvent)"><i class="pi pi-check"></i></button>
-                                    <button class = "btn blue center-align center" (click)="cancelEdit(communityEvent)"><i class="pi pi-times"></i></button>
-                                </ng-container>
+                                <div class ="action-button-group" *ngIf="communityEvent.readonly==null?true:communityEvent.readonly">
+                                    <button class = "btn blue darken-4 center-align center" (click)="editRow(communityEvent)"><i class="pi pi-user-edit"></i></button>
+                                    <button class = "btn red darken-4 center-align center" (click)="onDeleteCommunityEvent(communityEvent)"><i class="pi pi-trash"></i></button>
+                                </div>
+                                <div class = "action-button-group" *ngIf="communityEvent.readonly==false">
+                                    <button class = "btn green darken-4 center-align center" (click)="onEventSave(communityEvent)"><i class="pi pi-check"></i></button>
+                                    <button class = "btn red darken-4 center-align center" (click)="cancelEdit(communityEvent)"><i class="pi pi-times"></i></button>
+                                </div>
                             </td>
                         </tr>
                 </ng-template>
@@ -85,9 +86,9 @@
 
 
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'request_settings'">
-            <p>Request Recipient Email</p>
-            <input *ngIf="!isRequestEmailEdit" type="email" placeholder="example@example.com" [(ngModel)]="requestEmail.value" disabled="false">
-            <input *ngIf="isRequestEmailEdit" type="email"  placeholder="example@example.com" [(ngModel)]="requestEmail.value">
+            <p class = "white-text">Request Recipient Email</p>
+            <input class = "grey-text" *ngIf="!isRequestEmailEdit" type="email" placeholder="example@example.com" [(ngModel)]="requestEmail.value" disabled="false">
+            <input class = "white-text" *ngIf="isRequestEmailEdit" type="email"  placeholder="example@example.com" [(ngModel)]="requestEmail.value">
 
             <button *ngIf="isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.saveRequestEmail()">Save</button>
             <button *ngIf="!isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.isRequestEmailEdit = true">Edit <i class = "pi pi-user-edit"></i></button>
@@ -96,7 +97,9 @@
 
 
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'board_members'">
-            <button class="add-new-row btn blue-grey" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i> Add</button>
+            <div>
+                <button class="add-new-row btn blue-grey" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i> Add</button>
+            </div>
 
             <p-table [value]="boardMembers"  [resizableColumns]="true" [autoLayout]="true">>
                 <ng-template pTemplate="header">
@@ -123,14 +126,14 @@
                         </td>
 
                         <td class="center-align">
-                            <ng-container *ngIf="boardMember.readonly==null?true:boardMember.readonly">
-                                <button class = "btn blue center-align center" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
-                                <button class = "btn blue center-align center" (click)="onDeleteBoardMember(boardMember)"><i class="pi pi-trash"></i></button>
-                            </ng-container>
-                            <ng-container *ngIf="boardMember.readonly==false">
-                                <button class = "btn blue center-align center" (click)="onBoardMemberSave(boardMember)"><i class="pi pi-check"></i></button>
-                                <button class = "btn blue center-align center" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
-                            </ng-container>
+                            <div class="action-button-group" *ngIf="boardMember.readonly==null?true:boardMember.readonly">
+                                <button class = "btn blue darken-4 center-align center" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
+                                <button class = "btn red darken-4 center-align center" (click)="onDeleteBoardMember(boardMember)"><i class="pi pi-trash"></i></button>
+                            </div>
+                            <div class="action-button-group" *ngIf="boardMember.readonly==false">
+                                <button class = "btn green darken-4 center-align center" (click)="onBoardMemberSave(boardMember)"><i class="pi pi-check"></i></button>
+                                <button class = "btn red darken-4 center-align center" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
