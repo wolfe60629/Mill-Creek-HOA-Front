@@ -57,6 +57,10 @@
 .p-progress-spinner {
     left: 50%;
 }
+::ng-deep ngx-extended-pdf-viewer [type="checkbox"] + label:before, [type="checkbox"]:not(.filled-in) + label:after{
+    position: unset!important;
+    content: unset!important;
+}
 
 @media (max-width: 1024px) {
 

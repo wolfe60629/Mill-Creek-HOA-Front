@@ -1,13 +1,12 @@
 import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Calendar, EventInput} from '@fullcalendar/core';
-import {CalendarOptions, FullCalendarComponent} from '@fullcalendar/angular';
+import {Calendar, CalendarOptions, EventInput} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import {CommunityEvent} from '../../types/communityEvent';
 import {EventService} from '../../services/event.service';
 import {GeneralService} from '../../services/general.service';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 
 declare var $: any;
 

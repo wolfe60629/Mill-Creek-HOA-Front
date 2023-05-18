@@ -4,7 +4,6 @@ import {PDFDocument} from 'pdf-lib';
 import {
   FormDataType,
   NgxExtendedPdfViewerComponent,
-  NgxExtendedPdfViewerServerComponent,
   NgxExtendedPdfViewerService,
   pdfDefaultOptions
 } from 'ngx-extended-pdf-viewer';
@@ -52,7 +51,7 @@ export class RequestViewerComponent implements OnInit, OnChanges {
 
     pdfDefaultOptions.enableScripting = false;
     pdfDefaultOptions.renderForms = true;
-    pdfDefaultOptions.renderInteractiveForms = true;
+    //pdfDefaultOptions.renderInteractiveForms = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {

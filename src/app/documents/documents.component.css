@@ -113,6 +113,11 @@ span.badge.new {
   #display: flex;
 }
 
+::ng-deep ngx-extended-pdf-viewer [type="checkbox"] + label:before, [type="checkbox"]:not(.filled-in) + label:after{
+  position: unset!important;
+  content: unset!important;
+}
+
 @media only screen and (min-width: 993px) {
   .container {
     width: 85%;

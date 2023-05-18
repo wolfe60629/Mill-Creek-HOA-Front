@@ -5,10 +5,13 @@
         <span (click)="this.showViewerModalChange.emit(false)" class="close">&times;</span>
         <div class = "pdfView">
             <ngx-extended-pdf-viewer [showOpenFileButton]="false"
-                                     [showSidebarButton]="false"
-                                     [showRotateButton]="false"
+                                     [showSidebarButton]="true"
+                                     [showRotateButton]="true"
                                      [showPropertiesButton]="false"
-                                     [zoom]="140"
+                                     [showFindButton] = "true"
+                                     [textLayer]="true"
+                                     [theme]="'light'"
+                                     [zoom]="'page-width'"
                                      height="115"
                                      [base64Src]="src"
                                      #pdfViewer>
