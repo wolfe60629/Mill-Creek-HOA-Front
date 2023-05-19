@@ -13,10 +13,30 @@
   min-width: 100%;
   min-height: 100%;
 }
+.header {
+  background-image: url(src/assets/background.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding-top: 20vh;
+  padding-bottom: 15vh;
+  padding-left: 50px;
+  padding-right: 50px;
+  box-shadow: 0 0 8px 3px #000;
+  transform: translateY(-70px);
+}
+
+h2 {   text-shadow: 2px 2px #000000;}
 
 .left-align-text {
   text-align: left;
 }
+
+h4.white-text.center-align {
+  border-bottom: white;
+  border-bottom-style: solid;
+  padding-bottom: 10px;
+}
+
 .collapsible-body {
   border-bottom: none;
   background: var(--color-secondary);
@@ -37,10 +57,11 @@ td a {
 td a:hover {
   text-decoration: underline;
 }
-.container .row {
+.cont .row {
   margin-left: 0px !important;
   margin-right: 0px !important;
   margin-bottom: 0;
+  justify-content: center;
 }
 #description {
   margin-bottom: 0px !important;
@@ -65,20 +86,18 @@ td a:hover {
 }
 
 .inner {
-  background-color: #ffffffe0;
-  border-radius: 25px;
-  width: 98%;
-  transform: translate(0%,30px);
+  width: 99%;
   padding: 10px 10px 30px 30px;
-  box-shadow: 0 0 100px 11px #0006;
   overflow-wrap: break-word;
   margin:auto;
+  transform: translateY(-120px);
 }
 .outer {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   min-height: 1000px;
+  background-color: #1a2023;
 }
 
 table {
@@ -96,8 +115,45 @@ h5 {
   margin-right: 30px;
 }
 
-ul {
-  display: flex;
+.service-categories {
+  padding-top: 3em;
+  padding-bottom: 3em;
+  background-size: cover;
+}
+
+
+.service-categories .card {
+  height: 150px;
+  border-radius: 25px;
+  transition: all .3s ease-in-out;
+}
+
+.service-categories .card-title {
+  padding-top: 0.5em;
+}
+
+.service-categories a:hover {
+  text-decoration: none;
+}
+
+.service-card {
+  background: #5d727c;
+  border: 0;
+}
+
+.service-card:hover {
+  background: rgba(72, 88, 104, 1);
+  box-shadow: 2px 4px 8px 0px rgba(46, 61, 73, 0.2)
+}
+
+.fa {
+  color: white;
+}
+.card-block {
+  text-align: center;
+  padding: 10px 10px 10px 10px;
+  overflow: hidden;
+  height:inherit;
 }
 
 @media only screen and (min-width: 993px) {

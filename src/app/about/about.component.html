@@ -1,38 +1,59 @@
 <div class = "outer">
-  <img class = 'rsp centered' src="./assets/background.png">
 
-  <div class="inner">
-  <div class = "container">
-    <div class="row">
-      <div class="col s12 animated bounceInLeft ">
-        <div class="">
-          <h1 class="light-blue-text text-darken-3"><b>About the Community</b></h1>
+  <div class = "cont">
+      <div class="col s12">
+        <div class="header">
+          <h2 class="white-text center-align"><b>About Our Community</b></h2>
         </div>
-      </div>
     </div>
-  <ul materialize="collapsible">
-    <li>
+    <div class="inner">
         <div class="col s12 m7 offset-m1 l9 left-align-text">
-          <h5> Since 2008, the homeowners of Mill Creek have managed the community affairs through a volunteer homeowner elected board of directors,
-            consisting of five homeowner representatives. As fellow homeowners, we share the same passion to ensure that our investment in our homes is managed
-            properly while protecting and preserving the rights of our neighbors within the community.
-            <br><br>
+          <section class="service-categories text-xs-center">
+            <div class="container">
+              <h4 class = "white-text center-align"></h4>
+              <div class = "row">
+              <div class="col m4">
+                  <a href="/contact">
+                    <div class="card service-card card-inverse" (mouseover)="jumpUp(0)" (mouseout)="resetPosition(0)">
+                      <div class="card-block">
+                        <span class="fa fa-calendar-check-o fa-3x"></span>
+                        <h4 class="white-text card-title">Established in 2008 and Managed By Homeowners</h4>
+                        <h5 class = "white-text card-content"> Our community is actively managed by dedicated homeowners who volunteer their time and expertise. Through their collective efforts, we ensure that our neighborhood thrives and continues to be a desirable place to live</h5>
+                      </div>
+                    </div>
+                  </a>
+              </div>
 
-            This site contains useful information for homeowners of Mill Creek that includes covenants,
-            contact information, modification request forms, mailbox replacement, tennis court reservations,
-            and much more by visiting the pages within this site. For further information, please contact our
-            Mill Creek Board of Directors.
-            <br><br>
-            For the most current community happenings, please visit our community Facebook page by clicking on the Facebook image below.
-            You must be a current Mill Creek resident in order to view this page. Please register with your homeowner mail address to be
-            accepted to the Facebook page.
-          </h5>
+                <div class="col m4">
+                  <a href="/documents">
+                    <div class="card service-card card-inverse" (mouseover)="jumpUp(1)" (mouseout)="resetPosition(1)">
+                      <div class="card-block">
+                        <span class="fa fa-shield fa-3x"></span>
+                        <h4 class="white-text card-title">Protecting and Preserving the Rights of All Neighbors</h4>
+                        <h5 class = "white-text card-content">We are committed to safeguarding the rights and interests of every individual within our community. We actively work to maintain a harmonious environment where everyone feels respected, valued, and secure, fostering a sense of belonging for all neighbors. For our rules and regulations set forth in our bylaws, visit our documents page</h5>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+                <div class="col m4">
+                  <a href="/contact">
+                    <div class="card service-card card-inverse" (mouseover)="jumpUp(2)" (mouseout)="resetPosition(2)">
+                      <div class="card-block">
+                        <span class="fa fa-bullhorn fa-3x"></span>
+                        <h4 class="white-text card-title">Creating a Channel for Every Voice to be Heard</h4>
+                        <h5 class = "white-text card-content">We believe that every resident's perspective matters. We strive for inclusivity and transparency which encourages active participation and dialogue among neighbors. We aim to ensure that every voice is heard and considered in community decision-making processes.</h5>
+                        <div style="gap:10px;display: inline-flex;"><span class="fa fa-facebook fa-3x"></span> <span class="fa fa-instagram fa-3x"></span></div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+
+
+              </div>
+            </div>
+          </section>
         </div>
-    </li>
-
-
-  </ul>
-
 </div>
 </div>
 </div>
