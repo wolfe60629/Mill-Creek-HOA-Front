@@ -3,55 +3,44 @@
   <div class = "cont">
       <div class="col s12">
         <div class="header">
-          <h2 class="white-text center-align"><b>About Our Community</b></h2>
+          <h2 class="white-text  center-align"><b>About Our Community</b></h2>
         </div>
     </div>
     <div class="inner">
         <div class="col s12 m7 offset-m1 l9 left-align-text">
-          <section class="service-categories text-xs-center">
-            <div class="container">
-              <h4 class = "white-text center-align"></h4>
+          <section class="service-categories text-xs-center ">
+              <h4 class = "white-text center-align animated fadeInUp"></h4>
               <div class = "row">
-              <div class="col m4">
-                  <a href="/contact">
-                    <div class="card service-card card-inverse" (mouseover)="jumpUp(0)" (mouseout)="resetPosition(0)">
+              <div class="col s10 m6 l4">
+                    <div class="card service-card card-inverse"  (touchend)="resetPosition(0)" (touchstart)="jumpUp(0)"  (mouseover)="jumpUp(0)" (mouseout)="resetPosition(0)">
                       <div class="card-block">
                         <span class="fa fa-calendar-check-o fa-3x"></span>
                         <h4 class="white-text card-title">Established in 2008 and Managed By Homeowners</h4>
-                        <h5 class = "white-text card-content"> Our community is actively managed by dedicated homeowners who volunteer their time and expertise. Through their collective efforts, we ensure that our neighborhood thrives and continues to be a desirable place to live</h5>
+                        <p class = "white-text card-content"> Our community is actively managed by dedicated homeowners who volunteer their time and expertise. Through their collective efforts, we ensure that our neighborhood thrives and continues to be a desirable place to live</p>
                       </div>
                     </div>
-                  </a>
               </div>
 
-                <div class="col m4">
-                  <a href="/documents">
-                    <div class="card service-card card-inverse" (mouseover)="jumpUp(1)" (mouseout)="resetPosition(1)">
+                <div class="col s12 m6 l4">
+                    <div class="card service-card card-inverse"  (touchend)="resetPosition(1)" (touchstart)="jumpUp(1)"  (mouseover)="jumpUp(1)" (mouseout)="resetPosition(1)">
                       <div class="card-block">
                         <span class="fa fa-shield fa-3x"></span>
                         <h4 class="white-text card-title">Protecting and Preserving the Rights of All Neighbors</h4>
-                        <h5 class = "white-text card-content">We are committed to safeguarding the rights and interests of every individual within our community. We actively work to maintain a harmonious environment where everyone feels respected, valued, and secure, fostering a sense of belonging for all neighbors. For our rules and regulations set forth in our bylaws, visit our documents page</h5>
+                          <p class = "white-text card-content">We prioritize inclusivity, equality, and justice in our community to ensure that every individual feels respected, valued, and secure. Our bylaws serve as a framework for maintaining order and protecting individual rights.</p>
                       </div>
                     </div>
-                  </a>
                 </div>
 
-                <div class="col m4">
-                  <a href="/contact">
-                    <div class="card service-card card-inverse" (mouseover)="jumpUp(2)" (mouseout)="resetPosition(2)">
+                <div class="col s12 m6 l4">
+                    <div class="card service-card card-inverse"  (touchend)="resetPosition(2)" (touchstart)="jumpUp(2)"  (mouseover)="jumpUp(2)" (mouseout)="resetPosition(2)">
                       <div class="card-block">
                         <span class="fa fa-bullhorn fa-3x"></span>
                         <h4 class="white-text card-title">Creating a Channel for Every Voice to be Heard</h4>
-                        <h5 class = "white-text card-content">We believe that every resident's perspective matters. We strive for inclusivity and transparency which encourages active participation and dialogue among neighbors. We aim to ensure that every voice is heard and considered in community decision-making processes.</h5>
-                        <div style="gap:10px;display: inline-flex;"><span class="fa fa-facebook fa-3x"></span> <span class="fa fa-instagram fa-3x"></span></div>
+                        <p class = "white-text card-content">We believe that every resident's perspective matters. We strive for inclusivity and transparency which encourages active participation and dialogue among neighbors. We aim to ensure that every voice is heard and considered in community decision-making processes.</p>
                       </div>
                     </div>
-                  </a>
                 </div>
-
-
               </div>
-            </div>
           </section>
         </div>
 </div>

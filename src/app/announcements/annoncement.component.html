@@ -1,7 +1,12 @@
 <app-newsletter-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-newsletter-upload>
 
 <div class = "outer">
-    <img class = 'rsp centered' src="./assets/background.png">
+    <div class="col s12">
+        <div class="header">
+            <h2 class="white-text center-align fancy-cursive"><b>Announcements / Events</b></h2>
+        </div>
+    </div>
+
     <div class="inner">
         <div class = "page-container">
             <div class="leftBox">
@@ -26,8 +31,8 @@
                 </div>
 
                 <!-- Newsletter Acordian -->
-                <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects">
-                    <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="false">
+                <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects" >
+                    <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="j==0">
                         <div class="card-container">
                             <ng-container *ngFor="let document of this.documents; let i = index">
                                 <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showNewsletter(document)" target="_blank">

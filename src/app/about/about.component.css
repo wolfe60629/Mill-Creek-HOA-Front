@@ -17,15 +17,15 @@
   background-image: url(src/assets/background.png);
   background-size: cover;
   background-repeat: no-repeat;
-  padding-top: 20vh;
-  padding-bottom: 15vh;
+  padding-top: 25vh;
+  padding-bottom: 12vh;
   padding-left: 50px;
   padding-right: 50px;
   box-shadow: 0 0 8px 3px #000;
-  transform: translateY(-70px);
+  transform: translateY(-120px);
 }
 
-h2 {   text-shadow: 2px 2px #000000;}
+h2 {   text-shadow:5px 4px 2px #000013;}
 
 .left-align-text {
   text-align: left;
@@ -61,6 +61,7 @@ td a:hover {
   margin-left: 0px !important;
   margin-right: 0px !important;
   margin-bottom: 0;
+  margin-top:50px;
   justify-content: center;
 }
 #description {
@@ -90,13 +91,14 @@ td a:hover {
   padding: 10px 10px 30px 30px;
   overflow-wrap: break-word;
   margin:auto;
-  transform: translateY(-120px);
+  transform: translateY(-180px);
 }
 .outer {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  min-height: 1000px;
+  height: 100vh;
+  overflow: auto;
   background-color: #1a2023;
 }
 
@@ -121,15 +123,16 @@ h5 {
   background-size: cover;
 }
 
+p { font-size: large;}
 
 .service-categories .card {
-  height: 150px;
+  height: 32rem;
   border-radius: 25px;
   transition: all .3s ease-in-out;
 }
 
 .service-categories .card-title {
-  padding-top: 0.5em;
+  padding-top: 1em;
 }
 
 .service-categories a:hover {
@@ -137,7 +140,7 @@ h5 {
 }
 
 .service-card {
-  background: #5d727c;
+  background: #393f48;
   border: 0;
 }
 
@@ -151,7 +154,7 @@ h5 {
 }
 .card-block {
   text-align: center;
-  padding: 10px 10px 10px 10px;
+  padding: 20px 10px 10px 10px;
   overflow: hidden;
   height:inherit;
 }

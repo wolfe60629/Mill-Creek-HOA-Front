@@ -4,6 +4,24 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.header {
+    background-image: url("src/assets/amenitiesBackground.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-top: 25vh;
+    padding-bottom: 12vh;
+    padding-left: 50px;
+    padding-right: 50px;
+    box-shadow: 0 0 8px 3px #000;
+    transform: translateY(-70px);
+}
+
+h2 {
+    text-shadow: 2px 2px #000000;
+}
+
 .rsp {
     min-width: 100%;
     z-index: -1;
@@ -68,7 +86,7 @@ td a:hover {
     background-color: #ffffffe0;
     border-radius: 25px;
     width: 98%;
-    transform: translate(0%,30px);
+    transform: translate(0%, -50px);
     padding: 10px 10px 30px 30px;
     box-shadow: 0 0 100px 11px #0006;
     overflow-wrap: break-word;
@@ -79,7 +97,9 @@ td a:hover {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    min-height: 1000px;
+    height: 100vh;
+    overflow: auto;
+    background-color: #1a2023;
 }
 
 table {

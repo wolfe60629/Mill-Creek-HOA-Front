@@ -11,13 +11,11 @@ export class AboutComponent implements OnInit {
 
   jumpUp( index) {
     const card = document.getElementsByClassName('card')[index] as HTMLElement;
-    card.style.transform = 'translateY(-5px)';
-    card.style.height = '450px';
+    card.style.transform = 'translateY(-20px)';
   }
 
   resetPosition(index) {
     const card = document.getElementsByClassName('card')[index] as HTMLElement;
     card.style.transform = 'none';
-    card.style.height = '155px';
   }
 }
