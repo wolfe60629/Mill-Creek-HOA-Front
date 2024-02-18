@@ -1,7 +1,7 @@
 name: Deploy To Github Pages
 
 on:
-  push:
+  workflow_dispatch:
     branches:
       - 'release/4.0'
 
@@ -24,28 +24,30 @@ jobs:
       #   run: npm run test
       - name: Archive build
         if: success()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: deploy_dist
           path: dist
       # - name: Archive code coverage result
       #   if: success()
-      #   uses: actions/upload-artifact@v1
+      #   uses: actions/upload-artifact@v2
       #   with:
       #     name: deploy_coverage
       #     path: coverage
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Download build
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: deploy_dist
       - name: Deploy to GitHub Pages
-        uses: wolfe60629/Mill-Creek-HOA-Front@release/4.0
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FOLDER: deploy_dist/dgm-app
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy_dist/dgm-app # Change this path if needed
+          publish_branch: gh-pages
