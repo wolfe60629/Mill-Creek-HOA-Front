@@ -49,3 +49,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FOLDER: deploy_dist/dgm-app
+          BRANCH: resease/4.0
