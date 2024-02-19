@@ -20,6 +20,8 @@ jobs:
         run: npm install --f
       - name: Build
         run: npm run build:prod
+      - name: Format To Github Pages
+        run: ngh --dir=dist/dgm-app
       # - name: Test
       #   run: npm run test
       - name: Archive build
