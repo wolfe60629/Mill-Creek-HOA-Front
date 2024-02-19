@@ -45,7 +45,8 @@ jobs:
         with:
           name: deploy_dist
       - name: Deploy to GitHub Pages
-        uses: wolfe60629/Mill-Creek-HOA-Front
+        uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FOLDER: deploy_dist/dgm-app
+          BRANCH: gh-pages
+          FOLDER: deploy_dist/angular-demo
