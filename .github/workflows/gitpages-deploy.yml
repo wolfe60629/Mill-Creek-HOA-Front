@@ -45,7 +45,7 @@ jobs:
         with:
           name: deploy_dist
       - name: Deploy to GitHub Pages
-        uses: wolfe60629/Mill-Creek-HOA-Front@release/4.0
+        uses: wolfe60629/Mill-Creek-HOA-Front
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FOLDER: deploy_dist/dgm-app
