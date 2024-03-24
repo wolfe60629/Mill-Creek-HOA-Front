@@ -10,11 +10,13 @@
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
     "ngcc": "ngcc --properties es2015 browser main module --async false --first-only",
-    "postinstall": "npm run ngcc"
+    "postinstall": "npm run ngcc",
+    "scully": "npx scully -- --project dgm-app",
+    "scully:serve": "npx scully serve -- --project dgm-app"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^14.3.0",
+    "@angular/animations": "np^14.3.0",
     "@angular/cdk": "^13.3.2",
     "@angular/common": "^14.3.0",
     "@angular/compiler": "^14.3.0",
@@ -31,6 +33,10 @@
     "@fullcalendar/resource": "^6.1.7",
     "@fullcalendar/resource-timegrid": "^6.1.7",
     "@fullcalendar/timegrid": "^6.1.7",
+    "@scullyio/init": "^2.1.41",
+    "@scullyio/ng-lib": "^2.1.0",
+    "@scullyio/scully": "^2.1.41",
+    "@scullyio/scully-plugin-puppeteer": "^2.1.0",
     "@syncfusion/ej2-angular-inputs": "^19.4.52",
     "@types/jest": "^27.4.1",
     "@types/materialize-css": "^1.0.11",

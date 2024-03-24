@@ -47,6 +47,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {CardModule} from 'primeng/card';
+import { ScullyLibModule } from '@scullyio/ng-lib';
 
 const appRoutes: Routes = [
   {
@@ -149,7 +150,8 @@ const appRoutes: Routes = [
         RadioButtonModule,
         SpinnerModule,
         ProgressSpinnerModule,
-        CardModule
+        CardModule,
+        ScullyLibModule
     ],
   providers: [
     {
