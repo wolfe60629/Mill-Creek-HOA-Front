@@ -1,7 +1,7 @@
 <div *ngIf="route !=='/'" class="navbar-fixed">
   <nav class="z-depth-0 white animated slideInDown">
     <div id="navbar" class="nav-wrapper">
-      <a routerLink="/" class="brand-logo black-text"></a> <a materialize="sideNav" [materializeParams]="[{edge: 'left', closeOnClick: true}]" class="sidenav-trigger button-collapse left hide-on-large-only" href="#" data-activates="mobile-version" data-target="nav-mobile" > <i class="material-icons light-blue-text text-darken-3">menu</i> </a>
+      <a routerLink="/" class="brand-logo black-text"></a> <a materialize="sideNav"  class="sidenav-trigger button-collapse left hide-on-large-only" href="#" data-activates="mobile-version" data-target="nav-mobile" > <i class="material-icons light-blue-text text-darken-3">menu</i> </a>
       <ul class="right hide-on-med-and-down">
 <!--        <li [ngClass]="route==='/' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/">Home</a > </li>-->
         <li [ngClass]="route==='/about' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/about">Community Information</a> </li>
