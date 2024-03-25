@@ -30,6 +30,7 @@ jobs:
       uses: cmgriffing/scully-gh-pages-action@v10
       with:
         access-token: ${{ secrets.ACCESS_TOKEN }}
+        deploy-branch: gh-pages
 
 #    - name: Deploy
 #      if: success()
