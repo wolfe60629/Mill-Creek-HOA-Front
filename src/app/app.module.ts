@@ -131,7 +131,7 @@ const appRoutes: Routes = [
     NewsletterUploadComponent
   ],
     imports: [
-        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy', useHash: true}),
+        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
         BrowserModule,
         MaterializeModule,
         HttpClientModule,
