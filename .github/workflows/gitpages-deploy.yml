@@ -7,17 +7,6 @@ on:
     - release/4.2
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "20"
-      - uses: cmgriffing/scully-gh-pages-action@v10
-        with:
-          access-token: ${{ secrets.ACCESS_TOKEN }}
-
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -37,6 +26,10 @@ jobs:
 
 #    - name: Build
 #      run: npm run build:prod
+    - name: Build
+      uses: cmgriffing/scully-gh-pages-action@v10
+      with:
+        access-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Deploy
       if: success()
