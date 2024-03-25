@@ -11,8 +11,8 @@
     "e2e": "ng e2e",
     "ngcc": "ngcc --properties es2015 browser main module --async false --first-only",
     "postinstall": "npm run ngcc",
-    "scully": "npx scully -- --project dgm-app",
-    "scully:serve": "npx scully serve -- --project dgm-app"
+    "scully": "npx scully --project dgm-app",
+    "scully:serve": "npx scully serve --project dgm-app"
   },
   "private": true,
   "dependencies": {
