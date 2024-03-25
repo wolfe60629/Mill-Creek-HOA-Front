@@ -29,12 +29,12 @@ jobs:
     - name: Build
       uses: cmgriffing/scully-gh-pages-action@v10
       with:
-        access-token: ${{ secrets.GITHUB_TOKEN }}
+        access-token: ${{ secrets.ACCESS_TOKEN }}
 
-    - name: Deploy
-      if: success()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: dist/dgm-app
-        enable_jekyll: true
+#    - name: Deploy
+#      if: success()
+#      uses: peaceiris/actions-gh-pages@v3
+#      with:
+#        github_token: ${{ secrets.GITHUB_TOKEN }}
+#        publish_dir: dist/dgm-app
+#        enable_jekyll: true
