@@ -19,25 +19,30 @@ async function copyFilesToSubfolders(sourceDir) {
       throw new Error(`Source directory '${sourceDir}' does not exist.`);
     }
 
-    // Get a list of all subdirectories and files in the source directory
+    // Get a list of all items (files and directories) in the source directory
     const items = await fs.readdir(sourceDir);
 
-    // Filter out directories from the list of items
+    // Filter out only files from the list of items
     const files = items.filter(async item => {
       const itemPath = path.join(sourceDir, item);
       const stats = await fs.stat(itemPath);
       return stats.isFile();
     });
 
-    // Iterate over each subdirectory in the source directory
-    for (const subDir of items) {
-      const subDirPath = path.join(sourceDir, subDir);
+    // Iterate over each file in the source directory
+    for (const file of files) {
+      // Skip the index.html file
+      if (file === 'index.html') {
+        continue;
+      }
 
-      // Ensure that the item is a directory
-      const stats = await fs.stat(subDirPath);
-      if (stats.isDirectory()) {
-        // Get a list of all files in the source subdirectory excluding index.html
-        for (const file of files.filter(file => (file !== 'index.html' && !file.isDirectory()))) {
+      // Iterate over each subdirectory in the source directory
+      for (const subDir of items) {
+        const subDirPath = path.join(sourceDir, subDir);
+
+        // Ensure that the item is a directory
+        const stats = await fs.stat(subDirPath);
+        if (stats.isDirectory()) {
           const sourcePath = path.join(sourceDir, file);
           const destinationPath = path.join(subDirPath, file);
 
