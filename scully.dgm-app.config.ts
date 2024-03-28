@@ -1,21 +1,18 @@
-import {registerPlugin, ScullyConfig} from '@scullyio/scully';
-import '@scullyio/scully-plugin-puppeteer'
-import * as fs from "fs-extra";
-import * as path from "path";
-import {promisify} from "node:util";
+import { registerPlugin, ScullyConfig } from '@scullyio/scully';
+import { promisify } from 'util';
+import * as fsExtra from 'fs-extra';
+import * as path from 'path';
+
+const readdir = promisify(fsExtra.readdir);
+const stat = promisify(fsExtra.stat);
+const copyFile = promisify(fsExtra.copyFile);
 
 export const config: ScullyConfig = {
-  projectRoot: "./src",
-  projectName: "dgm-app",
-  // add spsModulePath when using de Scully Platform Server,
+  projectRoot: './src',
+  projectName: 'dgm-app',
   outDir: './dist/static',
-  routes: {
-  }
+  routes: {}
 };
-
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
-const copyFile = promisify(fs.copyFile);
 
 async function copyFilesToDestinations(sourceDir: string, destinations: string[]) {
   try {
@@ -24,13 +21,12 @@ async function copyFilesToDestinations(sourceDir: string, destinations: string[]
       const filePath = path.join(sourceDir, file);
       const fileStat = await stat(filePath);
       if (fileStat.isDirectory()) {
-        // Recursively copy files inside subfolders
         await copyFilesToDestinations(filePath, destinations);
       } else {
-        // Copy file to specified destinations
         if (file !== 'index.html') {
           for (const destination of destinations) {
             const targetFile = path.join(destination, file);
+            await fsExtra.ensureDir(destination);
             await copyFile(filePath, targetFile);
             console.log(`Copied ${file} to ${destination}`);
           }
@@ -42,15 +38,11 @@ async function copyFilesToDestinations(sourceDir: string, destinations: string[]
   }
 }
 
-
 async function customAllDonePlugin() {
-  const sourceDir = '/dist/static'; // Provide the path to your source directory
-  const destinations = ['/dist/static/about', '/dist/static/admin' , '/dist/static/amenities', '/dist/static/contact', '/dist/static/documents', '/dist/static/login', '/dist/static/logout', '/dist/static/requests']; // Array of destination paths
-  copyFilesToDestinations(sourceDir, destinations);
+  const sourceDir = './dist/static'; // Note: Using relative paths
+  const destinations = ['./dist/static/about', './dist/static/admin', './dist/static/amenities', './dist/static/contact', './dist/static/documents', './dist/static/login', './dist/static/logout', './dist/static/requests'];
+  await copyFilesToDestinations(sourceDir, destinations);
 }
 
 const validator = async () => [];
 registerPlugin('allDone', 'customAllDonePlugin', customAllDonePlugin, validator);
-
-
-
