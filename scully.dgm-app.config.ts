@@ -1,7 +1,4 @@
 import {registerPlugin, ScullyConfig} from '@scullyio/scully';
-
-
-/** this loads the default render plugin, remove when switching to something else. */
 import '@scullyio/scully-plugin-puppeteer'
 import * as fs from "fs-extra";
 import * as path from "path";
@@ -12,10 +9,8 @@ export const config: ScullyConfig = {
   // add spsModulePath when using de Scully Platform Server,
   outDir: './dist/static',
   routes: {
-  },
-  extraRoutes: [ '/documents' ]
+  }
 };
-
 
 async function copyFilesToSubfolders(sourceDir) {
   try {
@@ -24,26 +19,35 @@ async function copyFilesToSubfolders(sourceDir) {
       throw new Error(`Source directory '${sourceDir}' does not exist.`);
     }
 
-    // Get a list of all subdirectories in the source directory
-    const subDirs = await fs.readdir(sourceDir);
+    // Get a list of all subdirectories and files in the source directory
+    const items = await fs.readdir(sourceDir);
 
-    // Iterate over each subdirectory
-    for (const subDir of subDirs) {
+    // Filter out directories from the list of items
+    const files = items.filter(async item => {
+      const itemPath = path.join(sourceDir, item);
+      const stats = await fs.stat(itemPath);
+      return stats.isFile();
+    });
+
+    // Iterate over each subdirectory in the source directory
+    for (const subDir of items) {
       const subDirPath = path.join(sourceDir, subDir);
 
       // Ensure that the item is a directory
-      if ((await fs.stat(subDirPath)).isDirectory()) {
-        // Get a list of all files in the source directory excluding index.html
-        const files = (await fs.readdir(sourceDir)).filter(file => file !== 'index.html');
-
-        // Iterate over each file in the source directory
-        for (const file of files) {
+      const stats = await fs.stat(subDirPath);
+      if (stats.isDirectory()) {
+        // Get a list of all files in the source subdirectory excluding index.html
+        for (const file of files.filter(file => file !== 'index.html')) {
           const sourcePath = path.join(sourceDir, file);
           const destinationPath = path.join(subDirPath, file);
 
-          // Copy the file from the source path to the destination path
-          await fs.copy(sourcePath, destinationPath);
-          console.log(`Copied ${file} to ${destinationPath} successfully.`);
+          try {
+            // Copy the file from the source path to the destination path
+            await fs.copy(sourcePath, destinationPath);
+            console.log(`Copied ${file} to ${destinationPath} successfully.`);
+          } catch (error) {
+            console.error(`Error copying ${file}:`, error);
+          }
         }
       }
     }
