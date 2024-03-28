@@ -37,7 +37,7 @@ async function copyFilesToSubfolders(sourceDir) {
       const stats = await fs.stat(subDirPath);
       if (stats.isDirectory()) {
         // Get a list of all files in the source subdirectory excluding index.html
-        for (const file of files.filter(file => file !== 'index.html')) {
+        for (const file of files.filter(file => (file !== 'index.html' && !file.isDirectory()))) {
           const sourcePath = path.join(sourceDir, file);
           const destinationPath = path.join(subDirPath, file);
 
