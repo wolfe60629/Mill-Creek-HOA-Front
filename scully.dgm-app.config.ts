@@ -22,7 +22,7 @@ async function copyFilesToDestinations(sourceDir: string, destinations: string[]
       const fileStat = await stat(filePath);
       if (fileStat.isDirectory()) {
         // Recursively copy files from subdirectories
-        await copyFilesToDestinations(filePath, destinations);
+        // await copyFilesToDestinations(filePath, destinations);
       } else {
         if (file.endsWith('.html')) {
           // Skip HTML files
