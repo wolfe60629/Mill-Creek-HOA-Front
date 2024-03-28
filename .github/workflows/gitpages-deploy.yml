@@ -32,6 +32,7 @@ jobs:
         access-token: ${{ secrets.ACCESS_TOKEN }}
         deploy-branch: gh-pages
         build-args: --configuration production
+        scully-args: --scanRoutes
 
 #    - name: Deploy
 #      if: success()
