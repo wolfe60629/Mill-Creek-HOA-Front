@@ -12,6 +12,10 @@ export const config: ScullyConfig = {
   }
 };
 
+const { registerPlugin } = require('@scullyio/scully');
+const fs = require('fs-extra');
+const path = require('path');
+
 async function copyFilesToSubfolders(sourceDir) {
   try {
     // Ensure that the source directory exists
@@ -22,37 +26,29 @@ async function copyFilesToSubfolders(sourceDir) {
     // Get a list of all items (files and directories) in the source directory
     const items = await fs.readdir(sourceDir);
 
-    // Filter out only files from the list of items
-    const files = items.filter(async item => {
+    // Filter out only directories from the list of items
+    const dirs = items.filter(async item => {
       const itemPath = path.join(sourceDir, item);
       const stats = await fs.stat(itemPath);
-      return stats.isFile();
+      return stats.isDirectory();
     });
 
-    // Iterate over each file in the source directory
-    for (const file of files) {
-      // Skip the index.html file
-      if (file === 'index.html') {
-        continue;
-      }
+    // Iterate over each directory in the source directory
+    for (const dir of dirs) {
+      // Get a list of all files in the current directory excluding index.html
+      const files = items.filter(file => file !== 'index.html');
 
-      // Iterate over each subdirectory in the source directory
-      for (const subDir of items) {
-        const subDirPath = path.join(sourceDir, subDir);
+      // Iterate over each file in the current directory
+      for (const file of files) {
+        const sourcePath = path.join(sourceDir, file);
+        const destinationPath = path.join(sourceDir, dir, file);
 
-        // Ensure that the item is a directory
-        const stats = await fs.stat(subDirPath);
-        if (stats.isDirectory()) {
-          const sourcePath = path.join(sourceDir, file);
-          const destinationPath = path.join(subDirPath, file);
-
-          try {
-            // Copy the file from the source path to the destination path
-            await fs.copy(sourcePath, destinationPath);
-            console.log(`Copied ${file} to ${destinationPath} successfully.`);
-          } catch (error) {
-            console.error(`Error copying ${file}:`, error);
-          }
+        try {
+          // Copy the file from the source path to the destination path
+          await fs.copy(sourcePath, destinationPath);
+          console.log(`Copied ${file} to ${destinationPath} successfully.`);
+        } catch (error) {
+          console.error(`Error copying ${file}:`, error);
         }
       }
     }
