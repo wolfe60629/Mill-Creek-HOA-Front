@@ -14,22 +14,27 @@ export const config: ScullyConfig = {
   routes: {}
 };
 
-async function copyFilesToDestinations(sourceDir: string, destinations: string[]) {
+async function copyFilesToDestinations(sourceDir: string, destinations: string[], processedFiles: Set<string>) {
   try {
     const files = await readdir(sourceDir);
     for (const file of files) {
       const filePath = path.join(sourceDir, file);
       const fileStat = await stat(filePath);
       if (fileStat.isDirectory()) {
-        await copyFilesToDestinations(filePath, destinations);
+        await copyFilesToDestinations(filePath, destinations, processedFiles);
       } else {
-        if (file !== 'index.html') {
+        if (file.endsWith('.html')) {
+          // Skip HTML files
+          continue;
+        }
+        if (!processedFiles.has(file)) {
           for (const destination of destinations) {
             const targetFile = path.join(destination, file);
             await fsExtra.ensureDir(destination);
             await copyFile(filePath, targetFile);
             console.log(`Copied ${file} to ${destination}`);
           }
+          processedFiles.add(file); // Mark the file as processed
         }
       }
     }
@@ -39,9 +44,10 @@ async function copyFilesToDestinations(sourceDir: string, destinations: string[]
 }
 
 async function customAllDonePlugin() {
-  const sourceDir = './dist/static'; // Note: Using relative paths
+  const sourceDir = './dist/static';
   const destinations = ['./dist/static/about', './dist/static/admin', './dist/static/amenities', './dist/static/contact', './dist/static/documents', './dist/static/login', './dist/static/logout', './dist/static/requests'];
-  await copyFilesToDestinations(sourceDir, destinations);
+  const processedFiles = new Set<string>(); // Set to keep track of processed files
+  await copyFilesToDestinations(sourceDir, destinations, processedFiles);
 }
 
 const validator = async () => [];
