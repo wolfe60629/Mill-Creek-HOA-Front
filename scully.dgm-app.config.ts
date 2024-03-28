@@ -17,7 +17,7 @@ const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 const copyFile = promisify(fs.copyFile);
 
-async function copyFilesToSubfolders(sourceDir: string) {
+async function copyFilesToDestinations(sourceDir: string, destinations: string[]) {
   try {
     const files = await readdir(sourceDir);
     for (const file of files) {
@@ -25,15 +25,15 @@ async function copyFilesToSubfolders(sourceDir: string) {
       const fileStat = await stat(filePath);
       if (fileStat.isDirectory()) {
         // Recursively copy files inside subfolders
-        await copyFilesToSubfolders(filePath);
+        await copyFilesToDestinations(filePath, destinations);
       } else {
-        // Copy file if it's not index.html
+        // Copy file to specified destinations
         if (file !== 'index.html') {
-          // Assuming the target subfolder is named the same as the parent folder
-          const targetDir = path.dirname(filePath);
-          const targetFile = path.join(targetDir, file);
-          await copyFile(filePath, targetFile);
-          console.log(`Copied ${file} to ${targetDir}`);
+          for (const destination of destinations) {
+            const targetFile = path.join(destination, file);
+            await copyFile(filePath, targetFile);
+            console.log(`Copied ${file} to ${destination}`);
+          }
         }
       }
     }
@@ -42,9 +42,11 @@ async function copyFilesToSubfolders(sourceDir: string) {
   }
 }
 
+
 async function customAllDonePlugin() {
-  const sourceDir = './dist/static';
-  await copyFilesToSubfolders(sourceDir);
+  const sourceDir = '/dist/static'; // Provide the path to your source directory
+  const destinations = ['/dist/static/about', '/dist/static/admin' , '/dist/static/amenities', '/dist/static/contact', '/dist/static/documents', '/dist/static/login', '/dist/static/logout', '/dist/static/requests']; // Array of destination paths
+  copyFilesToDestinations(sourceDir, destinations);
 }
 
 const validator = async () => [];
