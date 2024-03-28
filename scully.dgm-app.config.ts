@@ -31,6 +31,7 @@ async function copyFilesToDestinations(sourceDir: string, destinations: string[]
           for (const destination of destinations) {
             // Copy file to each destination directory
             const destinationFilePath = path.join(destination, file);
+            console.log("Copying: " + filePath + " into " + destinationFilePath);
             await fsExtra.copy(filePath, destinationFilePath);
           }
         }
