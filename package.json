@@ -10,7 +10,8 @@
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
     "ngcc": "ngcc --properties es2015 browser main module --async false --first-only",
-    "postinstall": "npm run ngcc"
+    "postinstall": "npm run ngcc",
+    "deploy" : "ng deploy --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app"
   },
   "private": true,
   "dependencies": {
