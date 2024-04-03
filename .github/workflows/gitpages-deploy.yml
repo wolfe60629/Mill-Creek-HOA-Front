@@ -1,6 +1,7 @@
 name: GitHub Pages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -24,9 +25,6 @@ jobs:
       # - name: Run tests
       #   run: npm run test:headless
 
-      - name: Build
-        run: npm run build:prod
-
       - name: Deploy
         run: npm run deploy
         env:
@@ -35,10 +33,10 @@ jobs:
       - name: Copy Workflow File
         run: |
           mkdir -p .github/workflows
-          cp .github/workflows/deploy.yml .github/workflows/deploy.yml.temp
+          cp .github/workflows/gitpages-deploy.yml .github/workflows/gitpages-deploy.yml.temp
           git checkout gh-pages
-          cp .github/workflows/deploy.yml.temp .github/workflows/deploy.yml
-          git add .github/workflows/deploy.yml
+          cp .github/workflows/gitpages-deploy.yml.temp .github/workflows/gitpages-deploy.yml
+          git add .github/workflows/gitpages-deploy.yml
           git commit -m "Update deploy workflow"
           git push origin gh-pages
         env:
