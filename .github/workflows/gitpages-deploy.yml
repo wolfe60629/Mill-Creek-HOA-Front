@@ -29,29 +29,3 @@ jobs:
         run: npm run deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Copy Workflow File
-        run: |
-          mkdir -p .github/workflows
-          cp .github/workflows/gitpages-deploy.yml .github/workflows/gitpages-deploy.yml.temp
-          git checkout gh-pages
-          cp .github/workflows/gitpages-deploy.yml.temp .github/workflows/gitpages-deploy.yml
-          git add .github/workflows/gitpages-deploy.yml
-          git commit -m "Update deploy workflow"
-          git push origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create CNAME file
-        run: echo "millcreekhoa.org" > CNAME
-        working-directory: ${{ github.workspace }}/build
-
-      - name: Copy CNAME to gh-pages branch
-        run: |
-          git checkout gh-pages
-          cp ../build/CNAME .
-          git add CNAME
-          git commit -m "Add CNAME file"
-          git push origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
