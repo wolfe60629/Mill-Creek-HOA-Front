@@ -3,38 +3,37 @@ name: GitHub Pages
 on:
   push:
     branches:
-    - main
-    - release/4.2
+      - main
+      - release/4.2
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Install dependencies
-      run: npm install --f
+      - name: Install dependencies
+        run: npm install --f
 
-    # - name: Run tests
-    #   run: npm run test:headless
+      # - name: Run tests
+      #   run: npm run test:headless
 
-    - name: Build
-      run: npm run build:prod
+      - name: Build
+        run: npm run build:prod
 
+      - name: Deploy
+        run: npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Deploy
-      run: npm run deploy
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Copy Workflow File
-      run: |
+      - name: Copy Workflow File
+        run: |
           mkdir -p .github/workflows
           cp .github/workflows/deploy.yml .github/workflows/deploy.yml.temp
           git checkout gh-pages
@@ -45,18 +44,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create CNAME file
-      run: echo "millcreekhoa.org" > CNAME
-      working-directory: ${{ github.workspace }}/build
+      - name: Create CNAME file
+        run: echo "millcreekhoa.org" > CNAME
+        working-directory: ${{ github.workspace }}/build
 
-    - name: Copy CNAME to gh-pages branch
-      run: |
-            git checkout gh-pages
-            cp ../build/CNAME .
-            git add CNAME
-            git commit -m "Add CNAME file"
-            git push origin gh-pages
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      
+      - name: Copy CNAME to gh-pages branch
+        run: |
+          git checkout gh-pages
+          cp ../build/CNAME .
+          git add CNAME
+          git commit -m "Add CNAME file"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
