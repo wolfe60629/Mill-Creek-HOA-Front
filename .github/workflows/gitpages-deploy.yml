@@ -34,7 +34,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Copy Workflow File
-        run: |
+      run: |
           mkdir -p .github/workflows
           cp .github/workflows/deploy.yml .github/workflows/deploy.yml.temp
           git checkout gh-pages
@@ -44,3 +44,19 @@ jobs:
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Create CNAME file
+          run: echo "millcreekhoa.org" > CNAME
+          working-directory: ${{ github.workspace }}/build
+
+    - name: Copy CNAME to gh-pages branch
+      run: |
+            git checkout gh-pages
+            cp ../build/CNAME .
+            git add CNAME
+            git commit -m "Add CNAME file"
+            git push origin gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      
