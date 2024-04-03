@@ -45,9 +45,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Create CNAME file
-          run: echo "millcreekhoa.org" > CNAME
-          working-directory: ${{ github.workspace }}/build
+    - name: Create CNAME file
+      run: echo "millcreekhoa.org" > CNAME
+      working-directory: ${{ github.workspace }}/build
 
     - name: Copy CNAME to gh-pages branch
       run: |
