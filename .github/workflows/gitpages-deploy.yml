@@ -1,7 +1,6 @@
 name: GitHub Pages
 
 on:
-  workflow_dispatch:
   push:
     branches:
     - main
@@ -33,3 +32,15 @@ jobs:
       run: npm run deploy
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Copy Workflow File
+        run: |
+          mkdir -p .github/workflows
+          cp .github/workflows/deploy.yml .github/workflows/deploy.yml.temp
+          git checkout gh-pages
+          cp .github/workflows/deploy.yml.temp .github/workflows/deploy.yml
+          git add .github/workflows/deploy.yml
+          git commit -m "Update deploy workflow"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
