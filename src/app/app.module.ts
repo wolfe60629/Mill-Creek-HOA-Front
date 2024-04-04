@@ -5,6 +5,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
 
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
+import { MaterializeModule } from 'angular2-materialize';
 
 import { NavigationComponent } from './navigation/navigation.component';
 import { DocumentsComponent } from './documents/documents.component';
@@ -130,8 +131,9 @@ const appRoutes: Routes = [
     NewsletterUploadComponent
   ],
     imports: [
-        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy', useHash: false}),
+        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
         BrowserModule,
+        MaterializeModule,
         HttpClientModule,
         FormsModule,
         AccordionModule,
