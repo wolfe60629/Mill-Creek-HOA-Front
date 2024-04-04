@@ -22,7 +22,7 @@
   padding-left: 50px;
   padding-right: 50px;
   box-shadow: 0 0 8px 3px #000;
-  transform: translateY(-120px);
+  transform: translateY(-70px);
 }
 
 h2 {   text-shadow:5px 4px 2px #000013;}
@@ -34,7 +34,7 @@ h2 {   text-shadow:5px 4px 2px #000013;}
 h4.white-text.center-align {
   border-bottom: white;
   border-bottom-style: solid;
-  padding-bottom: 10px;
+  padding-bottom: 40px;
 }
 
 .collapsible-body {
