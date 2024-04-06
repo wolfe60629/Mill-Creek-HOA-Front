@@ -3,7 +3,7 @@
     <div class="inner">
         <div class="row center">
             <div class="col s12 animated fadeIn">
-                <h2 class="white-text text-darken-3"><b>Admin Dashboard</b></h2>
+                <h2 class="grey-text text-darken-3"><b>Administration</b></h2>
             </div>
         </div>
         <div class="p-m-4 pane">
@@ -66,12 +66,12 @@
 
                             <td class="center-align">
                                 <div class ="action-button-group" *ngIf="communityEvent.readonly==null?true:communityEvent.readonly">
-                                    <button class = "btn blue darken-4 center-align center" (click)="editRow(communityEvent)"><i class="pi pi-user-edit"></i></button>
-                                    <button class = "btn red darken-4 center-align center" (click)="onDeleteCommunityEvent(communityEvent)"><i class="pi pi-trash"></i></button>
+                                    <button class = "btn blue darken-4 center-align center"  pTooltip = "Edit" (click)="editRow(communityEvent)"><i class="pi pi-user-edit"></i></button>
+                                    <button class = "btn red darken-4 center-align center"  pTooltip = "Delete" (click)="onDeleteCommunityEvent(communityEvent)"><i class="pi pi-trash"></i></button>
                                 </div>
                                 <div class = "action-button-group" *ngIf="communityEvent.readonly==false">
-                                    <button class = "btn green darken-4 center-align center" (click)="onEventSave(communityEvent)"><i class="pi pi-check"></i></button>
-                                    <button class = "btn red darken-4 center-align center" (click)="cancelEdit(communityEvent)"><i class="pi pi-times"></i></button>
+                                    <button class = "btn green darken-4 center-align center" pTooltip = "Save" (click)="onEventSave(communityEvent)"><i class="pi pi-check"></i></button>
+                                    <button class = "btn red darken-4 center-align center"  pTooltip = "Cancel" (click)="cancelEdit(communityEvent)"><i class="pi pi-times"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -90,8 +90,8 @@
             <input class = "grey-text" *ngIf="!isRequestEmailEdit" type="email" placeholder="example@example.com" [(ngModel)]="requestEmail.value" disabled="false">
             <input class = "white-text" *ngIf="isRequestEmailEdit" type="email"  placeholder="example@example.com" [(ngModel)]="requestEmail.value">
 
-            <button *ngIf="isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.saveRequestEmail()">Save</button>
-            <button *ngIf="!isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" (click)="this.isRequestEmailEdit = true">Edit <i class = "pi pi-user-edit"></i></button>
+            <button *ngIf="isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3"  pTooltip = "Save" (click)="this.saveRequestEmail()">Save</button>
+            <button *ngIf="!isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" pTooltip = "Edit" (click)="this.isRequestEmailEdit = true">Edit <i class = "pi pi-user-edit"></i></button>
 
         </ng-container>
 
@@ -127,12 +127,12 @@
 
                         <td class="center-align">
                             <div class="action-button-group" *ngIf="boardMember.readonly==null?true:boardMember.readonly">
-                                <button class = "btn blue darken-4 center-align center" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
-                                <button class = "btn red darken-4 center-align center" (click)="onDeleteBoardMember(boardMember)"><i class="pi pi-trash"></i></button>
+                                <button class = "btn blue darken-4 center-align center" pTooltip = "Edit" (click)="editRow(boardMember)"><i class="pi pi-user-edit"></i></button>
+                                <button class = "btn red darken-4 center-align center"  pTooltip = "Delete" (click)="onDeleteBoardMember(boardMember)"><i class="pi pi-trash"></i></button>
                             </div>
                             <div class="action-button-group" *ngIf="boardMember.readonly==false">
-                                <button class = "btn green darken-4 center-align center" (click)="onBoardMemberSave(boardMember)"><i class="pi pi-check"></i></button>
-                                <button class = "btn red darken-4 center-align center" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
+                                <button class = "btn green darken-4 center-align center"  pTooltip = "Save" (click)="onBoardMemberSave(boardMember)"><i class="pi pi-check"></i></button>
+                                <button class = "btn red darken-4 center-align center"  pTooltip = "Cancel" *ngIf="!boardMember.newMember" (click)="cancelEdit(boardMember)"><i class="pi pi-times"></i></button>
                             </div>
                         </td>
                     </tr>

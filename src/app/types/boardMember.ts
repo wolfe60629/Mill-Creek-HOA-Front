@@ -4,5 +4,6 @@ export class BoardMember {
     email: string;
     title: string;
     readonly?: boolean;
+    newMember?: boolean;
 }
 

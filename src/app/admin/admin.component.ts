@@ -63,6 +63,7 @@ export class AdminComponent implements OnInit {
         });
 
         this.boardMembers = boardMembers;
+        this.addNewBoardMemberRow();
 
         // Load Community Events
         this.eventService.getAllEvents().subscribe((events) => {
@@ -100,12 +101,13 @@ export class AdminComponent implements OnInit {
   }
 
   addNewBoardMemberRow() {
-    const newBoardMember = new BoardMember();
-    newBoardMember.name = '';
-    newBoardMember.email = '';
-    newBoardMember.title = '';
-    newBoardMember.readonly = false;
-    this.boardMembers.unshift(newBoardMember);
+    this.boardMembers.push({
+      title: '',
+      name: '',
+      email: '',
+      readonly: false,
+      newMember: true
+    });
   }
 
   addNewEventRow() {
@@ -132,13 +134,20 @@ export class AdminComponent implements OnInit {
   }
 
   onBoardMemberSave(boardMember: BoardMember) {
-    if (!boardMember) {
+    if (!boardMember || Object.values(boardMember).some(value => value === null || value === "")) {
+      this.messageService.add({severity: 'warn', summary: 'Please fill in all fields.'});
       return;
     }
 
     this.boardMemberService.saveNewBoardMember(boardMember).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Board Member Saved Successfully!'});
       boardMember.readonly = true;
+
+      if (boardMember.newMember) {
+        boardMember.newMember = false;
+        this.addNewBoardMemberRow();
+      }
+
     }, (err) => {
       this.messageService.add({severity: 'warn', summary: err});
     });
@@ -184,6 +193,7 @@ export class AdminComponent implements OnInit {
       this.boardMemberService.getAllBoardMembers().subscribe((boardMembers: BoardMember[]) => {
         boardMembers.forEach((board) => {board.readonly = true; });
         this.boardMembers = boardMembers;
+        this.addNewBoardMemberRow();
       });
     }, (err) => {
       this.messageService.add({severity: 'warn', summary: err});
