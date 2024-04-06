@@ -48,6 +48,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {CardModule} from 'primeng/card';
+import {SidebarModule} from "primeng/sidebar";
 
 const appRoutes: Routes = [
   {
@@ -130,29 +131,30 @@ const appRoutes: Routes = [
     CalendarComponent,
     NewsletterUploadComponent
   ],
-    imports: [
-        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
-        BrowserModule,
-        MaterializeModule,
-        HttpClientModule,
-        FormsModule,
-        AccordionModule,
-        BrowserAnimationsModule,
-        ButtonModule,
-        ToastModule,
-        DropdownModule,
-        MultiSelectModule,
-        AutoCompleteModule,
-        NgxExtendedPdfViewerModule,
-        TableModule,
-        ListboxModule,
-        ConfirmDialogModule,
-        FullCalendarModule,
-        RadioButtonModule,
-        SpinnerModule,
-        ProgressSpinnerModule,
-        CardModule
-    ],
+  imports: [
+    RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+    BrowserModule,
+    MaterializeModule,
+    HttpClientModule,
+    FormsModule,
+    AccordionModule,
+    BrowserAnimationsModule,
+    ButtonModule,
+    ToastModule,
+    DropdownModule,
+    MultiSelectModule,
+    AutoCompleteModule,
+    NgxExtendedPdfViewerModule,
+    TableModule,
+    ListboxModule,
+    ConfirmDialogModule,
+    FullCalendarModule,
+    RadioButtonModule,
+    SpinnerModule,
+    ProgressSpinnerModule,
+    CardModule,
+    SidebarModule,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

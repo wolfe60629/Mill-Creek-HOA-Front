@@ -6,7 +6,7 @@
 }
 
 .header {
-    background-image: url("src/assets/amenitiesBackground.jpg");
+    background-image: url("/assets/amenities-background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -58,7 +58,6 @@ td a:hover {
 .container .row {
     margin-left: 0px !important;
     margin-right: 0px !important;
-    margin-bottom: 0;
 }
 #description {
     margin-bottom: 0px !important;
@@ -97,8 +96,7 @@ td a:hover {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    height: 100vh;
-    overflow: auto;
+    height: 100%;
     background-color: #1a2023;
 }
 
@@ -140,3 +138,52 @@ th {
  padding: unset;
 }
 
+.card-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:20px;
+    flex-wrap: wrap;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+.red-button {
+    background-color: darkred;
+    color: white;
+}
+
+.red-button:hover {
+    background-color: red;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.button-bottom {
+    position: absolute;
+    bottom: 5px;
+    text-align: center;
+}
+
+:host ::ng-deep .card {
+    height: 100%;
+    border-radius:15px;
+    background-color: #ffffffe0;
+    transform: translateY(-60px);
+
+}
+
+
+@media only screen and (max-width: 600px) {
+    .card-container {
+        grid-template-columns: 1fr;
+        gap:10px;
+    }
+
+    .button-bottom {
+        position: relative;
+        margin-left: calc((100% - 100px) / 2);
+        margin-top: 10px;
+    }
+}
