@@ -35,7 +35,7 @@
                                 <div class="card-title-content">
                                    <h5 class="project-title">{{ request.friendlyName }}</h5>
                                     <span>
-                                        <i *ngIf="isAdmin" class="pi pi-trash" (click)="onDelete(request)"></i>
+                                        <button pButton class="p-button-text"><i *ngIf="isAdmin" pTooltip = "Delete Request" class="pi pi-trash" (click)="onDelete(request)"></i></button>
                                     </span>
                                 </div>
                              </span>
