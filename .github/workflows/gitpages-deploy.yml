@@ -25,6 +25,11 @@ jobs:
       # - name: Run tests
       #   run: npm run test:headless
 
+      - name: Configure Git
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
       - name: Deploy
         run: npm run deploy
         env:
