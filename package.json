@@ -11,7 +11,7 @@
     "e2e": "ng e2e",
     "ngcc": "ngcc --properties es2015 browser main module --async false --first-only",
     "postinstall": "npm run ngcc",
-    "deploy" : "ng deploy --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app --name=\"Jeremy Wolfe\" --email=jawolfe@tds.net --cname=millcreekhoa.org"
+    "deploy" : "ng deploy --repo=https://github.com/wolfe60629/Mill-Creek-HOA-Front.git --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app --name=\"Jeremy Wolfe\" --email=jawolfe@tds.net --cname=millcreekhoa.org"
   },
   "private": true,
   "dependencies": {
