@@ -4,7 +4,6 @@ import {Router} from '@angular/router';
 import {BoardMember} from '../types/boardMember';
 import {BoardMemberService} from '../services/board-member.service';
 import {CommunityEvent} from '../types/communityEvent';
-import {RequestsService} from '../services/requests.service';
 import {EventService} from '../services/event.service';
 import {MessageService} from 'primeng/api';
 import {GeneralService} from '../services/general.service';

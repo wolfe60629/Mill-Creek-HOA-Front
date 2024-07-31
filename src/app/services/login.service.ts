@@ -31,22 +31,27 @@ export class LoginService {
       }
   }
 
-  public checkAuthToken() {
-      this.authenicationToken = this.getAuthorizationHeaderValue();
+    public checkAuthToken() {
+        const authenticationToken = this.getAuthorizationHeaderValue();
 
-      if (!this.authenicationToken) {
-          this.logout();
-          return;
-      }
+        if (!authenticationToken) {
+            this.logout();
+            return;
+        }
 
-      return this.httpSvc.post(this.host + '/checkSessionId/' + this.authenicationToken, null)
-          .subscribe((isTokenValid: boolean) => {
-              if (!isTokenValid) {
-                  this.logout();
-              }
-          });
-
-  }
+        this.httpSvc.post<boolean>(`${this.host}/checkSessionId/${authenticationToken}`, null)
+            .subscribe(
+                (isTokenValid: boolean) => {
+                    if (!isTokenValid) {
+                        this.logout();
+                    }
+                },
+                (error) => {
+                    console.error('Error checking authentication token:', error);
+                    this.logout();
+                }
+            );
+    }
 
   logout (): String {
       localStorage.clear();

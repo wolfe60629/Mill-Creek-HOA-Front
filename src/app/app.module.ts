@@ -21,9 +21,6 @@ import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
 import {DropdownModule} from 'primeng/dropdown';
 import { ViewerComponent } from './documents/viewer/viewer.component';
-import { RequestsComponent } from './requests/requests.component';
-import { RequestUploadComponent } from './requests/request-upload/request-upload.component';
-import { RequestViewerComponent } from './requests/request-viewer/request-viewer.component';
 import {DocumentUploadComponent} from './documents/document-upload/document-upload';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {AutoCompleteModule} from 'primeng/autocomplete';
@@ -78,11 +75,6 @@ const appRoutes: Routes = [
     data: { title: 'Mill Creek Community | Contact Us' },
   },
   {
-    path: 'requests',
-    component: RequestsComponent,
-    data: { title: 'Mill Creek Community | Requests' },
-  },
-  {
     path: 'announcements',
     component: AnnoncementComponent,
     data: { title: 'Mill Creek Community | Announcements' },
@@ -121,9 +113,6 @@ const appRoutes: Routes = [
     AboutComponent,
     DocumentUploadComponent,
     ViewerComponent,
-    RequestsComponent,
-    RequestUploadComponent,
-    RequestViewerComponent,
     AnnoncementComponent,
     AmenitiesComponent,
     LoginComponent,
