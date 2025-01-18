@@ -6,18 +6,17 @@ on:
       branch:
         description: 'Branch to deploy' # Description shown in the UI
         required: true
-        default: 'main' # Default branch if none is specified
+        default: 'develop' # Default branch if none is specified
       deploy:
         description: 'Deploy the application' # Description for deploy option
         required: true
-        default: 'yes' # Default value is 'yes'
+        default: 'no' # Default value is 'no'
         options:
           - 'yes'
           - 'no'
   push:
     branches:
-      - main
-      - release/4.2
+      - develop
 
 jobs:
   deploy:
