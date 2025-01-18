@@ -7,10 +7,17 @@ on:
         description: 'Branch to deploy' # Description shown in the UI
         required: true
         default: 'main' # Default branch if none is specified
+      deploy:
+        description: 'Deploy the application' # Description for deploy option
+        required: true
+        default: 'yes' # Default value is 'yes'
+        options:
+          - 'yes'
+          - 'no'
   push:
     branches:
       - main
-      - release/4.3
+      - release/4.2
 
 jobs:
   deploy:
@@ -33,6 +40,7 @@ jobs:
       #   run: npm run test:headless
 
       - name: Deploy
+        if: ${{ github.event.inputs.deploy == 'yes' }}
         run: npm run deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
