@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backend: 'https://www.backend.millcreekhoa.org:9650'
+  backend: 'https://www.backend.millcreekhoa.org'
 };
 
 /*
