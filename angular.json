@@ -8,7 +8,6 @@
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -29,26 +28,14 @@
             ],
             "styles": [
               "node_modules/materialize-css/dist/css/materialize.css",
-              "node_modules/primeng/resources/primeng.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/animate.css/animate.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/saga-blue/theme.css",
               "src/styles.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/hammerjs/hammer.js",
-              "node_modules/materialize-css/dist/js/materialize.js"],
-            "aot": false,
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
+              "node_modules/materialize-css/dist/js/materialize.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -62,13 +49,12 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -105,21 +91,28 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         },
         "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {
+            "baseHref": "https://millcreekhoa.org/",
+            "repo": "https://github.com/wolfe60629/Mill-Creek-HOA-Front.git",
+            "name": "Jeremy Wolfe",
+            "email": "jawolfe125@gmail.com",
+            "cname": "millcreekhoa.org"
+          }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
