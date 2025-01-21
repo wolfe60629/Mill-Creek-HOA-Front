@@ -9,9 +9,10 @@ import {SafeResourceUrl} from '@angular/platform-browser';
 
 
 @Component({
-  selector: 'app-annoncement',
-  templateUrl: './annoncement.component.html',
-  styleUrls: ['./annoncement.component.css']
+    selector: 'app-annoncement',
+    templateUrl: './annoncement.component.html',
+    styleUrls: ['./annoncement.component.css'],
+    standalone: false
 })
 export class AnnoncementComponent implements OnInit {
   @ViewChild('external') external: ElementRef;

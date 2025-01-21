@@ -5,8 +5,9 @@ import {BoardMemberService} from '../services/board-member.service';
 import {Router} from '@angular/router';
 
 @Component({
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css'],
+    templateUrl: './contact.component.html',
+    styleUrls: ['./contact.component.css'],
+    standalone: false
 })
 export class ContactComponent implements OnInit {
   contacts = [];
