@@ -9,18 +9,19 @@ import {SafeResourceUrl} from '@angular/platform-browser';
 
 
 @Component({
-  selector: 'app-annoncement',
-  templateUrl: './annoncement.component.html',
-  styleUrls: ['./annoncement.component.css']
+    selector: 'app-annoncement',
+    templateUrl: './annoncement.component.html',
+    styleUrls: ['./annoncement.component.css'],
+    standalone: false
 })
 export class AnnoncementComponent implements OnInit {
   @ViewChild('external') external: ElementRef;
+  isAdmin: boolean;
   events: CommunityEvent[];
   documents: Doc[] = [];
   listOfCategories: String[];
   monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
-  isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
   src: SafeResourceUrl;
   fileToUpload: File | null = null;
 
@@ -33,6 +34,7 @@ export class AnnoncementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loginService.checkAuthToken();
     this.newslettersService.getAllNewsletters().subscribe((newsletters: Doc[]) => {
       this.documents = newsletters;
       this.listOfCategories = [...new Set(newsletters.map(item => item.category))];
@@ -54,7 +56,7 @@ export class AnnoncementComponent implements OnInit {
       this.events = [...this.events];
     });
 
-
+    this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
   }
 
   showNewsletter(document: Doc) {

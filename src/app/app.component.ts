@@ -6,8 +6,9 @@ import {Title} from '@angular/platform-browser';
 declare var gtag;
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    standalone: false
 })
 export class AppComponent {
     constructor(titleService: Title, router: Router) {

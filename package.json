@@ -10,22 +10,20 @@
     "test": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
-    "ngcc": "ngcc --properties es2020 browser main module --async false --first-only",
-    "postinstall": "npm run ngcc",
     "deploy": "ng deploy --repo=https://github.com/wolfe60629/Mill-Creek-HOA-Front.git --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app --name=\"Jeremy Wolfe\" --email=jawolfe@tds.net --cname=millcreekhoa.org"
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^14.3.0",
+    "@angular/animations": "^19.1.2",
     "@angular/cdk": "^14.2.7",
-    "@angular/common": "^14.3.0",
-    "@angular/compiler": "^14.3.0",
-    "@angular/core": "^14.3.0",
-    "@angular/forms": "^14.3.0",
+    "@angular/common": "^19.1.2",
+    "@angular/compiler": "^19.1.2",
+    "@angular/core": "^19.1.2",
+    "@angular/forms": "^19.1.2",
     "@angular/material": "^14.2.7",
-    "@angular/platform-browser": "^14.3.0",
-    "@angular/platform-browser-dynamic": "^14.3.0",
-    "@angular/router": "^14.3.0",
+    "@angular/platform-browser": "^19.1.2",
+    "@angular/platform-browser-dynamic": "^19.1.2",
+    "@angular/router": "^19.1.2",
     "@fullcalendar/angular": "^6.1.7",
     "@fullcalendar/bootstrap5": "^6.1.7",
     "@fullcalendar/core": "^6.1.7",
@@ -55,14 +53,14 @@
     "rxjs": "7.5.5",
     "tippy": "0.0.0",
     "tslib": "^2.3.1",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "0.1402.11",
-    "@angular-devkit/build-angular": "^14.2.13",
-    "@angular/cli": "^19.1.2",
-    "@angular/compiler-cli": "^14.3.0",
-    "@angular/language-service": "^14.3.0",
+    "@angular-devkit/architect": "0.1901.3",
+    "@angular-devkit/build-angular": "^19.1.3",
+    "@angular/cli": "^19.1.3",
+    "@angular/compiler-cli": "^19.1.2",
+    "@angular/language-service": "^19.1.2",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "^2.0.10",
@@ -84,6 +82,6 @@
     "protractor": "~7.0.0",
     "ts-node": "~5.0.1",
     "tslint": "~6.1.0",
-    "typescript": "^4.7.0"
+    "typescript": "^5.7.3"
   }
 }

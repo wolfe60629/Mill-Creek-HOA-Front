@@ -4,9 +4,10 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 @Component({
-  selector: 'app-viewer',
-  templateUrl: './viewer.component.html',
-  styleUrls: ['./viewer.component.css']
+    selector: 'app-viewer',
+    templateUrl: './viewer.component.html',
+    styleUrls: ['./viewer.component.css'],
+    standalone: false
 })
 export class ViewerComponent implements OnInit, OnChanges {
   @Input() showViewerModal: boolean = false;

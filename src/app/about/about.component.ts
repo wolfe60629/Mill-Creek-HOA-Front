@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  templateUrl: './about.component.html',
-  providers: [],
-  styleUrls: ['./about.component.css'],
+    templateUrl: './about.component.html',
+    providers: [],
+    styleUrls: ['./about.component.css'],
+    standalone: false
 })
 export class AboutComponent implements OnInit {
   ngOnInit(): void {

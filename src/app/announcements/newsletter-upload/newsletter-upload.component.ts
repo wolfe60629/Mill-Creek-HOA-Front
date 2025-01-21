@@ -7,9 +7,10 @@ import {Observable, ReplaySubject} from 'rxjs';
 
 
 @Component({
-  selector: 'app-newsletter-upload',
-  templateUrl: './newsletter-upload.component.html',
-  styleUrls: ['./newsletter-upload.component.css']
+    selector: 'app-newsletter-upload',
+    templateUrl: './newsletter-upload.component.html',
+    styleUrls: ['./newsletter-upload.component.css'],
+    standalone: false
 })
 export class NewsletterUploadComponent implements OnInit {
   @Input() showUploadModal;

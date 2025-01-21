@@ -10,9 +10,10 @@ import {asNumber} from 'pdf-lib';
 
 
 @Component({
-  templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.css'],
-  providers: [DocumentsService],
+    templateUrl: './documents.component.html',
+    styleUrls: ['./documents.component.css'],
+    providers: [DocumentsService],
+    standalone: false
 })
 export class DocumentsComponent implements OnInit {
   isAdmin: boolean;

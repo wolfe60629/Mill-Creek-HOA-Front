@@ -4,9 +4,10 @@ import {EventService} from '../services/event.service';
 import { Location } from '@angular/common';
 
 @Component({
-  selector: 'app-amenities',
-  templateUrl: './amenities.component.html',
-  styleUrls: ['./amenities.component.css']
+    selector: 'app-amenities',
+    templateUrl: './amenities.component.html',
+    styleUrls: ['./amenities.component.css'],
+    standalone: false
 })
 export class AmenitiesComponent implements OnInit {
   visibleSidebar1: boolean;

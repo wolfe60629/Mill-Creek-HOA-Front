@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {Injectable, NgModule} from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 
 import { AppComponent } from './app.component';
@@ -101,29 +101,26 @@ const appRoutes: Routes = [
   },
 ];
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavigationComponent,
-    DocumentsComponent,
-    ContactComponent,
-    FooterComponent,
-    HomeComponent,
-    AboutComponent,
-    DocumentUploadComponent,
-    ViewerComponent,
-    AnnoncementComponent,
-    AmenitiesComponent,
-    LoginComponent,
-    AdminComponent,
-    LogoutComponent,
-    CalendarComponent,
-    NewsletterUploadComponent
-  ],
-    imports: [
-        RouterModule.forRoot(appRoutes, {enableTracing: false, relativeLinkResolution: 'legacy'}),
+@NgModule({ declarations: [
+        AppComponent,
+        NavigationComponent,
+        DocumentsComponent,
+        ContactComponent,
+        FooterComponent,
+        HomeComponent,
+        AboutComponent,
+        DocumentUploadComponent,
+        ViewerComponent,
+        AnnoncementComponent,
+        AmenitiesComponent,
+        LoginComponent,
+        AdminComponent,
+        LogoutComponent,
+        CalendarComponent,
+        NewsletterUploadComponent
+    ],
+    bootstrap: [AppComponent], imports: [RouterModule.forRoot(appRoutes, { enableTracing: false }),
         BrowserModule,
-        HttpClientModule,
         FormsModule,
         AccordionModule,
         BrowserAnimationsModule,
@@ -142,24 +139,21 @@ const appRoutes: Routes = [
         ProgressSpinnerModule,
         CardModule,
         SidebarModule,
-        TooltipModule,
-    ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpErrorInterceptor,
-      multi: true,
-    },
-    MessageService,
-      ConfirmationService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true
-    }
-  ],
-  bootstrap: [AppComponent],
-})
+        TooltipModule], providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true,
+        },
+        MessageService,
+        ConfirmationService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 
 }
