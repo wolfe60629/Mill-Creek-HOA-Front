@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { DocumentsComponent } from '../documents/documents.component'
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ProjectsComponent', () => {
   let component: DocumentsComponent
@@ -9,8 +10,9 @@ describe('ProjectsComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     declarations: [DocumentsComponent],
-    imports: [HttpClientTestingModule],
-    teardown: { destroyAfterEach: false }
+    teardown: { destroyAfterEach: false },
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
 }).compileComponents()
   }))
 
