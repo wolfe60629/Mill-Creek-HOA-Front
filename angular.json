@@ -73,18 +73,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "dgm-app:build"
+            "buildTarget": "dgm-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dgm-app:build:production"
+              "buildTarget": "dgm-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dgm-app:build"
+            "buildTarget": "dgm-app:build"
           }
         },
         "test": {
