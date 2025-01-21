@@ -10,24 +10,24 @@ import {Observable, Subscription} from 'rxjs';
 
 export class LoginService {
   host = environment.backend + '/login';
-  private authenicationToken: String = '';
+  private authenticationToken: String = '';
 
   constructor(private httpSvc: HttpClient) { }
 
   public getAuthToken(username: String, password: String): Subscription {
     return this.httpSvc.post(this.host, {'username': username, 'password': password})
          .subscribe((token: TokenResponse) => {
-           this.authenicationToken = token.sessionId;
-           localStorage.setItem('authenticationToken', this.authenicationToken.toString());
+           this.authenticationToken = token.sessionId;
+           localStorage.setItem('authenticationToken', this.authenticationToken.toString());
          });
   }
 
-  getAuthorizationHeaderValue () {
-      if (this.authenicationToken === '' && localStorage.getItem('authenticationToken')) {
+  getAuthorizationHeaderValue (): String {
+      if (this.authenticationToken === '' && localStorage.getItem('authenticationToken')) {
           // Check local storage
          return localStorage.getItem('authenticationToken');
       } else {
-          return this.authenicationToken;
+          return this.authenticationToken;
       }
   }
 
@@ -55,7 +55,7 @@ export class LoginService {
 
   logout (): String {
       localStorage.clear();
-     return this.authenicationToken = '';
+     return this.authenticationToken = '';
   }
 }
 
