@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {Injectable, NgModule} from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 
@@ -13,7 +13,7 @@ import { AboutComponent } from './about/about.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import {environment} from '../environments/environment.prod';
-import {FormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ButtonModule} from 'primeng/button';
@@ -34,126 +34,108 @@ import { LogoutComponent } from './logout/logout.component';
 import {TableModule} from 'primeng/table';
 import {ListboxModule} from 'primeng/listbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarComponent } from './announcements/calendar/calendar.component';
 import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
-import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {CardModule} from 'primeng/card';
 import {SidebarModule} from "primeng/sidebar";
 import {TooltipModule} from "primeng/tooltip";
+import { providePrimeNG } from 'primeng/config'
+import Material from '@primeng/themes/material'
+import { MatIcon } from '@angular/material/icon'
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu'
+import { MatToolbar } from '@angular/material/toolbar'
+import { MatIconButton } from '@angular/material/button'
+import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav'
+import { MatListItem, MatNavList } from '@angular/material/list'
 
 const appRoutes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    data: { title: 'Mill Creek Community | Home' },
-  },
-  {
-    path: 'about',
-    component: AboutComponent,
-    data: { title: 'Mill Creek Community | About' },
-  },
-  {
-    path: 'admin',
-    component: AdminComponent,
-    data: { title: 'Mill Creek Community | Admin' },
-  },
-  {
-    path: 'documents',
-    component: DocumentsComponent,
-    data: { title: 'Mill Creek Community | Documents' },
-  },
-  {
-    path: 'contact',
-    component: ContactComponent,
-    data: { title: 'Mill Creek Community | Contact Us' },
-  },
-  {
-    path: 'announcements',
-    component: AnnoncementComponent,
-    data: { title: 'Mill Creek Community | Announcements' },
-  },
-  {
-    path: 'amenities',
-    component: AmenitiesComponent,
-    data: { title: 'Mill Creek Community | Amenities' },
-  },
-  {
-    path: 'login',
-    component: LoginComponent,
-    data: { title: 'Mill Creek Community | Login' },
-  },
-  {
-    path: 'logout',
-    component: LogoutComponent,
-    data: { title: 'Mill Creek Community | Logout' },
-  },
-  {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full',
-    data: {title: '404 Page Not Found'}
-  },
+  { path: '', component: HomeComponent, data: { title: 'Mill Creek Community | Home' } },
+  { path: 'about', component: AboutComponent, data: { title: 'Mill Creek Community | About' } },
+  { path: 'admin', component: AdminComponent, data: { title: 'Mill Creek Community | Admin' } },
+  { path: 'documents', component: DocumentsComponent, data: { title: 'Mill Creek Community | Documents' } },
+  { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Contact Us' } },
+  { path: 'announcements', component: AnnoncementComponent, data: { title: 'Mill Creek Community | Announcements' } },
+  { path: 'amenities', component: AmenitiesComponent, data: { title: 'Mill Creek Community | Amenities' } },
+  { path: 'login', component: LoginComponent, data: { title: 'Mill Creek Community | Login' } },
+  { path: 'logout', component: LogoutComponent, data: { title: 'Mill Creek Community | Logout' } },
+  { path: '**', redirectTo: '', pathMatch: 'full', data: { title: '404 Page Not Found' } },
 ];
 
-@NgModule({ declarations: [
-        AppComponent,
-        NavigationComponent,
-        DocumentsComponent,
-        ContactComponent,
-        FooterComponent,
-        HomeComponent,
-        AboutComponent,
-        DocumentUploadComponent,
-        ViewerComponent,
-        AnnoncementComponent,
-        AmenitiesComponent,
-        LoginComponent,
-        AdminComponent,
-        LogoutComponent,
-        CalendarComponent,
-        NewsletterUploadComponent
-    ],
-    bootstrap: [AppComponent], imports: [RouterModule.forRoot(appRoutes, { enableTracing: false }),
-        BrowserModule,
-        FormsModule,
-        AccordionModule,
-        BrowserAnimationsModule,
-        ButtonModule,
-        ToastModule,
-        DropdownModule,
-        MultiSelectModule,
-        AutoCompleteModule,
-        NgxExtendedPdfViewerModule,
-        TableModule,
-        ListboxModule,
-        ConfirmDialogModule,
-        FullCalendarModule,
-        RadioButtonModule,
-        SpinnerModule,
-        ProgressSpinnerModule,
-        CardModule,
-        SidebarModule,
-        TooltipModule], providers: [
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpErrorInterceptor,
-            multi: true,
-        },
-        MessageService,
-        ConfirmationService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: TokenInterceptor,
-            multi: true
-        },
-        provideHttpClient(withInterceptorsFromDi())
-    ] })
-export class AppModule {
-
-}
+@NgModule({
+  declarations: [
+    AppComponent,
+    NavigationComponent,
+    DocumentsComponent,
+    ContactComponent,
+    FooterComponent,
+    HomeComponent,
+    AboutComponent,
+    DocumentUploadComponent,
+    ViewerComponent,
+    AnnoncementComponent,
+    AmenitiesComponent,
+    LoginComponent,
+    AdminComponent,
+    LogoutComponent,
+    CalendarComponent,
+    NewsletterUploadComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,  // Ensure animations are loaded before PrimeNG components
+    RouterModule.forRoot(appRoutes, { enableTracing: false }),
+    FormsModule,
+    AccordionModule,
+    ButtonModule,
+    ToastModule,
+    DropdownModule,
+    MultiSelectModule,
+    AutoCompleteModule,
+    NgxExtendedPdfViewerModule,
+    TableModule,
+    ListboxModule,
+    ConfirmDialogModule,
+    FullCalendarModule,
+    RadioButtonModule,
+    ProgressSpinnerModule,
+    CardModule,
+    SidebarModule,
+    TooltipModule,
+    ReactiveFormsModule.withConfig({ callSetDisabledState: 'whenDisabledForLegacyCode' }),
+    MatIcon,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatMenu,
+    MatToolbar,
+    MatIconButton,
+    MatSidenav,
+    MatNavList,
+    MatSidenavContainer,
+    MatListItem,
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    MessageService,
+    ConfirmationService,
+    providePrimeNG({
+      theme: {
+        preset: Material
+      }
+    }),
+    provideHttpClient(withInterceptorsFromDi()) // HttpClient setup with DI-based interceptors
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }

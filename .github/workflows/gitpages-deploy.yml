@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to deploy' # Description shown in the UI
+        description: 'Branch to deploy'
         required: true
-        default: 'develop' # Default branch if none is specified
+        default: 'develop'
       deploy:
-        description: 'Deploy the application' # Description for deploy option
+        description: 'Deploy the application'
         required: true
-        default: 'no' # Default value is 'no'
+        default: 'no'
         options:
           - 'yes'
           - 'no'
@@ -19,27 +19,53 @@ on:
       - develop
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.ref_name }}
+          ref: ${{ github.event.inputs.branch || github.ref }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --f
+        run: npm ci
 
+      # Uncomment to run tests
       # - name: Run tests
       #   run: npm run test:headless
 
-      - name: Deploy
-        if: ${{ github.event.inputs.deploy == 'yes' }}
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/  # Update path based on your build output folder
+
+  deploy:
+    needs: build  # Ensures deploy runs only after build job completes successfully
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: dist/  # Ensure this matches the upload path
+
+      - name: Deploy application
         run: npm run deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
