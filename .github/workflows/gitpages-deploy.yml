@@ -70,7 +70,6 @@ jobs:
           npm install angular-cli-ghpages --save-dev  # Ensure angular-cli-ghpages is installed
 
       - name: Deploy application
-        run: |
-          npx ng deploy --repo=https://github.com/${{ github.repository }}.git --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app --name="Jeremy Wolfe" --email=jawolfe@tds.net --cname=millcreekhoa.org
+        run: npm run deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
