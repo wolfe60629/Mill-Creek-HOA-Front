@@ -64725,7 +64725,7 @@ HttpErrorInterceptor = __decorate([
 ], HttpErrorInterceptor);
 
 // angular:jit:template:file:src/app/app.component.html
-var app_component_default = '<app-navigation></app-navigation>\n<p-toast position="bottom-center"></p-toast>\n<router-outlet></router-outlet>\n';
+var app_component_default = '<app-navigation *ngIf="!isHomePage"></app-navigation>\n<p-toast position="bottom-center"></p-toast>\n<router-outlet></router-outlet>\n';
 
 // node_modules/@angular/router/fesm2022/router.mjs
 var PRIMARY_OUTLET = "primary";
@@ -70734,6 +70734,7 @@ var __metadata = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var AppComponent = class AppComponent2 {
+  isHomePage;
   constructor(titleService, router) {
     const navEndEvents = router.events.pipe(filter((event2) => event2 instanceof NavigationEnd));
     navEndEvents.subscribe((event2) => {
@@ -70741,6 +70742,9 @@ var AppComponent = class AppComponent2 {
       gtag("config", "G-GHEE5RV5RQ", {
         "page_path": event2.urlAfterRedirects
       });
+    });
+    router.events.pipe(filter((event2) => event2 instanceof NavigationEnd)).subscribe((event2) => {
+      this.isHomePage = event2.url === "/";
     });
   }
   // collect that title data properties from all child routes
@@ -201118,7 +201122,8 @@ AppModule = __decorate26([
       MatSidenav,
       MatNavList,
       MatSidenavContainer,
-      MatListItem
+      MatListItem,
+      NgIf
     ],
     providers: [
       {
