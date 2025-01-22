@@ -201140,7 +201140,11 @@ AppModule = __decorate26([
       ConfirmationService,
       providePrimeNG({
         theme: {
-          preset: material_default
+          preset: material_default,
+          options: {
+            //setting to a query that doesnt exist to disable
+            darkModeSelector: ".dark"
+          }
         }
       }),
       provideHttpClient(withInterceptorsFromDi())
