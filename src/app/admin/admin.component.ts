@@ -51,8 +51,7 @@ export class AdminComponent implements OnInit {
     this.referenceGroups = [
         {label: '👥 Board Members', groupCode: 'board_members'},
       {label: '📅 Community Events', groupCode: 'community_events'},
-        {label: '📝 Request Settings ', groupCode: 'request_settings'}
-      ];
+    ];
 
       this.selectedReferenceGroup = this.referenceGroups[0];
 
@@ -74,13 +73,6 @@ export class AdminComponent implements OnInit {
           this.communityEvents = events;
         });
       });
-
-      // Load Current Request Email
-    this.settingsService.getSettingByName('requestEmail').subscribe((setting: Setting) => {
-      if (setting) {
-        this.requestEmail = setting;
-      }
-    });
   }
 
   addValue() {
@@ -154,18 +146,6 @@ export class AdminComponent implements OnInit {
   }
 
 
-  saveRequestEmail () {
-    if (this.requestEmail.value === '') {
-      this.messageService.add({severity: 'error', summary: 'Request email cannot be blank'});
-      return;
-    }
-
-    this.settingsService.saveSetting(this.requestEmail).subscribe(() => {
-      this.messageService.add({severity: 'success', summary: 'Request Email Updated Successfully!'});
-      this.isRequestEmailEdit = false;
-    });
-  }
-
   onDeleteCommunityEvent(communityEvent: CommunityEvent) {
     if (!communityEvent) {
       return;
@@ -200,9 +180,6 @@ export class AdminComponent implements OnInit {
     });
   }
 }
-
-
-
 
 class ReferenceGroup {
   label: String;

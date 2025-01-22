@@ -1,32 +1,56 @@
-<div *ngIf="route !=='/'" class="navbar-fixed">
-  <nav class="z-depth-0 white animated slideInDown">
-    <div id="navbar" class="nav-wrapper">
-      <a routerLink="/" class="brand-logo black-text"></a>
-        <a materialize="sideNav" [materializeParams]="[{edge: 'left', closeOnClick: true}]" class="sidenav-trigger button-collapse left hide-on-large-only" href="#" data-activates="mobile-version" data-target="nav-mobile">
-        <i class="material-icons light-blue-text text-darken-3">menu</i>
-    </a>
-      <ul class="right hide-on-med-and-down">
-<!--        <li [ngClass]="route==='/' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/">Home</a > </li>-->
-        <li [ngClass]="route==='/about' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/about">Community Information</a> </li>
-        <li [ngClass]="route==='/amenities' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/amenities">Amenities</a > </li>
-        <li [ngClass]="route==='/announcements' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/announcements">Announcements</a > </li>
-        <li [ngClass]="route==='/documents' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/documents">Documents</a > </li>
-          <li> <a class="black-text text-darken-3" href = "https://hms-inc.net/" >ARC Requests</a> </li>
-        <li [ngClass]="route==='/contact' ? 'active' : ' '"> <a class="black-text text-darken-3" routerLink="/contact" >Contact Us</a > </li>
-        <li> <a class="black-text text-darken-3" href = "https://hms.cincwebaxis.com/account/loginmodernthemes" >Resident Portal</a> </li>
+
+<mat-sidenav-container class="navbar-container navbar-fixed">
+  <!-- Sidebar for Mobile (Initially hidden on large screens) -->
+  <mat-sidenav #sidenav mode="over" class="sidenav-menu" [opened]="false">
+    <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/about" (click)="sidenav.close()">Community Information</a>
+      <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
+      <a mat-list-item routerLink="/announcements" (click)="sidenav.close()">Announcements</a>
+      <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
+      <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Contact Us</a>
+      <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <!-- Top Navbar -->
+  <mat-toolbar class="navbar z-depth-0 white">
+    <!-- Mobile Menu Icon -->
+    <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <!-- Desktop Menu -->
+    <div class="menu-container">
+      <ul class="navbar-links">
+        <li [ngClass]="route === '/about' ? 'active' : ''">
+          <a routerLink="/about" class="black-text text-darken-3">Community Info</a>
+        </li>
+        <li [ngClass]="route === '/amenities' ? 'active' : ''">
+          <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
+        </li>
+        <li [ngClass]="route === '/announcements' ? 'active' : ''">
+          <a routerLink="/announcements" class="black-text text-darken-3">Announcements</a>
+        </li>
+        <li [ngClass]="route === '/documents' ? 'active' : ''">
+          <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
+        </li>
+        <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
+        <li [ngClass]="route === '/contact' ? 'active' : ''">
+          <a routerLink="/contact" class="black-text text-darken-3">Contact Us</a>
+        </li>
+        <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
       </ul>
     </div>
-  </nav>
-</div>
-<ul class="side-nav white" id="mobile-version">
-  <li class="sidenav-close" [ngClass]="route==='/' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/" >Home</a ></li>
-  <li class="sidenav-close" [ngClass]="route==='/about' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/about" >Community Information</a > </li>
-  <li class="sidenav-close" [ngClass]="route==='/amenities' ? 'active' : ''"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/amenities" >Amenities</a > </li>
-  <li class="sidenav-close" [ngClass]="route==='/announcements' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/announcements" >Announcements</a > </li>
-  <li class="sidenav-close" [ngClass]="route==='/documents' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/documents" >Documents</a > </li>
-    <li class="sidenav-close"> <a href="https://hms-inc.net/" class="light-blue-text text-darken-3 waves-effect sidenav-close">ARC Requests</a> </li>
-  <li class="sidenav-close" [ngClass]="route==='/contact' ? 'active' : ' '"> <a href="#!" class="light-blue-text text-darken-3 waves-effect sidenav-close" routerLink="/contact" >Contact Us</a> </li>
-  <li class="sidenav-close"> <a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="light-blue-text text-darken-3 waves-effect sidenav-close">Resident Portal</a> </li>
-</ul>
 
-
+    <!-- User Icon Menu -->
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon> Logout
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+</mat-sidenav-container>
+<div class ='navbar-space'></div>

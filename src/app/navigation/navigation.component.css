@@ -1,60 +1,123 @@
-.brand-logo img {
-  height: 2rem;
-}
-.brand-logo {
-  display: flex !important;
+/* Ensure mat-toolbar is full-width */
+mat-toolbar {
+  display: flex;
   align-items: center;
-  margin: 0 2%;
-}
-.brand-logo {
-  display: inline-block;
-  height: 100%;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px; /* Adjust padding to match your design */
 }
 
-.brand-logo img:hover {
-  opacity: 0.65;
+.navbar-fixed {
+  position: fixed;
+  width: 100%;
 }
-nav ul li {
-  transition: all 150ms ease-in-out;
-  margin: 0 0.5rem;
-  background-color: transparent !important;
+
+.navbar-space {
+  height: 60px;
 }
-nav ul li:last-child {
-  margin-right: 1rem;
+
+/* Flex container for the menu items (Center alignment) */
+.menu-container {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
 }
-nav ul li a {
-  font-weight: 400;
-  font-size: 1.2rem;
-  font-weight: bold !important;
-}
-nav ul li.active a {
+
+ul li.active  {
   box-shadow: inset 0 -5px 0 var(--color-primary);
+  /*padding:10px*/
 }
 
-nav ul li a:hover {
-  background-color: transparent !important;
+/* Navbar links styling */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap:10px;
+  line-height: 60px;
 }
-#navbar {
 
-}
-.side-nav {
-  background-color: var(--color-secondary);
-  width: 15rem;
-}
-.side-nav li {
+.nav-list{
   text-align: center;
   margin: 1rem 0;
 }
 
-ul{
-  background-color: white;
+.navbar-links li {
+  margin-right: 20px;
 }
 
+.navbar-links li a {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
 
-@media only screen and (min-width: 993px) {
-  nav {
-    display: flex;
-    justify-content: center;
-    width:100%;
+.navbar-links li.active a {
+  color: var(--color-primary); /* Add active color */
+}
+
+/* The user icon should be on the far right */
+mat-icon-button {
+  margin-left: auto; /* Pushes the user icon button to the far right */
+}
+
+/* Ensure a spacer to push content to the center */
+.spacer {
+  flex-grow: 1;
+}
+
+/* Ensure sidenav overlays the entire screen */
+.sidenav-menu {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 250px;  /* Adjust width as needed */
+  height: 100vh;
+  z-index: 1000; /* Higher value to ensure it overlays content */
+  background: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark overlay background when sidenav is open */
+.sidenav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Slightly lower than sidenav but above content */
+  display: none; /* Initially hidden */
+}
+
+/* Show overlay when sidenav is open */
+.sidenav-menu.open + .sidenav-overlay {
+  display: block;
+}
+
+/* Ensure toolbar and content below */
+mat-toolbar {
+  z-index: 10; /* Lower than sidenav */
+}
+
+/* Ensure content shifts when sidenav is open (optional) */
+.content-shift {
+  margin-left: 250px; /* Same as sidenav width */
+}
+
+/* Hide mobile menu button on larger screens */
+.mobile-menu-btn {
+  display: none;
+}
+
+/* Media queries to hide/show elements on different screen sizes */
+@media (max-width: 993px) {
+  .menu-container {
+    display: none; /* Hide desktop menu on mobile */
   }
+  .mobile-menu-btn {
+    display: block; /* Show menu button only on mobile */
+  }
+
 }
+

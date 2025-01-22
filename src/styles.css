@@ -47,3 +47,12 @@ body::-webkit-scrollbar {
   bottom:0px;
 }
 
+[type=radio]:not(:checked), [type=radio]:checked {
+  pointer-events: auto!important;
+}
+
+button:focus {
+  background-color: white!important;
+}
+
+

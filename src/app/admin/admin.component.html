@@ -83,19 +83,6 @@
             </div>
         </ng-container>
 
-
-
-        <ng-container *ngIf="selectedReferenceGroup.groupCode == 'request_settings'">
-            <p class = "white-text">Request Recipient Email</p>
-            <input class = "grey-text" *ngIf="!isRequestEmailEdit" type="email" placeholder="example@example.com" [(ngModel)]="requestEmail.value" disabled="false">
-            <input class = "white-text" *ngIf="isRequestEmailEdit" type="email"  placeholder="example@example.com" [(ngModel)]="requestEmail.value">
-
-            <button *ngIf="isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3"  pTooltip = "Save" (click)="this.saveRequestEmail()">Save</button>
-            <button *ngIf="!isRequestEmailEdit" type="submit" class="btn btn-grey red right darken-3" pTooltip = "Edit" (click)="this.isRequestEmailEdit = true">Edit <i class = "pi pi-user-edit"></i></button>
-
-        </ng-container>
-
-
         <ng-container *ngIf="selectedReferenceGroup.groupCode == 'board_members'">
             <div>
                 <button class="add-new-row btn blue-grey" (click)="addNewBoardMemberRow()"><i class="pi pi-plus"></i> Add</button>
