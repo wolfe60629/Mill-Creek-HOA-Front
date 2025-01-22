@@ -10,7 +10,7 @@
     "test": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
-    "deploy": "ng deploy --repo=https://github.com/wolfe60629/Mill-Creek-HOA-Front.git --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app --name=\"Jeremy Wolfe\" --email=jawolfe@tds.net --cname=millcreekhoa.org"
+    "deploy": "ng deploy --repo=https://github.com/wolfe60629/Mill-Creek-HOA-Front.git --base-href=https://millcreekhoa.org/ --dir=dist/dgm-app/browser --name=\"Jeremy Wolfe\" --email=jawolfe@tds.net --cname=millcreekhoa.org"
   },
   "private": true,
   "dependencies": {
