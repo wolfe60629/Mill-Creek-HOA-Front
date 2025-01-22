@@ -133,7 +133,11 @@ const appRoutes: Routes = [
     ConfirmationService,
     providePrimeNG({
       theme: {
-        preset: Material
+        preset: Material,
+        options: {
+          //setting to a query that doesnt exist to disable
+          darkModeSelector: '.dark',
+        }
       }
     }),
     provideHttpClient(withInterceptorsFromDi()) // HttpClient setup with DI-based interceptors
