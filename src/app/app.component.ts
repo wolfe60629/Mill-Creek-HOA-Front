@@ -11,6 +11,8 @@ declare var gtag;
     standalone: false
 })
 export class AppComponent {
+    isHomePage: boolean;
+
     constructor(titleService: Title, router: Router) {
      const navEndEvents = router.events.pipe(
           filter(event => event instanceof NavigationEnd),
@@ -22,6 +24,14 @@ export class AppComponent {
              'page_path': event.urlAfterRedirects
          });
      });
+
+        // Listen for route changes to update the `isHomePage` flag
+        router.events
+          .pipe(filter(event => event instanceof NavigationEnd))
+          .subscribe((event: NavigationEnd) => {
+              // Set `isHomePage` to true if the current route is the home page ('/')
+              this.isHomePage = event.url === '/';
+          });
     }
 
     // collect that title data properties from all child routes
@@ -37,4 +47,5 @@ export class AppComponent {
         }
         return data;
     }
+
 }
