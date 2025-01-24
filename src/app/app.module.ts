@@ -50,6 +50,7 @@ import { MatToolbar } from '@angular/material/toolbar'
 import { MatIconButton } from '@angular/material/button'
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav'
 import { MatListItem, MatNavList } from '@angular/material/list'
+import { NgIf } from '@angular/common'
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent, data: { title: 'Mill Creek Community | Home' } },
@@ -115,6 +116,7 @@ const appRoutes: Routes = [
     MatNavList,
     MatSidenavContainer,
     MatListItem,
+    NgIf,
   ],
   providers: [
     {

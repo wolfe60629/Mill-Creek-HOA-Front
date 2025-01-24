@@ -36,21 +36,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Uncomment to run tests
-      # - name: Run tests
-      #   run: npm run test:headless
-
       - name: Build application
-        run: npm run build
+        run: npm run build  # This will run your "ng build" command
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: dist/  # Update path based on your build output folder
+          path: dist/  # Ensure this matches your build output folder
 
   deploy:
-    needs: build  # Ensures deploy runs only after build job completes successfully
+    needs: build  # Ensures deploy runs only after the build job completes successfully
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
     steps:
@@ -64,6 +60,14 @@ jobs:
         with:
           name: build-output
           path: dist/  # Ensure this matches the upload path
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Angular CLI and gh-pages package
+        run: |
+          npm install -g @angular/cli
+          npm install angular-cli-ghpages --save-dev  # Ensure angular-cli-ghpages is installed
 
       - name: Deploy application
         run: npm run deploy
