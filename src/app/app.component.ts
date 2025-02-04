@@ -30,7 +30,7 @@ export class AppComponent {
           .pipe(filter(event => event instanceof NavigationEnd))
           .subscribe((event: NavigationEnd) => {
               // Set `isHomePage` to true if the current route is the home page ('/')
-              this.isHomePage = event.url === '/';
+              this.isHomePage = event.urlAfterRedirects === '/';
           });
     }
 

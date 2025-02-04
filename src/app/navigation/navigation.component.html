@@ -5,10 +5,10 @@
     <mat-nav-list class="nav-list">
       <a mat-list-item routerLink="/about" (click)="sidenav.close()">Community Information</a>
       <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
-      <a mat-list-item routerLink="/announcements" (click)="sidenav.close()">Announcements</a>
+      <a mat-list-item routerLink="/events" (click)="sidenav.close()">Community Events</a>
       <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
       <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Contact Us</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Board Members</a>
       <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
     </mat-nav-list>
   </mat-sidenav>
@@ -28,15 +28,15 @@
         <li [ngClass]="route === '/amenities' ? 'active' : ''">
           <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
         </li>
-        <li [ngClass]="route === '/announcements' ? 'active' : ''">
-          <a routerLink="/announcements" class="black-text text-darken-3">Announcements</a>
+        <li [ngClass]="route === '/events' ? 'active' : ''">
+          <a routerLink="/events" class="black-text text-darken-3">Community Events</a>
         </li>
         <li [ngClass]="route === '/documents' ? 'active' : ''">
           <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
         </li>
         <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
         <li [ngClass]="route === '/contact' ? 'active' : ''">
-          <a routerLink="/contact" class="black-text text-darken-3">Contact Us</a>
+          <a routerLink="/contact" class="black-text text-darken-3">Board Members</a>
         </li>
         <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
       </ul>
@@ -46,7 +46,10 @@
     <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin">
       <mat-icon>account_circle</mat-icon>
     </button>
-    <mat-menu #userMenu="matMenu">
+    <mat-menu  #userMenu="matMenu">
+      <button mat-menu-item (click)="openAdmin()">
+        <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon> Logout
       </button>

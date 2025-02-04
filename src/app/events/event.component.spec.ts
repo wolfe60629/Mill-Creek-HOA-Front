@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewsletterUploadComponent } from './newsletter-upload.component';
+import { EventComponent } from './event.component';
 
-describe('NewsletterUploadComponent', () => {
-  let component: NewsletterUploadComponent;
-  let fixture: ComponentFixture<NewsletterUploadComponent>;
+describe('AnnoncementComponent', () => {
+  let component: EventComponent;
+  let fixture: ComponentFixture<EventComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NewsletterUploadComponent ]
+      declarations: [ EventComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewsletterUploadComponent);
+    fixture = TestBed.createComponent(EventComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

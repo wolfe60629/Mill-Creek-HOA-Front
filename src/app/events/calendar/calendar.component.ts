@@ -17,7 +17,6 @@ declare var $: any;
     standalone: false
 })
 export class CalendarComponent implements OnInit {
-  options: any;
   calendarOptions: CalendarOptions;
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
   @ViewChild('fullCalModal') fullCalModal: ElementRef;
@@ -26,12 +25,11 @@ export class CalendarComponent implements OnInit {
   @ViewChild('modalLocation') modalLocation: ElementRef;
   @ViewChild('modalDate') modalDate: ElementRef;
   communityEvents = [];
-  constructor(private eventService: EventService,
-              private generalService: GeneralService) {
-    const name = Calendar.name;
-  }
+
+  constructor(private eventService: EventService, private generalService: GeneralService) { }
 
   ngOnInit(): void {
+    // Fetch all events on initialization
     this.eventService.getAllEvents().subscribe((events) => {
       const eventInput: EventInput[] = events.map(event => {
         return {
@@ -53,7 +51,7 @@ export class CalendarComponent implements OnInit {
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        right: ''
       },
       locale: 'en',
       // add other plugins
@@ -86,22 +84,21 @@ export class CalendarComponent implements OnInit {
           this.modalDate.nativeElement.innerText += ' - ' + this.generalService.formatUTCTimeAndUTCDate(endDate);
         }
       },
-      eventMouseLeave: (event) => {
-        if (!this.fullCalModal.nativeElement.matches(':hover')) {
-          this.fullCalModal.nativeElement.style.display = 'none';
-        }
-
-        this.fullCalModal.nativeElement.addEventListener('mouseleave', e => {
-          this.fullCalModal.nativeElement.style.display = 'none';
-        });
-      }
+      eventMouseLeave: (event: EventInput) => {this.closeModel(event)}
     };
   }
+
   getAppointmentsForSpecificDate(arg) {
     console.log(arg);
   }
 
+  closeModel(event) {
+      if (!this.fullCalModal.nativeElement.matches(':hover')) {
+        this.fullCalModal.nativeElement.style.display = 'none';
+      }
 
-
-
+      this.fullCalModal.nativeElement.addEventListener('mouseleave', e => {
+        this.fullCalModal.nativeElement.style.display = 'none';
+      });
+  }
 }

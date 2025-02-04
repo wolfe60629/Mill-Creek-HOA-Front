@@ -30,4 +30,8 @@ export class NavigationComponent {
     this.loginService.logout();
     window.location.reload();
   }
+
+  openAdmin() {
+    this.router.navigate(['/admin']);
+  }
 }

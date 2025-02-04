@@ -7,6 +7,10 @@ mat-toolbar {
   padding: 0 16px; /* Adjust padding to match your design */
 }
 
+::ng-deep .mat-mdc-menu-content {
+  background-color: white !important;
+  color: black;
+}
 .navbar-fixed {
   position: fixed;
   width: 100%;
