@@ -10342,6 +10342,30 @@ var ShadowCss = class {
    * .foo<scopeName> .bar { ... }
    */
   _convertColonHostContext(cssText) {
+    const length = cssText.length;
+    let parens = 0;
+    let prev = 0;
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      const char = cssText[i];
+      if (char === "," && parens === 0) {
+        result += this._convertColonHostContextInSelectorPart(cssText.slice(prev, i)) + ",";
+        prev = i + 1;
+        continue;
+      }
+      if (i === length - 1) {
+        result += this._convertColonHostContextInSelectorPart(cssText.slice(prev));
+        break;
+      }
+      if (char === "(") {
+        parens++;
+      } else if (char === ")") {
+        parens--;
+      }
+    }
+    return result;
+  }
+  _convertColonHostContextInSelectorPart(cssText) {
     return cssText.replace(_cssColonHostContextReGlobal, (selectorText, pseudoPrefix) => {
       const contextSelectorGroups = [[]];
       let match;
@@ -10623,10 +10647,11 @@ var _cssContentRuleRe = /(polyfill-rule)[^}]*(content:[\s]*(['"])(.*?)\3)[;\s]*[
 var _cssContentUnscopedRuleRe = /(polyfill-unscoped-rule)[^}]*(content:[\s]*(['"])(.*?)\3)[;\s]*[^}]*}/gim;
 var _polyfillHost = "-shadowcsshost";
 var _polyfillHostContext = "-shadowcsscontext";
-var _parenSuffix = "(?:\\(((?:\\([^)(]*\\)|[^)(]*)+?)\\))?([^,{]*)";
-var _cssColonHostRe = new RegExp(_polyfillHost + _parenSuffix, "gim");
-var _cssColonHostContextReGlobal = new RegExp(_cssScopedPseudoFunctionPrefix + "(" + _polyfillHostContext + _parenSuffix + ")", "gim");
-var _cssColonHostContextRe = new RegExp(_polyfillHostContext + _parenSuffix, "im");
+var _parenSuffix = "(?:\\(((?:\\([^)(]*\\)|[^)(]*)+?)\\))";
+var _cssColonHostRe = new RegExp(_polyfillHost + _parenSuffix + "?([^,{]*)", "gim");
+var _hostContextPattern = _polyfillHostContext + _parenSuffix + "?([^{]*)";
+var _cssColonHostContextReGlobal = new RegExp(`${_cssScopedPseudoFunctionPrefix}(${_hostContextPattern})`, "gim");
+var _cssColonHostContextRe = new RegExp(_hostContextPattern, "im");
 var _polyfillHostNoCombinator = _polyfillHost + "-no-combinator";
 var _polyfillHostNoCombinatorOutsidePseudoFunction = new RegExp(`${_polyfillHostNoCombinator}(?![^(]*\\))`, "g");
 var _polyfillHostNoCombinatorRe = /-shadowcsshost-no-combinator([^\s,]*)/;
@@ -29254,7 +29279,7 @@ function publishFacade(global3) {
   const ng = global3.ng || (global3.ng = {});
   ng.\u0275compilerFacade = new CompilerFacadeImpl();
 }
-var VERSION = new Version("19.1.2");
+var VERSION = new Version("19.1.3");
 var _VisitorMode;
 (function(_VisitorMode2) {
   _VisitorMode2[_VisitorMode2["Extract"] = 0] = "Extract";

@@ -11920,6 +11920,36 @@ function nativeRemoveNode(renderer, rNode, isHostElement) {
 function clearElementContents(rElement) {
   rElement.textContent = "";
 }
+function writeDirectStyle(renderer, element2, newValue) {
+  ngDevMode && assertString(newValue, "'newValue' should be a string");
+  renderer.setAttribute(element2, "style", newValue);
+  ngDevMode && ngDevMode.rendererSetStyle++;
+}
+function writeDirectClass(renderer, element2, newValue) {
+  ngDevMode && assertString(newValue, "'newValue' should be a string");
+  if (newValue === "") {
+    renderer.removeAttribute(element2, "class");
+  } else {
+    renderer.setAttribute(element2, "class", newValue);
+  }
+  ngDevMode && ngDevMode.rendererSetClassName++;
+}
+function setupStaticAttributes(renderer, element2, tNode) {
+  const {
+    mergedAttrs,
+    classes: classes29,
+    styles
+  } = tNode;
+  if (mergedAttrs !== null) {
+    setUpAttributes(renderer, element2, mergedAttrs);
+  }
+  if (classes29 !== null) {
+    writeDirectClass(renderer, element2, classes29);
+  }
+  if (styles !== null) {
+    writeDirectStyle(renderer, element2, styles);
+  }
+}
 function createLView(parentLView, tView, context2, flags, host, tHostNode, environment2, renderer, injector, embeddedViewInjector, hydrationInfo) {
   const lView = tView.blueprint.slice();
   lView[HOST] = host;
@@ -11943,51 +11973,6 @@ function createLView(parentLView, tView, context2, flags, host, tHostNode, envir
   ngDevMode && assertEqual(tView.type == 2 ? parentLView !== null : true, true, "Embedded views must have parentLView");
   lView[DECLARATION_COMPONENT_VIEW] = tView.type == 2 ? parentLView[DECLARATION_COMPONENT_VIEW] : lView;
   return lView;
-}
-function getOrCreateTNode(tView, index7, type, name, attrs) {
-  ngDevMode && index7 !== 0 && // 0 are bogus nodes and they are OK. See `createContainerRef` in
-  // `view_engine_compatibility` for additional context.
-  assertGreaterThanOrEqual(index7, HEADER_OFFSET, "TNodes can't be in the LView header.");
-  ngDevMode && assertPureTNodeType(type);
-  let tNode = tView.data[index7];
-  if (tNode === null) {
-    tNode = createTNodeAtIndex(tView, index7, type, name, attrs);
-    if (isInI18nBlock()) {
-      tNode.flags |= 32;
-    }
-  } else if (tNode.type & 64) {
-    tNode.type = type;
-    tNode.value = name;
-    tNode.attrs = attrs;
-    const parent = getCurrentParentTNode();
-    tNode.injectorIndex = parent === null ? -1 : parent.injectorIndex;
-    ngDevMode && assertTNodeForTView(tNode, tView);
-    ngDevMode && assertEqual(index7, tNode.index, "Expecting same index");
-  }
-  setCurrentTNode(tNode, true);
-  return tNode;
-}
-function createTNodeAtIndex(tView, index7, type, name, attrs) {
-  const currentTNode = getCurrentTNodePlaceholderOk();
-  const isParent = isCurrentTNodeParent();
-  const parent = isParent ? currentTNode : currentTNode && currentTNode.parent;
-  const tNode = tView.data[index7] = createTNode(tView, parent, type, index7, name, attrs);
-  if (tView.firstChild === null) {
-    tView.firstChild = tNode;
-  }
-  if (currentTNode !== null) {
-    if (isParent) {
-      if (currentTNode.child == null && tNode.parent !== null) {
-        currentTNode.child = tNode;
-      }
-    } else {
-      if (currentTNode.next === null) {
-        currentTNode.next = tNode;
-        tNode.prev = currentTNode;
-      }
-    }
-  }
-  return tNode;
 }
 function allocExpando(tView, lView, numSlotsToAlloc, initialValue) {
   if (numSlotsToAlloc === 0) return -1;
@@ -12120,58 +12105,6 @@ function applyRootElementTransformImpl(rootElement) {
 }
 function enableApplyRootElementTransformImpl() {
   _applyRootElementTransformImpl = applyRootElementTransformImpl;
-}
-function createTNode(tView, tParent, type, index7, value, attrs) {
-  ngDevMode && index7 !== 0 && // 0 are bogus nodes and they are OK. See `createContainerRef` in
-  // `view_engine_compatibility` for additional context.
-  assertGreaterThanOrEqual(index7, HEADER_OFFSET, "TNodes can't be in the LView header.");
-  ngDevMode && assertNotSame(attrs, void 0, "'undefined' is not valid value for 'attrs'");
-  ngDevMode && ngDevMode.tNode++;
-  ngDevMode && tParent && assertTNodeForTView(tParent, tView);
-  let injectorIndex = tParent ? tParent.injectorIndex : -1;
-  let flags = 0;
-  if (isInSkipHydrationBlock$1()) {
-    flags |= 128;
-  }
-  const tNode = {
-    type,
-    index: index7,
-    insertBeforeIndex: null,
-    injectorIndex,
-    directiveStart: -1,
-    directiveEnd: -1,
-    directiveStylingLast: -1,
-    componentOffset: -1,
-    propertyBindings: null,
-    flags,
-    providerIndexes: 0,
-    value,
-    attrs,
-    mergedAttrs: null,
-    localNames: null,
-    initialInputs: void 0,
-    inputs: null,
-    outputs: null,
-    tView: null,
-    next: null,
-    prev: null,
-    projectionNext: null,
-    child: null,
-    parent: tParent,
-    projection: null,
-    styles: null,
-    stylesWithoutHost: null,
-    residualStyles: void 0,
-    classes: null,
-    classesWithoutHost: null,
-    residualClasses: void 0,
-    classBindings: 0,
-    styleBindings: 0
-  };
-  if (ngDevMode) {
-    Object.seal(tNode);
-  }
-  return tNode;
 }
 function captureNodeBindings(mode, aliasMap, directiveIndex, bindingsResult, hostDirectiveAliasMap) {
   for (let publicName in aliasMap) {
@@ -13273,36 +13206,6 @@ function applyStyling(renderer, isClassBased, rNode, prop, value) {
       ngDevMode && ngDevMode.rendererSetStyle++;
       renderer.setStyle(rNode, prop, value, flags);
     }
-  }
-}
-function writeDirectStyle(renderer, element2, newValue) {
-  ngDevMode && assertString(newValue, "'newValue' should be a string");
-  renderer.setAttribute(element2, "style", newValue);
-  ngDevMode && ngDevMode.rendererSetStyle++;
-}
-function writeDirectClass(renderer, element2, newValue) {
-  ngDevMode && assertString(newValue, "'newValue' should be a string");
-  if (newValue === "") {
-    renderer.removeAttribute(element2, "class");
-  } else {
-    renderer.setAttribute(element2, "class", newValue);
-  }
-  ngDevMode && ngDevMode.rendererSetClassName++;
-}
-function setupStaticAttributes(renderer, element2, tNode) {
-  const {
-    mergedAttrs,
-    classes: classes29,
-    styles
-  } = tNode;
-  if (mergedAttrs !== null) {
-    setUpAttributes(renderer, element2, mergedAttrs);
-  }
-  if (classes29 !== null) {
-    writeDirectClass(renderer, element2, classes29);
-  }
-  if (styles !== null) {
-    writeDirectStyle(renderer, element2, styles);
   }
 }
 function createAndRenderEmbeddedLView(declarationLView, templateTNode, context2, options) {
@@ -14419,6 +14322,106 @@ function processI18nInsertBefore(renderer, childTNode, lView, childRNode, parent
       }
     }
   }
+}
+function getOrCreateTNode(tView, index7, type, name, attrs) {
+  ngDevMode && index7 !== 0 && // 0 are bogus nodes and they are OK. See `createContainerRef` in
+  // `view_engine_compatibility` for additional context.
+  assertGreaterThanOrEqual(index7, HEADER_OFFSET, "TNodes can't be in the LView header.");
+  ngDevMode && assertPureTNodeType(type);
+  let tNode = tView.data[index7];
+  if (tNode === null) {
+    tNode = createTNodeAtIndex(tView, index7, type, name, attrs);
+    if (isInI18nBlock()) {
+      tNode.flags |= 32;
+    }
+  } else if (tNode.type & 64) {
+    tNode.type = type;
+    tNode.value = name;
+    tNode.attrs = attrs;
+    const parent = getCurrentParentTNode();
+    tNode.injectorIndex = parent === null ? -1 : parent.injectorIndex;
+    ngDevMode && assertTNodeForTView(tNode, tView);
+    ngDevMode && assertEqual(index7, tNode.index, "Expecting same index");
+  }
+  setCurrentTNode(tNode, true);
+  return tNode;
+}
+function createTNodeAtIndex(tView, index7, type, name, attrs) {
+  const currentTNode = getCurrentTNodePlaceholderOk();
+  const isParent = isCurrentTNodeParent();
+  const parent = isParent ? currentTNode : currentTNode && currentTNode.parent;
+  const tNode = tView.data[index7] = createTNode(tView, parent, type, index7, name, attrs);
+  linkTNodeInTView(tView, tNode, currentTNode, isParent);
+  return tNode;
+}
+function linkTNodeInTView(tView, tNode, currentTNode, isParent) {
+  if (tView.firstChild === null) {
+    tView.firstChild = tNode;
+  }
+  if (currentTNode !== null) {
+    if (isParent) {
+      if (currentTNode.child == null && tNode.parent !== null) {
+        currentTNode.child = tNode;
+      }
+    } else {
+      if (currentTNode.next === null) {
+        currentTNode.next = tNode;
+        tNode.prev = currentTNode;
+      }
+    }
+  }
+}
+function createTNode(tView, tParent, type, index7, value, attrs) {
+  ngDevMode && index7 !== 0 && // 0 are bogus nodes and they are OK. See `createContainerRef` in
+  // `view_engine_compatibility` for additional context.
+  assertGreaterThanOrEqual(index7, HEADER_OFFSET, "TNodes can't be in the LView header.");
+  ngDevMode && assertNotSame(attrs, void 0, "'undefined' is not valid value for 'attrs'");
+  ngDevMode && ngDevMode.tNode++;
+  ngDevMode && tParent && assertTNodeForTView(tParent, tView);
+  let injectorIndex = tParent ? tParent.injectorIndex : -1;
+  let flags = 0;
+  if (isInSkipHydrationBlock$1()) {
+    flags |= 128;
+  }
+  const tNode = {
+    type,
+    index: index7,
+    insertBeforeIndex: null,
+    injectorIndex,
+    directiveStart: -1,
+    directiveEnd: -1,
+    directiveStylingLast: -1,
+    componentOffset: -1,
+    propertyBindings: null,
+    flags,
+    providerIndexes: 0,
+    value,
+    attrs,
+    mergedAttrs: null,
+    localNames: null,
+    initialInputs: void 0,
+    inputs: null,
+    outputs: null,
+    tView: null,
+    next: null,
+    prev: null,
+    projectionNext: null,
+    child: null,
+    parent: tParent,
+    projection: null,
+    styles: null,
+    stylesWithoutHost: null,
+    residualStyles: void 0,
+    classes: null,
+    classesWithoutHost: null,
+    residualClasses: void 0,
+    classBindings: 0,
+    styleBindings: 0
+  };
+  if (ngDevMode) {
+    Object.seal(tNode);
+  }
+  return tNode;
 }
 function addTNodeAndUpdateInsertBeforeIndex(previousTNodes, newTNode) {
   ngDevMode && assertEqual(newTNode.insertBeforeIndex, null, "We expect that insertBeforeIndex is not set");
@@ -15699,9 +15702,9 @@ var ComponentFactory = class extends ComponentFactory$1 {
       }
       const rootTView = createTView(0, null, null, 1, 0, null, null, null, null, null, null);
       const rootLView = createLView(null, rootTView, null, rootFlags, null, null, environment2, hostRenderer, rootViewInjector, null, hydrationInfo);
+      rootLView[HEADER_OFFSET] = hostRNode;
       enterView(rootLView);
       let component;
-      let tElementNode;
       let componentView = null;
       try {
         const rootComponentDef = this.componentDef;
@@ -15716,23 +15719,22 @@ var ComponentFactory = class extends ComponentFactory$1 {
         } else {
           rootDirectives = [rootComponentDef];
         }
-        const hostTNode = createRootComponentTNode(rootLView, hostRNode);
-        const tAttributes = rootSelectorOrNode ? ["ng-version", "19.1.2"] : (
+        const tAttributes = rootSelectorOrNode ? ["ng-version", "19.1.3"] : (
           // Extract attributes and classes from the first selector only to match VE behavior.
           getRootTAttributesFromSelector(this.componentDef.selectors[0])
         );
+        const hostTNode2 = getOrCreateTNode(rootTView, HEADER_OFFSET, 2, "#host", tAttributes);
         for (const def of rootDirectives) {
-          hostTNode.mergedAttrs = mergeHostAttrs(hostTNode.mergedAttrs, def.hostAttrs);
+          hostTNode2.mergedAttrs = mergeHostAttrs(hostTNode2.mergedAttrs, def.hostAttrs);
         }
-        hostTNode.mergedAttrs = mergeHostAttrs(hostTNode.mergedAttrs, tAttributes);
-        computeStaticStyling(hostTNode, hostTNode.mergedAttrs, true);
+        hostTNode2.mergedAttrs = mergeHostAttrs(hostTNode2.mergedAttrs, tAttributes);
+        computeStaticStyling(hostTNode2, hostTNode2.mergedAttrs, true);
         if (hostRNode) {
-          setupStaticAttributes(hostRenderer, hostRNode, hostTNode);
+          setupStaticAttributes(hostRenderer, hostRNode, hostTNode2);
         }
-        componentView = createRootComponentView(hostTNode, hostRNode, rootComponentDef, rootDirectives, rootLView, environment2);
-        tElementNode = getTNode(rootTView, HEADER_OFFSET);
+        componentView = createRootComponentView(hostTNode2, hostRNode, rootComponentDef, rootDirectives, rootLView, environment2);
         if (projectableNodes !== void 0) {
-          projectNodes(hostTNode, this.ngContentSelectors, projectableNodes);
+          projectNodes(hostTNode2, this.ngContentSelectors, projectableNodes);
         }
         component = createRootComponent(componentView, rootComponentDef, rootDirectives, hostDirectiveDefs, rootLView, [LifecycleHooksFeature]);
         renderView(rootTView, rootLView, null);
@@ -15745,7 +15747,8 @@ var ComponentFactory = class extends ComponentFactory$1 {
       } finally {
         leaveView();
       }
-      return new ComponentRef(this.componentType, component, createElementRef(tElementNode, rootLView), rootLView, tElementNode);
+      const hostTNode = getTNode(rootTView, HEADER_OFFSET);
+      return new ComponentRef(this.componentType, component, createElementRef(hostTNode, rootLView), rootLView, hostTNode);
     } finally {
       setActiveConsumer(prevConsumer);
     }
@@ -15810,13 +15813,6 @@ var ComponentRef = class extends ComponentRef$1 {
     this.hostView.onDestroy(callback);
   }
 };
-function createRootComponentTNode(lView, rNode) {
-  const tView = lView[TVIEW];
-  const index7 = HEADER_OFFSET;
-  ngDevMode && assertIndexInRange(lView, index7);
-  lView[index7] = rNode;
-  return getOrCreateTNode(tView, index7, 2, "#host", null);
-}
 function createRootComponentView(tNode, hostRNode, rootComponentDef, rootDirectives, rootView, environment2) {
   const tView = rootView[TVIEW];
   let hydrationInfo = null;
@@ -17101,7 +17097,7 @@ function getComponentId(componentDef) {
   }
   hash += 2147483647 + 1;
   const compId = "c" + hash;
-  if (typeof ngDevMode === "undefined" || ngDevMode) {
+  if ((typeof ngDevMode === "undefined" || ngDevMode) && true) {
     if (GENERATED_COMP_IDS.has(compId)) {
       const previousCompDefType = GENERATED_COMP_IDS.get(compId);
       if (previousCompDefType !== componentDef.type) {
@@ -24137,36 +24133,59 @@ function \u0275setClassDebugInfo(type, debugInfo) {
 }
 function \u0275\u0275replaceMetadata(type, applyMetadata, namespaces, locals) {
   ngDevMode && assertComponentDef(type);
-  const oldDef = getComponentDef(type);
+  const currentDef = getComponentDef(type);
   applyMetadata.apply(null, [type, namespaces, ...locals]);
+  const {
+    newDef,
+    oldDef
+  } = mergeWithExistingDefinition(currentDef, getComponentDef(type));
+  type[NG_COMP_DEF] = newDef;
   if (oldDef.tView) {
     const trackedViews = getTrackedLViews().values();
     for (const root of trackedViews) {
       if (root[FLAGS] & 512 && root[PARENT] === null) {
-        recreateMatchingLViews(oldDef, root);
+        recreateMatchingLViews(newDef, oldDef, root);
       }
     }
   }
 }
-function recreateMatchingLViews(oldDef, rootLView) {
+function mergeWithExistingDefinition(currentDef, newDef) {
+  const clone = __spreadValues({}, currentDef);
+  const replacement = Object.assign(currentDef, newDef, {
+    // We need to keep the existing directive and pipe defs, because they can get patched on
+    // by a call to `setComponentScope` from a module file. That call won't make it into the
+    // HMR replacement function, because it lives in an entirely different file.
+    directiveDefs: clone.directiveDefs,
+    pipeDefs: clone.pipeDefs,
+    // Preserve the old `setInput` function, because it has some state.
+    // This is fine, because the component instance is preserved as well.
+    setInput: clone.setInput
+  });
+  ngDevMode && assertEqual(replacement, currentDef, "Expected definition to be merged in place");
+  return {
+    newDef: replacement,
+    oldDef: clone
+  };
+}
+function recreateMatchingLViews(newDef, oldDef, rootLView) {
   ngDevMode && assertDefined(oldDef.tView, "Expected a component definition that has been instantiated at least once");
   const tView = rootLView[TVIEW];
   if (tView === oldDef.tView) {
     ngDevMode && assertComponentDef(oldDef.type);
-    recreateLView(getComponentDef(oldDef.type), oldDef, rootLView);
+    recreateLView(newDef, oldDef, rootLView);
     return;
   }
   for (let i3 = HEADER_OFFSET; i3 < tView.bindingStartIndex; i3++) {
     const current = rootLView[i3];
     if (isLContainer(current)) {
       if (isLView(current[HOST])) {
-        recreateMatchingLViews(oldDef, current[HOST]);
+        recreateMatchingLViews(newDef, oldDef, current[HOST]);
       }
       for (let j4 = CONTAINER_HEADER_OFFSET; j4 < current.length; j4++) {
-        recreateMatchingLViews(oldDef, current[j4]);
+        recreateMatchingLViews(newDef, oldDef, current[j4]);
       }
     } else if (isLView(current)) {
-      recreateMatchingLViews(oldDef, current);
+      recreateMatchingLViews(newDef, oldDef, current);
     }
   }
 }
@@ -25362,7 +25381,7 @@ var Version = class {
     this.patch = parts.slice(2).join(".");
   }
 };
-var VERSION = new Version("19.1.2");
+var VERSION = new Version("19.1.3");
 var ModuleWithComponentFactories = class {
   ngModuleFactory;
   componentFactories;
@@ -36019,6 +36038,30 @@ var ShadowCss = class {
    * .foo<scopeName> .bar { ... }
    */
   _convertColonHostContext(cssText) {
+    const length = cssText.length;
+    let parens = 0;
+    let prev = 0;
+    let result = "";
+    for (let i3 = 0; i3 < length; i3++) {
+      const char = cssText[i3];
+      if (char === "," && parens === 0) {
+        result += this._convertColonHostContextInSelectorPart(cssText.slice(prev, i3)) + ",";
+        prev = i3 + 1;
+        continue;
+      }
+      if (i3 === length - 1) {
+        result += this._convertColonHostContextInSelectorPart(cssText.slice(prev));
+        break;
+      }
+      if (char === "(") {
+        parens++;
+      } else if (char === ")") {
+        parens--;
+      }
+    }
+    return result;
+  }
+  _convertColonHostContextInSelectorPart(cssText) {
     return cssText.replace(_cssColonHostContextReGlobal, (selectorText, pseudoPrefix) => {
       const contextSelectorGroups = [[]];
       let match2;
@@ -36300,10 +36343,11 @@ var _cssContentRuleRe = /(polyfill-rule)[^}]*(content:[\s]*(['"])(.*?)\3)[;\s]*[
 var _cssContentUnscopedRuleRe = /(polyfill-unscoped-rule)[^}]*(content:[\s]*(['"])(.*?)\3)[;\s]*[^}]*}/gim;
 var _polyfillHost = "-shadowcsshost";
 var _polyfillHostContext = "-shadowcsscontext";
-var _parenSuffix = "(?:\\(((?:\\([^)(]*\\)|[^)(]*)+?)\\))?([^,{]*)";
-var _cssColonHostRe = new RegExp(_polyfillHost + _parenSuffix, "gim");
-var _cssColonHostContextReGlobal = new RegExp(_cssScopedPseudoFunctionPrefix + "(" + _polyfillHostContext + _parenSuffix + ")", "gim");
-var _cssColonHostContextRe = new RegExp(_polyfillHostContext + _parenSuffix, "im");
+var _parenSuffix = "(?:\\(((?:\\([^)(]*\\)|[^)(]*)+?)\\))";
+var _cssColonHostRe = new RegExp(_polyfillHost + _parenSuffix + "?([^,{]*)", "gim");
+var _hostContextPattern = _polyfillHostContext + _parenSuffix + "?([^{]*)";
+var _cssColonHostContextReGlobal = new RegExp(`${_cssScopedPseudoFunctionPrefix}(${_hostContextPattern})`, "gim");
+var _cssColonHostContextRe = new RegExp(_hostContextPattern, "im");
 var _polyfillHostNoCombinator = _polyfillHost + "-no-combinator";
 var _polyfillHostNoCombinatorOutsidePseudoFunction = new RegExp(`${_polyfillHostNoCombinator}(?![^(]*\\))`, "g");
 var _polyfillHostNoCombinatorRe = /-shadowcsshost-no-combinator([^\s,]*)/;
@@ -54827,7 +54871,7 @@ function publishFacade(global) {
   const ng = global.ng || (global.ng = {});
   ng.\u0275compilerFacade = new CompilerFacadeImpl();
 }
-var VERSION2 = new Version2("19.1.2");
+var VERSION2 = new Version2("19.1.3");
 var CompilerConfig = class {
   defaultEncapsulation;
   preserveWhitespaces;
@@ -54891,7 +54935,7 @@ var DomAdapter = class {
 var PlatformNavigation = class _PlatformNavigation {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PlatformNavigation,
     deps: [],
@@ -54899,7 +54943,7 @@ var PlatformNavigation = class _PlatformNavigation {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PlatformNavigation,
     providedIn: "platform",
@@ -54908,7 +54952,7 @@ var PlatformNavigation = class _PlatformNavigation {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PlatformNavigation,
   decorators: [{
@@ -54926,7 +54970,7 @@ var PlatformLocation = class _PlatformLocation {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PlatformLocation,
     deps: [],
@@ -54934,7 +54978,7 @@ var PlatformLocation = class _PlatformLocation {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PlatformLocation,
     providedIn: "platform",
@@ -54943,7 +54987,7 @@ var PlatformLocation = class _PlatformLocation {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PlatformLocation,
   decorators: [{
@@ -55021,7 +55065,7 @@ var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLoc
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserPlatformLocation,
     deps: [],
@@ -55029,7 +55073,7 @@ var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLoc
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserPlatformLocation,
     providedIn: "platform",
@@ -55038,7 +55082,7 @@ var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLoc
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BrowserPlatformLocation,
   decorators: [{
@@ -55087,7 +55131,7 @@ var LocationStrategy = class _LocationStrategy {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LocationStrategy,
     deps: [],
@@ -55095,7 +55139,7 @@ var LocationStrategy = class _LocationStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LocationStrategy,
     providedIn: "root",
@@ -55104,7 +55148,7 @@ var LocationStrategy = class _LocationStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: LocationStrategy,
   decorators: [{
@@ -55167,7 +55211,7 @@ var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy 
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PathLocationStrategy,
     deps: [{
@@ -55180,7 +55224,7 @@ var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy 
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PathLocationStrategy,
     providedIn: "root"
@@ -55188,7 +55232,7 @@ var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy 
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PathLocationStrategy,
   decorators: [{
@@ -55268,7 +55312,7 @@ var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy 
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HashLocationStrategy,
     deps: [{
@@ -55281,14 +55325,14 @@ var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy 
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HashLocationStrategy
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HashLocationStrategy,
   decorators: [{
@@ -55520,7 +55564,7 @@ var Location = class _Location {
   static stripTrailingSlash = stripTrailingSlash;
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Location,
     deps: [{
@@ -55530,7 +55574,7 @@ var Location = class _Location {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Location,
     providedIn: "root",
@@ -55539,7 +55583,7 @@ var Location = class _Location {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: Location,
   decorators: [{
@@ -56826,7 +56870,7 @@ function parseIntAutoRadix2(text2) {
 var NgLocalization = class _NgLocalization {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgLocalization,
     deps: [],
@@ -56834,7 +56878,7 @@ var NgLocalization = class _NgLocalization {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgLocalization,
     providedIn: "root",
@@ -56846,7 +56890,7 @@ var NgLocalization = class _NgLocalization {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgLocalization,
   decorators: [{
@@ -56897,7 +56941,7 @@ var NgLocaleLocalization = class _NgLocaleLocalization extends NgLocalization {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgLocaleLocalization,
     deps: [{
@@ -56907,14 +56951,14 @@ var NgLocaleLocalization = class _NgLocaleLocalization extends NgLocalization {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgLocaleLocalization
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgLocaleLocalization,
   decorators: [{
@@ -57046,7 +57090,7 @@ var NgClass = class _NgClass {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgClass,
     deps: [{
@@ -57058,7 +57102,7 @@ var NgClass = class _NgClass {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgClass,
     isStandalone: true,
     selector: "[ngClass]",
@@ -57071,7 +57115,7 @@ var NgClass = class _NgClass {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgClass,
   decorators: [{
@@ -57188,7 +57232,7 @@ var NgComponentOutlet = class _NgComponentOutlet {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgComponentOutlet,
     deps: [{
@@ -57198,7 +57242,7 @@ var NgComponentOutlet = class _NgComponentOutlet {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgComponentOutlet,
     isStandalone: true,
     selector: "[ngComponentOutlet]",
@@ -57217,7 +57261,7 @@ var NgComponentOutlet = class _NgComponentOutlet {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgComponentOutlet,
   decorators: [{
@@ -57408,7 +57452,7 @@ var NgForOf = class _NgForOf {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgForOf,
     deps: [{
@@ -57422,7 +57466,7 @@ var NgForOf = class _NgForOf {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgForOf,
     isStandalone: true,
     selector: "[ngFor][ngForOf]",
@@ -57436,7 +57480,7 @@ var NgForOf = class _NgForOf {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgForOf,
   decorators: [{
@@ -57547,7 +57591,7 @@ var NgIf = class _NgIf {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgIf,
     deps: [{
@@ -57559,7 +57603,7 @@ var NgIf = class _NgIf {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgIf,
     isStandalone: true,
     selector: "[ngIf]",
@@ -57573,7 +57617,7 @@ var NgIf = class _NgIf {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgIf,
   decorators: [{
@@ -57676,7 +57720,7 @@ var NgSwitch = class _NgSwitch {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgSwitch,
     deps: [],
@@ -57684,7 +57728,7 @@ var NgSwitch = class _NgSwitch {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgSwitch,
     isStandalone: true,
     selector: "[ngSwitch]",
@@ -57696,7 +57740,7 @@ var NgSwitch = class _NgSwitch {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgSwitch,
   decorators: [{
@@ -57735,7 +57779,7 @@ var NgSwitchCase = class _NgSwitchCase {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgSwitchCase,
     deps: [{
@@ -57751,7 +57795,7 @@ var NgSwitchCase = class _NgSwitchCase {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgSwitchCase,
     isStandalone: true,
     selector: "[ngSwitchCase]",
@@ -57763,7 +57807,7 @@ var NgSwitchCase = class _NgSwitchCase {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgSwitchCase,
   decorators: [{
@@ -57799,7 +57843,7 @@ var NgSwitchDefault = class _NgSwitchDefault {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgSwitchDefault,
     deps: [{
@@ -57815,7 +57859,7 @@ var NgSwitchDefault = class _NgSwitchDefault {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgSwitchDefault,
     isStandalone: true,
     selector: "[ngSwitchDefault]",
@@ -57824,7 +57868,7 @@ var NgSwitchDefault = class _NgSwitchDefault {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgSwitchDefault,
   decorators: [{
@@ -57879,7 +57923,7 @@ var NgPlural = class _NgPlural {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgPlural,
     deps: [{
@@ -57889,7 +57933,7 @@ var NgPlural = class _NgPlural {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgPlural,
     isStandalone: true,
     selector: "[ngPlural]",
@@ -57901,7 +57945,7 @@ var NgPlural = class _NgPlural {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgPlural,
   decorators: [{
@@ -57928,7 +57972,7 @@ var NgPluralCase = class _NgPluralCase {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgPluralCase,
     deps: [{
@@ -57946,7 +57990,7 @@ var NgPluralCase = class _NgPluralCase {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgPluralCase,
     isStandalone: true,
     selector: "[ngPluralCase]",
@@ -57955,7 +57999,7 @@ var NgPluralCase = class _NgPluralCase {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgPluralCase,
   decorators: [{
@@ -58022,7 +58066,7 @@ var NgStyle = class _NgStyle {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgStyle,
     deps: [{
@@ -58036,7 +58080,7 @@ var NgStyle = class _NgStyle {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgStyle,
     isStandalone: true,
     selector: "[ngStyle]",
@@ -58048,7 +58092,7 @@ var NgStyle = class _NgStyle {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgStyle,
   decorators: [{
@@ -58137,7 +58181,7 @@ var NgTemplateOutlet = class _NgTemplateOutlet {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgTemplateOutlet,
     deps: [{
@@ -58147,7 +58191,7 @@ var NgTemplateOutlet = class _NgTemplateOutlet {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgTemplateOutlet,
     isStandalone: true,
     selector: "[ngTemplateOutlet]",
@@ -58162,7 +58206,7 @@ var NgTemplateOutlet = class _NgTemplateOutlet {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgTemplateOutlet,
   decorators: [{
@@ -58278,7 +58322,7 @@ var AsyncPipe = class _AsyncPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AsyncPipe,
     deps: [{
@@ -58288,7 +58332,7 @@ var AsyncPipe = class _AsyncPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AsyncPipe,
     isStandalone: true,
@@ -58298,7 +58342,7 @@ var AsyncPipe = class _AsyncPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: AsyncPipe,
   decorators: [{
@@ -58322,7 +58366,7 @@ var LowerCasePipe = class _LowerCasePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LowerCasePipe,
     deps: [],
@@ -58330,7 +58374,7 @@ var LowerCasePipe = class _LowerCasePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LowerCasePipe,
     isStandalone: true,
@@ -58339,7 +58383,7 @@ var LowerCasePipe = class _LowerCasePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: LowerCasePipe,
   decorators: [{
@@ -58360,7 +58404,7 @@ var TitleCasePipe = class _TitleCasePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _TitleCasePipe,
     deps: [],
@@ -58368,7 +58412,7 @@ var TitleCasePipe = class _TitleCasePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _TitleCasePipe,
     isStandalone: true,
@@ -58377,7 +58421,7 @@ var TitleCasePipe = class _TitleCasePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: TitleCasePipe,
   decorators: [{
@@ -58397,7 +58441,7 @@ var UpperCasePipe = class _UpperCasePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UpperCasePipe,
     deps: [],
@@ -58405,7 +58449,7 @@ var UpperCasePipe = class _UpperCasePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UpperCasePipe,
     isStandalone: true,
@@ -58414,7 +58458,7 @@ var UpperCasePipe = class _UpperCasePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: UpperCasePipe,
   decorators: [{
@@ -58448,7 +58492,7 @@ var DatePipe = class _DatePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DatePipe,
     deps: [{
@@ -58464,7 +58508,7 @@ var DatePipe = class _DatePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DatePipe,
     isStandalone: true,
@@ -58473,7 +58517,7 @@ var DatePipe = class _DatePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DatePipe,
   decorators: [{
@@ -58529,7 +58573,7 @@ var I18nPluralPipe = class _I18nPluralPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _I18nPluralPipe,
     deps: [{
@@ -58539,7 +58583,7 @@ var I18nPluralPipe = class _I18nPluralPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _I18nPluralPipe,
     isStandalone: true,
@@ -58548,7 +58592,7 @@ var I18nPluralPipe = class _I18nPluralPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: I18nPluralPipe,
   decorators: [{
@@ -58582,7 +58626,7 @@ var I18nSelectPipe = class _I18nSelectPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _I18nSelectPipe,
     deps: [],
@@ -58590,7 +58634,7 @@ var I18nSelectPipe = class _I18nSelectPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _I18nSelectPipe,
     isStandalone: true,
@@ -58599,7 +58643,7 @@ var I18nSelectPipe = class _I18nSelectPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: I18nSelectPipe,
   decorators: [{
@@ -58618,7 +58662,7 @@ var JsonPipe = class _JsonPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonPipe,
     deps: [],
@@ -58626,7 +58670,7 @@ var JsonPipe = class _JsonPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonPipe,
     isStandalone: true,
@@ -58636,7 +58680,7 @@ var JsonPipe = class _JsonPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: JsonPipe,
   decorators: [{
@@ -58684,7 +58728,7 @@ var KeyValuePipe = class _KeyValuePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _KeyValuePipe,
     deps: [{
@@ -58694,7 +58738,7 @@ var KeyValuePipe = class _KeyValuePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _KeyValuePipe,
     isStandalone: true,
@@ -58704,7 +58748,7 @@ var KeyValuePipe = class _KeyValuePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: KeyValuePipe,
   decorators: [{
@@ -58756,7 +58800,7 @@ var DecimalPipe = class _DecimalPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DecimalPipe,
     deps: [{
@@ -58766,7 +58810,7 @@ var DecimalPipe = class _DecimalPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DecimalPipe,
     isStandalone: true,
@@ -58775,7 +58819,7 @@ var DecimalPipe = class _DecimalPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DecimalPipe,
   decorators: [{
@@ -58825,7 +58869,7 @@ var PercentPipe = class _PercentPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PercentPipe,
     deps: [{
@@ -58835,7 +58879,7 @@ var PercentPipe = class _PercentPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PercentPipe,
     isStandalone: true,
@@ -58844,7 +58888,7 @@ var PercentPipe = class _PercentPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PercentPipe,
   decorators: [{
@@ -58894,7 +58938,7 @@ var CurrencyPipe = class _CurrencyPipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CurrencyPipe,
     deps: [{
@@ -58906,7 +58950,7 @@ var CurrencyPipe = class _CurrencyPipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CurrencyPipe,
     isStandalone: true,
@@ -58915,7 +58959,7 @@ var CurrencyPipe = class _CurrencyPipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: CurrencyPipe,
   decorators: [{
@@ -58963,7 +59007,7 @@ var SlicePipe = class _SlicePipe {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SlicePipe,
     deps: [],
@@ -58971,7 +59015,7 @@ var SlicePipe = class _SlicePipe {
   });
   static \u0275pipe = \u0275\u0275ngDeclarePipe({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SlicePipe,
     isStandalone: true,
@@ -58981,7 +59025,7 @@ var SlicePipe = class _SlicePipe {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: SlicePipe,
   decorators: [{
@@ -58996,7 +59040,7 @@ var COMMON_PIPES = [AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe
 var CommonModule = class _CommonModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CommonModule,
     deps: [],
@@ -59004,7 +59048,7 @@ var CommonModule = class _CommonModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CommonModule,
     imports: [NgClass, NgComponentOutlet, NgForOf, NgIf, NgTemplateOutlet, NgStyle, NgSwitch, NgSwitchCase, NgSwitchDefault, NgPlural, NgPluralCase, AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe],
@@ -59012,14 +59056,14 @@ var CommonModule = class _CommonModule {
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CommonModule
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: CommonModule,
   decorators: [{
@@ -59038,7 +59082,7 @@ function isPlatformBrowser(platformId) {
 function isPlatformServer(platformId) {
   return platformId === PLATFORM_SERVER_ID;
 }
-var VERSION3 = new Version("19.1.2");
+var VERSION3 = new Version("19.1.3");
 var ViewportScroller = class _ViewportScroller {
   // De-sugared tree-shakable injection
   // See #23917
@@ -59374,7 +59418,7 @@ var LCPImageObserver = class _LCPImageObserver {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LCPImageObserver,
     deps: [],
@@ -59382,7 +59426,7 @@ var LCPImageObserver = class _LCPImageObserver {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _LCPImageObserver,
     providedIn: "root"
@@ -59390,7 +59434,7 @@ var LCPImageObserver = class _LCPImageObserver {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: LCPImageObserver,
   decorators: [{
@@ -59481,7 +59525,7 @@ var PreconnectLinkChecker = class _PreconnectLinkChecker {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreconnectLinkChecker,
     deps: [],
@@ -59489,7 +59533,7 @@ var PreconnectLinkChecker = class _PreconnectLinkChecker {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreconnectLinkChecker,
     providedIn: "root"
@@ -59497,7 +59541,7 @@ var PreconnectLinkChecker = class _PreconnectLinkChecker {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PreconnectLinkChecker,
   decorators: [{
@@ -59562,7 +59606,7 @@ var PreloadLinkCreator = class _PreloadLinkCreator {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreloadLinkCreator,
     deps: [],
@@ -59570,7 +59614,7 @@ var PreloadLinkCreator = class _PreloadLinkCreator {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreloadLinkCreator,
     providedIn: "root"
@@ -59578,7 +59622,7 @@ var PreloadLinkCreator = class _PreloadLinkCreator {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PreloadLinkCreator,
   decorators: [{
@@ -59952,7 +59996,7 @@ var NgOptimizedImage = class _NgOptimizedImage {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgOptimizedImage,
     deps: [],
@@ -59960,7 +60004,7 @@ var NgOptimizedImage = class _NgOptimizedImage {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "16.1.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgOptimizedImage,
     isStandalone: true,
     selector: "img[ngSrc]",
@@ -59999,7 +60043,7 @@ var NgOptimizedImage = class _NgOptimizedImage {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgOptimizedImage,
   decorators: [{
@@ -61521,7 +61565,7 @@ var HttpClient = class _HttpClient {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClient,
     deps: [{
@@ -61531,14 +61575,14 @@ var HttpClient = class _HttpClient {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClient
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpClient,
   decorators: [{
@@ -61728,7 +61772,7 @@ var FetchBackend = class _FetchBackend {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FetchBackend,
     deps: [],
@@ -61736,14 +61780,14 @@ var FetchBackend = class _FetchBackend {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FetchBackend
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FetchBackend,
   decorators: [{
@@ -61828,7 +61872,7 @@ var HttpInterceptorHandler = class _HttpInterceptorHandler extends HttpHandler {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpInterceptorHandler,
     deps: [{
@@ -61840,14 +61884,14 @@ var HttpInterceptorHandler = class _HttpInterceptorHandler extends HttpHandler {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpInterceptorHandler
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpInterceptorHandler,
   decorators: [{
@@ -61973,7 +62017,7 @@ var JsonpClientBackend = class _JsonpClientBackend {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonpClientBackend,
     deps: [{
@@ -61985,14 +62029,14 @@ var JsonpClientBackend = class _JsonpClientBackend {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonpClientBackend
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: JsonpClientBackend,
   decorators: [{
@@ -62031,7 +62075,7 @@ var JsonpInterceptor = class _JsonpInterceptor {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonpInterceptor,
     deps: [{
@@ -62041,14 +62085,14 @@ var JsonpInterceptor = class _JsonpInterceptor {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _JsonpInterceptor
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: JsonpInterceptor,
   decorators: [{
@@ -62248,7 +62292,7 @@ var HttpXhrBackend = class _HttpXhrBackend {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXhrBackend,
     deps: [{
@@ -62258,14 +62302,14 @@ var HttpXhrBackend = class _HttpXhrBackend {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXhrBackend
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpXhrBackend,
   decorators: [{
@@ -62317,7 +62361,7 @@ var HttpXsrfCookieExtractor = class _HttpXsrfCookieExtractor {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXsrfCookieExtractor,
     deps: [{
@@ -62331,14 +62375,14 @@ var HttpXsrfCookieExtractor = class _HttpXsrfCookieExtractor {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXsrfCookieExtractor
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpXsrfCookieExtractor,
   decorators: [{
@@ -62388,7 +62432,7 @@ var HttpXsrfInterceptor = class _HttpXsrfInterceptor {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXsrfInterceptor,
     deps: [{
@@ -62398,14 +62442,14 @@ var HttpXsrfInterceptor = class _HttpXsrfInterceptor {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpXsrfInterceptor
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpXsrfInterceptor,
   decorators: [{
@@ -62536,7 +62580,7 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientXsrfModule,
     deps: [],
@@ -62544,13 +62588,13 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientXsrfModule
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientXsrfModule,
     providers: [HttpXsrfInterceptor, {
@@ -62571,7 +62615,7 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpClientXsrfModule,
   decorators: [{
@@ -62597,7 +62641,7 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
 var HttpClientModule = class _HttpClientModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientModule,
     deps: [],
@@ -62605,13 +62649,13 @@ var HttpClientModule = class _HttpClientModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientModule
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientModule,
     providers: [provideHttpClient(withInterceptorsFromDi())]
@@ -62619,7 +62663,7 @@ var HttpClientModule = class _HttpClientModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpClientModule,
   decorators: [{
@@ -62636,7 +62680,7 @@ var HttpClientModule = class _HttpClientModule {
 var HttpClientJsonpModule = class _HttpClientJsonpModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientJsonpModule,
     deps: [],
@@ -62644,13 +62688,13 @@ var HttpClientJsonpModule = class _HttpClientJsonpModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientJsonpModule
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HttpClientJsonpModule,
     providers: [withJsonpSupport().\u0275providers]
@@ -62658,7 +62702,7 @@ var HttpClientJsonpModule = class _HttpClientJsonpModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HttpClientJsonpModule,
   decorators: [{
@@ -62793,7 +62837,7 @@ var BrowserXhr = class _BrowserXhr {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserXhr,
     deps: [],
@@ -62801,14 +62845,14 @@ var BrowserXhr = class _BrowserXhr {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserXhr
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BrowserXhr,
   decorators: [{
@@ -62866,7 +62910,7 @@ var EventManager = class _EventManager {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _EventManager,
     deps: [{
@@ -62878,14 +62922,14 @@ var EventManager = class _EventManager {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _EventManager
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: EventManager,
   decorators: [{
@@ -63061,7 +63105,7 @@ var SharedStylesHost = class _SharedStylesHost {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SharedStylesHost,
     deps: [{
@@ -63078,14 +63122,14 @@ var SharedStylesHost = class _SharedStylesHost {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SharedStylesHost
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: SharedStylesHost,
   decorators: [{
@@ -63224,7 +63268,7 @@ var DomRendererFactory2 = class _DomRendererFactory2 {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomRendererFactory2,
     deps: [{
@@ -63251,14 +63295,14 @@ var DomRendererFactory2 = class _DomRendererFactory2 {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomRendererFactory2
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DomRendererFactory2,
   decorators: [{
@@ -63576,7 +63620,7 @@ var DomEventsPlugin = class _DomEventsPlugin extends EventManagerPlugin {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomEventsPlugin,
     deps: [{
@@ -63586,14 +63630,14 @@ var DomEventsPlugin = class _DomEventsPlugin extends EventManagerPlugin {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomEventsPlugin
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DomEventsPlugin,
   decorators: [{
@@ -63753,7 +63797,7 @@ var KeyEventsPlugin = class _KeyEventsPlugin extends EventManagerPlugin {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _KeyEventsPlugin,
     deps: [{
@@ -63763,14 +63807,14 @@ var KeyEventsPlugin = class _KeyEventsPlugin extends EventManagerPlugin {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _KeyEventsPlugin
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: KeyEventsPlugin,
   decorators: [{
@@ -63864,7 +63908,7 @@ var BrowserModule = class _BrowserModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserModule,
     deps: [],
@@ -63872,14 +63916,14 @@ var BrowserModule = class _BrowserModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserModule,
     exports: [CommonModule, ApplicationModule]
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserModule,
     providers: [...BROWSER_MODULE_PROVIDERS, ...TESTABILITY_PROVIDERS],
@@ -63888,7 +63932,7 @@ var BrowserModule = class _BrowserModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BrowserModule,
   decorators: [{
@@ -64022,7 +64066,7 @@ var Meta = class _Meta {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Meta,
     deps: [{
@@ -64032,7 +64076,7 @@ var Meta = class _Meta {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Meta,
     providedIn: "root"
@@ -64040,7 +64084,7 @@ var Meta = class _Meta {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: Meta,
   decorators: [{
@@ -64080,7 +64124,7 @@ var Title = class _Title {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Title,
     deps: [{
@@ -64090,7 +64134,7 @@ var Title = class _Title {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Title,
     providedIn: "root"
@@ -64098,7 +64142,7 @@ var Title = class _Title {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: Title,
   decorators: [{
@@ -64208,7 +64252,7 @@ var HammerGestureConfig = class _HammerGestureConfig {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerGestureConfig,
     deps: [],
@@ -64216,14 +64260,14 @@ var HammerGestureConfig = class _HammerGestureConfig {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerGestureConfig
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HammerGestureConfig,
   decorators: [{
@@ -64309,7 +64353,7 @@ var HammerGesturesPlugin = class _HammerGesturesPlugin extends EventManagerPlugi
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerGesturesPlugin,
     deps: [{
@@ -64326,14 +64370,14 @@ var HammerGesturesPlugin = class _HammerGesturesPlugin extends EventManagerPlugi
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerGesturesPlugin
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HammerGesturesPlugin,
   decorators: [{
@@ -64366,7 +64410,7 @@ var HammerGesturesPlugin = class _HammerGesturesPlugin extends EventManagerPlugi
 var HammerModule = class _HammerModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerModule,
     deps: [],
@@ -64374,13 +64418,13 @@ var HammerModule = class _HammerModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerModule
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HammerModule,
     providers: [{
@@ -64397,7 +64441,7 @@ var HammerModule = class _HammerModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HammerModule,
   decorators: [{
@@ -64419,7 +64463,7 @@ var HammerModule = class _HammerModule {
 var DomSanitizer = class _DomSanitizer {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomSanitizer,
     deps: [],
@@ -64427,7 +64471,7 @@ var DomSanitizer = class _DomSanitizer {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomSanitizer,
     providedIn: "root",
@@ -64436,7 +64480,7 @@ var DomSanitizer = class _DomSanitizer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DomSanitizer,
   decorators: [{
@@ -64524,7 +64568,7 @@ var DomSanitizerImpl = class _DomSanitizerImpl extends DomSanitizer {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomSanitizerImpl,
     deps: [{
@@ -64534,7 +64578,7 @@ var DomSanitizerImpl = class _DomSanitizerImpl extends DomSanitizer {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DomSanitizerImpl,
     providedIn: "root"
@@ -64542,7 +64586,7 @@ var DomSanitizerImpl = class _DomSanitizerImpl extends DomSanitizer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DomSanitizerImpl,
   decorators: [{
@@ -64567,7 +64611,7 @@ var HydrationFeatureKind;
   HydrationFeatureKind2[HydrationFeatureKind2["EventReplay"] = 3] = "EventReplay";
   HydrationFeatureKind2[HydrationFeatureKind2["IncrementalHydration"] = 4] = "IncrementalHydration";
 })(HydrationFeatureKind || (HydrationFeatureKind = {}));
-var VERSION4 = new Version("19.1.2");
+var VERSION4 = new Version("19.1.3");
 
 // node_modules/@angular/platform-browser-dynamic/fesm2022/platform-browser-dynamic.mjs
 var COMPILER_PROVIDERS = [{
@@ -64660,7 +64704,7 @@ var ResourceLoaderImpl = class _ResourceLoaderImpl extends ResourceLoader {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ResourceLoaderImpl,
     deps: null,
@@ -64668,14 +64712,14 @@ var ResourceLoaderImpl = class _ResourceLoaderImpl extends ResourceLoader {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ResourceLoaderImpl
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: ResourceLoaderImpl,
   decorators: [{
@@ -64696,7 +64740,7 @@ var INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS = [INTERNAL_BROWSER_PLATFORM_PRO
   provide: PLATFORM_ID,
   useValue: PLATFORM_BROWSER_ID
 }];
-var VERSION5 = new Version("19.1.2");
+var VERSION5 = new Version("19.1.3");
 var platformBrowserDynamic = createPlatformFactory(platformCoreDynamic, "browserDynamic", INTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS);
 
 // src/app/http-error.interceptor.ts
@@ -64984,7 +65028,7 @@ function mapChildrenIntoArray(segment, fn2) {
 var UrlSerializer = class _UrlSerializer {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UrlSerializer,
     deps: [],
@@ -64992,7 +65036,7 @@ var UrlSerializer = class _UrlSerializer {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UrlSerializer,
     providedIn: "root",
@@ -65001,7 +65045,7 @@ var UrlSerializer = class _UrlSerializer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: UrlSerializer,
   decorators: [{
@@ -66104,7 +66148,7 @@ var ChildrenOutletContexts = class _ChildrenOutletContexts {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ChildrenOutletContexts,
     deps: [{
@@ -66114,7 +66158,7 @@ var ChildrenOutletContexts = class _ChildrenOutletContexts {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ChildrenOutletContexts,
     providedIn: "root"
@@ -66122,7 +66166,7 @@ var ChildrenOutletContexts = class _ChildrenOutletContexts {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: ChildrenOutletContexts,
   decorators: [{
@@ -66646,7 +66690,7 @@ var RouterOutlet = class _RouterOutlet {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterOutlet,
     deps: [],
@@ -66654,7 +66698,7 @@ var RouterOutlet = class _RouterOutlet {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "17.1.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RouterOutlet,
     isStandalone: true,
     selector: "router-outlet",
@@ -66687,7 +66731,7 @@ var RouterOutlet = class _RouterOutlet {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterOutlet,
   decorators: [{
@@ -66802,7 +66846,7 @@ var RoutedComponentInputBinder = class _RoutedComponentInputBinder {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RoutedComponentInputBinder,
     deps: [],
@@ -66810,14 +66854,14 @@ var RoutedComponentInputBinder = class _RoutedComponentInputBinder {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RoutedComponentInputBinder
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RoutedComponentInputBinder,
   decorators: [{
@@ -67964,7 +68008,7 @@ var TitleStrategy = class _TitleStrategy {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _TitleStrategy,
     deps: [],
@@ -67972,7 +68016,7 @@ var TitleStrategy = class _TitleStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _TitleStrategy,
     providedIn: "root",
@@ -67981,7 +68025,7 @@ var TitleStrategy = class _TitleStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: TitleStrategy,
   decorators: [{
@@ -68011,7 +68055,7 @@ var DefaultTitleStrategy = class _DefaultTitleStrategy extends TitleStrategy {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultTitleStrategy,
     deps: [{
@@ -68021,7 +68065,7 @@ var DefaultTitleStrategy = class _DefaultTitleStrategy extends TitleStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultTitleStrategy,
     providedIn: "root"
@@ -68029,7 +68073,7 @@ var DefaultTitleStrategy = class _DefaultTitleStrategy extends TitleStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DefaultTitleStrategy,
   decorators: [{
@@ -68049,7 +68093,7 @@ var ROUTER_CONFIGURATION = new InjectionToken(typeof ngDevMode === "undefined" |
 var \u0275EmptyOutletComponent = class _\u0275EmptyOutletComponent {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275EmptyOutletComponent,
     deps: [],
@@ -68057,7 +68101,7 @@ var \u0275EmptyOutletComponent = class _\u0275EmptyOutletComponent {
   });
   static \u0275cmp = \u0275\u0275ngDeclareComponent({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _\u0275EmptyOutletComponent,
     isStandalone: true,
     selector: "ng-component",
@@ -68077,7 +68121,7 @@ var \u0275EmptyOutletComponent = class _\u0275EmptyOutletComponent {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: \u0275EmptyOutletComponent,
   decorators: [{
@@ -68151,7 +68195,7 @@ var RouterConfigLoader = class _RouterConfigLoader {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterConfigLoader,
     deps: [],
@@ -68159,7 +68203,7 @@ var RouterConfigLoader = class _RouterConfigLoader {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterConfigLoader,
     providedIn: "root"
@@ -68167,7 +68211,7 @@ var RouterConfigLoader = class _RouterConfigLoader {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterConfigLoader,
   decorators: [{
@@ -68218,7 +68262,7 @@ function maybeUnwrapDefaultExport(input2) {
 var UrlHandlingStrategy = class _UrlHandlingStrategy {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UrlHandlingStrategy,
     deps: [],
@@ -68226,7 +68270,7 @@ var UrlHandlingStrategy = class _UrlHandlingStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UrlHandlingStrategy,
     providedIn: "root",
@@ -68235,7 +68279,7 @@ var UrlHandlingStrategy = class _UrlHandlingStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: UrlHandlingStrategy,
   decorators: [{
@@ -68258,7 +68302,7 @@ var DefaultUrlHandlingStrategy = class _DefaultUrlHandlingStrategy {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultUrlHandlingStrategy,
     deps: [],
@@ -68266,7 +68310,7 @@ var DefaultUrlHandlingStrategy = class _DefaultUrlHandlingStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultUrlHandlingStrategy,
     providedIn: "root"
@@ -68274,7 +68318,7 @@ var DefaultUrlHandlingStrategy = class _DefaultUrlHandlingStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DefaultUrlHandlingStrategy,
   decorators: [{
@@ -68688,7 +68732,7 @@ var NavigationTransitions = class _NavigationTransitions {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NavigationTransitions,
     deps: [],
@@ -68696,7 +68740,7 @@ var NavigationTransitions = class _NavigationTransitions {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NavigationTransitions,
     providedIn: "root"
@@ -68704,7 +68748,7 @@ var NavigationTransitions = class _NavigationTransitions {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NavigationTransitions,
   decorators: [{
@@ -68721,7 +68765,7 @@ function isBrowserTriggeredNavigation(source) {
 var RouteReuseStrategy = class _RouteReuseStrategy {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouteReuseStrategy,
     deps: [],
@@ -68729,7 +68773,7 @@ var RouteReuseStrategy = class _RouteReuseStrategy {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouteReuseStrategy,
     providedIn: "root",
@@ -68738,7 +68782,7 @@ var RouteReuseStrategy = class _RouteReuseStrategy {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouteReuseStrategy,
   decorators: [{
@@ -68782,7 +68826,7 @@ var BaseRouteReuseStrategy = class {
 var DefaultRouteReuseStrategy = class _DefaultRouteReuseStrategy extends BaseRouteReuseStrategy {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultRouteReuseStrategy,
     deps: null,
@@ -68790,7 +68834,7 @@ var DefaultRouteReuseStrategy = class _DefaultRouteReuseStrategy extends BaseRou
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultRouteReuseStrategy,
     providedIn: "root"
@@ -68798,7 +68842,7 @@ var DefaultRouteReuseStrategy = class _DefaultRouteReuseStrategy extends BaseRou
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DefaultRouteReuseStrategy,
   decorators: [{
@@ -68811,7 +68855,7 @@ var DefaultRouteReuseStrategy = class _DefaultRouteReuseStrategy extends BaseRou
 var StateManager = class _StateManager {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _StateManager,
     deps: [],
@@ -68819,7 +68863,7 @@ var StateManager = class _StateManager {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _StateManager,
     providedIn: "root",
@@ -68828,7 +68872,7 @@ var StateManager = class _StateManager {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: StateManager,
   decorators: [{
@@ -68981,7 +69025,7 @@ var HistoryStateManager = class _HistoryStateManager extends StateManager {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HistoryStateManager,
     deps: null,
@@ -68989,7 +69033,7 @@ var HistoryStateManager = class _HistoryStateManager extends StateManager {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _HistoryStateManager,
     providedIn: "root"
@@ -68997,7 +69041,7 @@ var HistoryStateManager = class _HistoryStateManager extends StateManager {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: HistoryStateManager,
   decorators: [{
@@ -69483,7 +69527,7 @@ var Router = class _Router {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Router,
     deps: [],
@@ -69491,7 +69535,7 @@ var Router = class _Router {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _Router,
     providedIn: "root"
@@ -69499,7 +69543,7 @@ var Router = class _Router {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: Router,
   decorators: [{
@@ -69744,7 +69788,7 @@ var RouterLink = class _RouterLink {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterLink,
     deps: [{
@@ -69765,7 +69809,7 @@ var RouterLink = class _RouterLink {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "16.1.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RouterLink,
     isStandalone: true,
     selector: "[routerLink]",
@@ -69796,7 +69840,7 @@ var RouterLink = class _RouterLink {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterLink,
   decorators: [{
@@ -70003,7 +70047,7 @@ var RouterLinkActive = class _RouterLinkActive {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterLinkActive,
     deps: [{
@@ -70022,7 +70066,7 @@ var RouterLinkActive = class _RouterLinkActive {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RouterLinkActive,
     isStandalone: true,
     selector: "[routerLinkActive]",
@@ -70046,7 +70090,7 @@ var RouterLinkActive = class _RouterLinkActive {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterLinkActive,
   decorators: [{
@@ -70102,7 +70146,7 @@ var PreloadAllModules = class _PreloadAllModules {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreloadAllModules,
     deps: [],
@@ -70110,7 +70154,7 @@ var PreloadAllModules = class _PreloadAllModules {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PreloadAllModules,
     providedIn: "root"
@@ -70118,7 +70162,7 @@ var PreloadAllModules = class _PreloadAllModules {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PreloadAllModules,
   decorators: [{
@@ -70134,7 +70178,7 @@ var NoPreloading = class _NoPreloading {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoPreloading,
     deps: [],
@@ -70142,7 +70186,7 @@ var NoPreloading = class _NoPreloading {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoPreloading,
     providedIn: "root"
@@ -70150,7 +70194,7 @@ var NoPreloading = class _NoPreloading {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NoPreloading,
   decorators: [{
@@ -70228,7 +70272,7 @@ var RouterPreloader = class _RouterPreloader {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterPreloader,
     deps: [{
@@ -70246,7 +70290,7 @@ var RouterPreloader = class _RouterPreloader {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterPreloader,
     providedIn: "root"
@@ -70254,7 +70298,7 @@ var RouterPreloader = class _RouterPreloader {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterPreloader,
   decorators: [{
@@ -70355,7 +70399,7 @@ var RouterScroller = class _RouterScroller {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterScroller,
     deps: "invalid",
@@ -70363,14 +70407,14 @@ var RouterScroller = class _RouterScroller {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterScroller
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterScroller,
   decorators: [{
@@ -70629,7 +70673,7 @@ var RouterModule = class _RouterModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterModule,
     deps: [],
@@ -70637,7 +70681,7 @@ var RouterModule = class _RouterModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterModule,
     imports: [RouterOutlet, RouterLink, RouterLinkActive, \u0275EmptyOutletComponent],
@@ -70645,14 +70689,14 @@ var RouterModule = class _RouterModule {
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RouterModule
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RouterModule,
   decorators: [{
@@ -70717,7 +70761,7 @@ function provideRouterInitializer() {
     }
   ];
 }
-var VERSION6 = new Version("19.1.2");
+var VERSION6 = new Version("19.1.3");
 function getLoadedRoutes(route) {
   return route._loadedRoutes;
 }
@@ -70744,7 +70788,7 @@ var AppComponent = class AppComponent2 {
       });
     });
     router.events.pipe(filter((event2) => event2 instanceof NavigationEnd)).subscribe((event2) => {
-      this.isHomePage = event2.url === "/";
+      this.isHomePage = event2.urlAfterRedirects === "/";
     });
   }
   // collect that title data properties from all child routes
@@ -70781,10 +70825,10 @@ var navigation_component_default = `
     <mat-nav-list class="nav-list">
       <a mat-list-item routerLink="/about" (click)="sidenav.close()">Community Information</a>
       <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
-      <a mat-list-item routerLink="/announcements" (click)="sidenav.close()">Announcements</a>
+      <a mat-list-item routerLink="/events" (click)="sidenav.close()">Community Events</a>
       <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
       <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Contact Us</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Board Members</a>
       <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
     </mat-nav-list>
   </mat-sidenav>
@@ -70804,15 +70848,15 @@ var navigation_component_default = `
         <li [ngClass]="route === '/amenities' ? 'active' : ''">
           <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
         </li>
-        <li [ngClass]="route === '/announcements' ? 'active' : ''">
-          <a routerLink="/announcements" class="black-text text-darken-3">Announcements</a>
+        <li [ngClass]="route === '/events' ? 'active' : ''">
+          <a routerLink="/events" class="black-text text-darken-3">Community Events</a>
         </li>
         <li [ngClass]="route === '/documents' ? 'active' : ''">
           <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
         </li>
         <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
         <li [ngClass]="route === '/contact' ? 'active' : ''">
-          <a routerLink="/contact" class="black-text text-darken-3">Contact Us</a>
+          <a routerLink="/contact" class="black-text text-darken-3">Board Members</a>
         </li>
         <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
       </ul>
@@ -70822,7 +70866,10 @@ var navigation_component_default = `
     <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin">
       <mat-icon>account_circle</mat-icon>
     </button>
-    <mat-menu #userMenu="matMenu">
+    <mat-menu  #userMenu="matMenu">
+      <button mat-menu-item (click)="openAdmin()">
+        <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+      </button>
       <button mat-menu-item (click)="logout()">
         <mat-icon>logout</mat-icon> Logout
       </button>
@@ -70832,7 +70879,7 @@ var navigation_component_default = `
 <div class ='navbar-space'></div>`;
 
 // angular:jit:style:file:src/app/navigation/navigation.component.css
-var navigation_component_default2 = "/* src/app/navigation/navigation.component.css */\nmat-toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;\n  padding: 0 16px;\n}\n.navbar-fixed {\n  position: fixed;\n  width: 100%;\n}\n.navbar-space {\n  height: 60px;\n}\n.menu-container {\n  display: flex;\n  justify-content: center;\n  flex-grow: 1;\n}\nul li.active {\n  box-shadow: inset 0 -5px 0 var(--color-primary);\n}\n.navbar-links {\n  display: flex;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  gap: 10px;\n  line-height: 60px;\n}\n.nav-list {\n  text-align: center;\n  margin: 1rem 0;\n}\n.navbar-links li {\n  margin-right: 20px;\n}\n.navbar-links li a {\n  font-weight: bold;\n  font-size: 1.1rem;\n}\n.navbar-links li.active a {\n  color: var(--color-primary);\n}\nmat-icon-button {\n  margin-left: auto;\n}\n.spacer {\n  flex-grow: 1;\n}\n.sidenav-menu {\n  position: fixed !important;\n  top: 0;\n  left: 0;\n  width: 250px;\n  height: 100vh;\n  z-index: 1000;\n  background: white;\n  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);\n}\n.sidenav-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  background: rgba(0, 0, 0, 0.5);\n  z-index: 999;\n  display: none;\n}\n.sidenav-menu.open + .sidenav-overlay {\n  display: block;\n}\nmat-toolbar {\n  z-index: 10;\n}\n.content-shift {\n  margin-left: 250px;\n}\n.mobile-menu-btn {\n  display: none;\n}\n@media (max-width: 993px) {\n  .menu-container {\n    display: none;\n  }\n  .mobile-menu-btn {\n    display: block;\n  }\n}\n";
+var navigation_component_default2 = "/* src/app/navigation/navigation.component.css */\nmat-toolbar {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;\n  padding: 0 16px;\n}\n::ng-deep .mat-mdc-menu-content {\n  background-color: white !important;\n  color: black;\n}\n.navbar-fixed {\n  position: fixed;\n  width: 100%;\n}\n.navbar-space {\n  height: 60px;\n}\n.menu-container {\n  display: flex;\n  justify-content: center;\n  flex-grow: 1;\n}\nul li.active {\n  box-shadow: inset 0 -5px 0 var(--color-primary);\n}\n.navbar-links {\n  display: flex;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  gap: 10px;\n  line-height: 60px;\n}\n.nav-list {\n  text-align: center;\n  margin: 1rem 0;\n}\n.navbar-links li {\n  margin-right: 20px;\n}\n.navbar-links li a {\n  font-weight: bold;\n  font-size: 1.1rem;\n}\n.navbar-links li.active a {\n  color: var(--color-primary);\n}\nmat-icon-button {\n  margin-left: auto;\n}\n.spacer {\n  flex-grow: 1;\n}\n.sidenav-menu {\n  position: fixed !important;\n  top: 0;\n  left: 0;\n  width: 250px;\n  height: 100vh;\n  z-index: 1000;\n  background: white;\n  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);\n}\n.sidenav-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100vw;\n  height: 100vh;\n  background: rgba(0, 0, 0, 0.5);\n  z-index: 999;\n  display: none;\n}\n.sidenav-menu.open + .sidenav-overlay {\n  display: block;\n}\nmat-toolbar {\n  z-index: 10;\n}\n.content-shift {\n  margin-left: 250px;\n}\n.mobile-menu-btn {\n  display: none;\n}\n@media (max-width: 993px) {\n  .menu-container {\n    display: none;\n  }\n  .mobile-menu-btn {\n    display: block;\n  }\n}\n";
 
 // src/environments/environment.ts
 var environment = {
@@ -70933,6 +70980,9 @@ var NavigationComponent = class NavigationComponent2 {
   logout() {
     this.loginService.logout();
     window.location.reload();
+  }
+  openAdmin() {
+    this.router.navigate(["/admin"]);
   }
   static ctorParameters = () => [
     { type: Location },
@@ -72493,7 +72543,7 @@ DocumentsComponent = __decorate6([
 ], DocumentsComponent);
 
 // angular:jit:template:file:src/app/contact/contact.component.html
-var contact_component_default = '<div class="outer">\n  <div class="container">\n  <div class="row">\n    <div class="col s12 animated bounceInLeft">\n      <div class="">\n        <h1 class="white-text text-darken-3"><b>Contact Us</b></h1>\n      </div>\n    </div>\n  </div>\n  <div class="row">\n    <a\n      *ngFor="let staticPage of staticPages; let i = index"\n      href="{{ staticPage.href }}"\n      target="_blank"\n      class="\n        card-link\n        col\n        offset-s1\n        s10\n        m5\n        offset-m1\n        l3\n        offset-l1\n        animated\n        zoomIn\n        faster\n      "\n    >\n\n      <div class="card-panel light-blue lighten-5">\n        <i\n          class="fa fa-{{ staticPage.icon }} fa-3x light-blue-text text-darken-3"\n          aria-hidden="true"\n        >\n        </i>\n        <p class="center-align flow-text light-blue-text text-darken-3 truncate">\n          <b>{{ staticPage.name }}</b>\n          <br>\n          {{ staticPage.title }}\n        </p>\n      </div>\n    </a>\n  </div>\n\n<div class="row">\n  <a\n          *ngFor="let contact of contacts; let i = index"\n          href="{{ contact.href }}"\n          target="_blank"\n          class="\n        card-link\n        col\n        offset-s1\n        s10\n        m5\n        offset-m1\n        l3\n        offset-l1\n        animated\n        zoomIn\n        faster\n      "\n          [title]="contact.email"\n  >\n    <div class="card-panel light-blue lighten-5">\n      <i\n              class="fa fa-{{ contact.icon }} fa-3x light-blue-text text-darken-3"\n              aria-hidden="true"\n      >\n      </i>\n      <p class="center-align flow-text light-blue-text text-darken-3 truncate">\n        <b>{{ contact.name }}</b>\n        <br>\n        {{ contact.title }}\n      </p>\n    </div>\n  </a>\n</div>\n</div>\n</div>\n';
+var contact_component_default = '<div class="outer">\n  <div class="container">\n  <div class="row">\n    <div class="col s12 animated bounceInLeft">\n      <div class="">\n        <h1 class="white-text text-darken-3"><b>Board Members</b></h1>\n      </div>\n    </div>\n  </div>\n  <div class="row">\n    <a\n      *ngFor="let staticPage of staticPages; let i = index"\n      href="{{ staticPage.href }}"\n      target="_blank"\n      class="\n        card-link\n        col\n        offset-s1\n        s10\n        m5\n        offset-m1\n        l3\n        offset-l1\n        animated\n        zoomIn\n        faster\n      "\n    >\n\n      <div class="card-panel light-blue lighten-5">\n        <i\n          class="fa fa-{{ staticPage.icon }} fa-3x light-blue-text text-darken-3"\n          aria-hidden="true"\n        >\n        </i>\n        <p class="center-align flow-text light-blue-text text-darken-3 truncate">\n          <b>{{ staticPage.name }}</b>\n          <br>\n          {{ staticPage.title }}\n        </p>\n      </div>\n    </a>\n  </div>\n\n<div class="row">\n  <a\n          *ngFor="let contact of contacts; let i = index"\n          href="{{ contact.href }}"\n          target="_blank"\n          class="\n        card-link\n        col\n        offset-s1\n        s10\n        m5\n        offset-m1\n        l3\n        offset-l1\n        animated\n        zoomIn\n        faster\n      "\n          [title]="contact.email"\n  >\n    <div class="card-panel light-blue lighten-5">\n      <i\n              class="fa fa-{{ contact.icon }} fa-3x light-blue-text text-darken-3"\n              aria-hidden="true"\n      >\n      </i>\n      <p class="center-align flow-text light-blue-text text-darken-3 truncate">\n        <b>{{ contact.name }}</b>\n        <br>\n        {{ contact.title }}\n      </p>\n    </div>\n  </a>\n</div>\n</div>\n</div>\n';
 
 // angular:jit:style:file:src/app/contact/contact.component.css
 var contact_component_default2 = "/* src/app/contact/contact.component.css */\n.outer {\n  height: 100vh;\n  background-color: #1a2023;\n}\n.centered {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.rsp {\n  min-width: 100%;\n  z-index: -1;\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n}\n.card-panel {\n  transition: transform 300ms ease-in-out !important;\n  margin: 0;\n  border-radius: 0;\n  padding: 2rem 2rem 0rem 2rem;\n  display: flex;\n  flex-direction: column;\n}\n.card-panel i {\n  text-align: center;\n}\n.card-link {\n  background-color: var(--color-primary) !important;\n  border-radius: 0;\n  padding: 0;\n  margin: 1rem 0;\n}\n@media (min-width: 1024px) {\n  .card-panel:hover {\n    transform: translate(0.75rem, 0.75rem);\n  }\n}\n";
@@ -72709,7 +72759,7 @@ var home_component_default = `<div class="animated fadeIn outer">
         </div>
 
       <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/announcements" routerlink="/announcements">Announcements</a>
+        <a class="sublink white-text text-darken-3" href="/events" routerlink="/events">Community Events</a>
       </div>
 
       <div class="flow-text">
@@ -72721,7 +72771,7 @@ var home_component_default = `<div class="animated fadeIn outer">
       </div>
 
       <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/contact" routerlink="/contact">Contact Us</a>
+        <a class="sublink white-text text-darken-3" href="/contact" routerlink="/contact">Board Members</a>
       </div>
 
       <div class="flow-text">
@@ -72815,7 +72865,7 @@ var BaseControlValueAccessor = class _BaseControlValueAccessor {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BaseControlValueAccessor,
     deps: [{
@@ -72827,7 +72877,7 @@ var BaseControlValueAccessor = class _BaseControlValueAccessor {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _BaseControlValueAccessor,
     isStandalone: true,
     ngImport: core_exports
@@ -72835,7 +72885,7 @@ var BaseControlValueAccessor = class _BaseControlValueAccessor {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BaseControlValueAccessor,
   decorators: [{
@@ -72850,7 +72900,7 @@ var BaseControlValueAccessor = class _BaseControlValueAccessor {
 var BuiltInControlValueAccessor = class _BuiltInControlValueAccessor extends BaseControlValueAccessor {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BuiltInControlValueAccessor,
     deps: null,
@@ -72858,7 +72908,7 @@ var BuiltInControlValueAccessor = class _BuiltInControlValueAccessor extends Bas
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _BuiltInControlValueAccessor,
     isStandalone: true,
     usesInheritance: true,
@@ -72867,7 +72917,7 @@ var BuiltInControlValueAccessor = class _BuiltInControlValueAccessor extends Bas
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BuiltInControlValueAccessor,
   decorators: [{
@@ -72890,7 +72940,7 @@ var CheckboxControlValueAccessor = class _CheckboxControlValueAccessor extends B
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CheckboxControlValueAccessor,
     deps: null,
@@ -72898,7 +72948,7 @@ var CheckboxControlValueAccessor = class _CheckboxControlValueAccessor extends B
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _CheckboxControlValueAccessor,
     isStandalone: false,
     selector: "input[type=checkbox][formControlName],input[type=checkbox][formControl],input[type=checkbox][ngModel]",
@@ -72915,7 +72965,7 @@ var CheckboxControlValueAccessor = class _CheckboxControlValueAccessor extends B
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: CheckboxControlValueAccessor,
   decorators: [{
@@ -72977,7 +73027,7 @@ var DefaultValueAccessor = class _DefaultValueAccessor extends BaseControlValueA
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _DefaultValueAccessor,
     deps: [{
@@ -72992,7 +73042,7 @@ var DefaultValueAccessor = class _DefaultValueAccessor extends BaseControlValueA
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _DefaultValueAccessor,
     isStandalone: false,
     selector: "input:not([type=checkbox])[formControlName],textarea[formControlName],input:not([type=checkbox])[formControl],textarea[formControl],input:not([type=checkbox])[ngModel],textarea[ngModel],[ngDefaultControl]",
@@ -73011,7 +73061,7 @@ var DefaultValueAccessor = class _DefaultValueAccessor extends BaseControlValueA
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: DefaultValueAccessor,
   decorators: [{
@@ -73600,7 +73650,7 @@ var NgControlStatus = class _NgControlStatus extends AbstractControlStatus {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgControlStatus,
     deps: [{
@@ -73611,7 +73661,7 @@ var NgControlStatus = class _NgControlStatus extends AbstractControlStatus {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgControlStatus,
     isStandalone: false,
     selector: "[formControlName],[ngModel],[formControl]",
@@ -73632,7 +73682,7 @@ var NgControlStatus = class _NgControlStatus extends AbstractControlStatus {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgControlStatus,
   decorators: [{
@@ -73656,7 +73706,7 @@ var NgControlStatusGroup = class _NgControlStatusGroup extends AbstractControlSt
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgControlStatusGroup,
     deps: [{
@@ -73668,7 +73718,7 @@ var NgControlStatusGroup = class _NgControlStatusGroup extends AbstractControlSt
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgControlStatusGroup,
     isStandalone: false,
     selector: "[formGroupName],[formArrayName],[ngModelGroup],[formGroup],form:not([ngNoForm]),[ngForm]",
@@ -73690,7 +73740,7 @@ var NgControlStatusGroup = class _NgControlStatusGroup extends AbstractControlSt
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgControlStatusGroup,
   decorators: [{
@@ -75632,7 +75682,7 @@ var NgForm = class _NgForm extends ControlContainer {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgForm,
     deps: [{
@@ -75651,7 +75701,7 @@ var NgForm = class _NgForm extends ControlContainer {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgForm,
     isStandalone: false,
     selector: "form:not([ngNoForm]):not([formGroup]),ng-form,[ngForm]",
@@ -75675,7 +75725,7 @@ var NgForm = class _NgForm extends ControlContainer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgForm,
   decorators: [{
@@ -75887,7 +75937,7 @@ var AbstractFormGroupDirective = class _AbstractFormGroupDirective extends Contr
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AbstractFormGroupDirective,
     deps: null,
@@ -75895,7 +75945,7 @@ var AbstractFormGroupDirective = class _AbstractFormGroupDirective extends Contr
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _AbstractFormGroupDirective,
     isStandalone: false,
     usesInheritance: true,
@@ -75904,7 +75954,7 @@ var AbstractFormGroupDirective = class _AbstractFormGroupDirective extends Contr
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: AbstractFormGroupDirective,
   decorators: [{
@@ -75983,7 +76033,7 @@ var NgModelGroup = class _NgModelGroup extends AbstractFormGroupDirective {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgModelGroup,
     deps: [{
@@ -76003,7 +76053,7 @@ var NgModelGroup = class _NgModelGroup extends AbstractFormGroupDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgModelGroup,
     isStandalone: false,
     selector: "[ngModelGroup]",
@@ -76018,7 +76068,7 @@ var NgModelGroup = class _NgModelGroup extends AbstractFormGroupDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgModelGroup,
   decorators: [{
@@ -76257,7 +76307,7 @@ var NgModel = class _NgModel extends NgControl {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgModel,
     deps: [{
@@ -76287,7 +76337,7 @@ var NgModel = class _NgModel extends NgControl {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgModel,
     isStandalone: false,
     selector: "[ngModel]:not([formControlName]):not([formControl])",
@@ -76309,7 +76359,7 @@ var NgModel = class _NgModel extends NgControl {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgModel,
   decorators: [{
@@ -76400,7 +76450,7 @@ var NgModel = class _NgModel extends NgControl {
 var \u0275NgNoValidate = class _\u0275NgNoValidate {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275NgNoValidate,
     deps: [],
@@ -76408,7 +76458,7 @@ var \u0275NgNoValidate = class _\u0275NgNoValidate {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _\u0275NgNoValidate,
     isStandalone: false,
     selector: "form:not([ngNoForm]):not([ngNativeValidate])",
@@ -76422,7 +76472,7 @@ var \u0275NgNoValidate = class _\u0275NgNoValidate {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: \u0275NgNoValidate,
   decorators: [{
@@ -76461,7 +76511,7 @@ var NumberValueAccessor = class _NumberValueAccessor extends BuiltInControlValue
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NumberValueAccessor,
     deps: null,
@@ -76469,7 +76519,7 @@ var NumberValueAccessor = class _NumberValueAccessor extends BuiltInControlValue
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NumberValueAccessor,
     isStandalone: false,
     selector: "input[type=number][formControlName],input[type=number][formControl],input[type=number][ngModel]",
@@ -76486,7 +76536,7 @@ var NumberValueAccessor = class _NumberValueAccessor extends BuiltInControlValue
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NumberValueAccessor,
   decorators: [{
@@ -76551,7 +76601,7 @@ var RadioControlRegistry = class _RadioControlRegistry {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RadioControlRegistry,
     deps: [],
@@ -76559,7 +76609,7 @@ var RadioControlRegistry = class _RadioControlRegistry {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RadioControlRegistry,
     providedIn: "root"
@@ -76567,7 +76617,7 @@ var RadioControlRegistry = class _RadioControlRegistry {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RadioControlRegistry,
   decorators: [{
@@ -76677,7 +76727,7 @@ var RadioControlValueAccessor = class _RadioControlValueAccessor extends BuiltIn
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RadioControlValueAccessor,
     deps: [{
@@ -76693,7 +76743,7 @@ var RadioControlValueAccessor = class _RadioControlValueAccessor extends BuiltIn
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RadioControlValueAccessor,
     isStandalone: false,
     selector: "input[type=radio][formControlName],input[type=radio][formControl],input[type=radio][ngModel]",
@@ -76715,7 +76765,7 @@ var RadioControlValueAccessor = class _RadioControlValueAccessor extends BuiltIn
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RadioControlValueAccessor,
   decorators: [{
@@ -76775,7 +76825,7 @@ var RangeValueAccessor = class _RangeValueAccessor extends BuiltInControlValueAc
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RangeValueAccessor,
     deps: null,
@@ -76783,7 +76833,7 @@ var RangeValueAccessor = class _RangeValueAccessor extends BuiltInControlValueAc
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RangeValueAccessor,
     isStandalone: false,
     selector: "input[type=range][formControlName],input[type=range][formControl],input[type=range][ngModel]",
@@ -76801,7 +76851,7 @@ var RangeValueAccessor = class _RangeValueAccessor extends BuiltInControlValueAc
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RangeValueAccessor,
   decorators: [{
@@ -76941,7 +76991,7 @@ var FormControlDirective = class _FormControlDirective extends NgControl {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormControlDirective,
     deps: [{
@@ -76967,7 +77017,7 @@ var FormControlDirective = class _FormControlDirective extends NgControl {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _FormControlDirective,
     isStandalone: false,
     selector: "[formControl]",
@@ -76988,7 +77038,7 @@ var FormControlDirective = class _FormControlDirective extends NgControl {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormControlDirective,
   decorators: [{
@@ -77350,7 +77400,7 @@ var FormGroupDirective = class _FormGroupDirective extends ControlContainer {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormGroupDirective,
     deps: [{
@@ -77369,7 +77419,7 @@ var FormGroupDirective = class _FormGroupDirective extends ControlContainer {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _FormGroupDirective,
     isStandalone: false,
     selector: "[formGroup]",
@@ -77394,7 +77444,7 @@ var FormGroupDirective = class _FormGroupDirective extends ControlContainer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormGroupDirective,
   decorators: [{
@@ -77478,7 +77528,7 @@ var FormGroupName = class _FormGroupName extends AbstractFormGroupDirective {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormGroupName,
     deps: [{
@@ -77499,7 +77549,7 @@ var FormGroupName = class _FormGroupName extends AbstractFormGroupDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _FormGroupName,
     isStandalone: false,
     selector: "[formGroupName]",
@@ -77513,7 +77563,7 @@ var FormGroupName = class _FormGroupName extends AbstractFormGroupDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormGroupName,
   decorators: [{
@@ -77631,7 +77681,7 @@ var FormArrayName = class _FormArrayName extends ControlContainer {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormArrayName,
     deps: [{
@@ -77652,7 +77702,7 @@ var FormArrayName = class _FormArrayName extends ControlContainer {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _FormArrayName,
     isStandalone: false,
     selector: "[formArrayName]",
@@ -77666,7 +77716,7 @@ var FormArrayName = class _FormArrayName extends ControlContainer {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormArrayName,
   decorators: [{
@@ -77841,7 +77891,7 @@ var FormControlName = class _FormControlName extends NgControl {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormControlName,
     deps: [{
@@ -77869,7 +77919,7 @@ var FormControlName = class _FormControlName extends NgControl {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _FormControlName,
     isStandalone: false,
     selector: "[formControlName]",
@@ -77889,7 +77939,7 @@ var FormControlName = class _FormControlName extends NgControl {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormControlName,
   decorators: [{
@@ -78037,7 +78087,7 @@ var SelectControlValueAccessor = class _SelectControlValueAccessor extends Built
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SelectControlValueAccessor,
     deps: null,
@@ -78045,7 +78095,7 @@ var SelectControlValueAccessor = class _SelectControlValueAccessor extends Built
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _SelectControlValueAccessor,
     isStandalone: false,
     selector: "select:not([multiple])[formControlName],select:not([multiple])[formControl],select:not([multiple])[ngModel]",
@@ -78065,7 +78115,7 @@ var SelectControlValueAccessor = class _SelectControlValueAccessor extends Built
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: SelectControlValueAccessor,
   decorators: [{
@@ -78135,7 +78185,7 @@ var NgSelectOption = class _NgSelectOption {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NgSelectOption,
     deps: [{
@@ -78151,7 +78201,7 @@ var NgSelectOption = class _NgSelectOption {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _NgSelectOption,
     isStandalone: false,
     selector: "option",
@@ -78164,7 +78214,7 @@ var NgSelectOption = class _NgSelectOption {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NgSelectOption,
   decorators: [{
@@ -78302,7 +78352,7 @@ var SelectMultipleControlValueAccessor = class _SelectMultipleControlValueAccess
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _SelectMultipleControlValueAccessor,
     deps: null,
@@ -78310,7 +78360,7 @@ var SelectMultipleControlValueAccessor = class _SelectMultipleControlValueAccess
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _SelectMultipleControlValueAccessor,
     isStandalone: false,
     selector: "select[multiple][formControlName],select[multiple][formControl],select[multiple][ngModel]",
@@ -78330,7 +78380,7 @@ var SelectMultipleControlValueAccessor = class _SelectMultipleControlValueAccess
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: SelectMultipleControlValueAccessor,
   decorators: [{
@@ -78409,7 +78459,7 @@ var \u0275NgSelectMultipleOption = class _\u0275NgSelectMultipleOption {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275NgSelectMultipleOption,
     deps: [{
@@ -78425,7 +78475,7 @@ var \u0275NgSelectMultipleOption = class _\u0275NgSelectMultipleOption {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _\u0275NgSelectMultipleOption,
     isStandalone: false,
     selector: "option",
@@ -78438,7 +78488,7 @@ var \u0275NgSelectMultipleOption = class _\u0275NgSelectMultipleOption {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: \u0275NgSelectMultipleOption,
   decorators: [{
@@ -78519,7 +78569,7 @@ var AbstractValidatorDirective = class _AbstractValidatorDirective {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AbstractValidatorDirective,
     deps: [],
@@ -78527,7 +78577,7 @@ var AbstractValidatorDirective = class _AbstractValidatorDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _AbstractValidatorDirective,
     isStandalone: true,
     usesOnChanges: true,
@@ -78536,7 +78586,7 @@ var AbstractValidatorDirective = class _AbstractValidatorDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: AbstractValidatorDirective,
   decorators: [{
@@ -78562,7 +78612,7 @@ var MaxValidator = class _MaxValidator extends AbstractValidatorDirective {
   createValidator = (max) => maxValidator(max);
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _MaxValidator,
     deps: null,
@@ -78570,7 +78620,7 @@ var MaxValidator = class _MaxValidator extends AbstractValidatorDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _MaxValidator,
     isStandalone: false,
     selector: "input[type=number][max][formControlName],input[type=number][max][formControl],input[type=number][max][ngModel]",
@@ -78589,7 +78639,7 @@ var MaxValidator = class _MaxValidator extends AbstractValidatorDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: MaxValidator,
   decorators: [{
@@ -78628,7 +78678,7 @@ var MinValidator = class _MinValidator extends AbstractValidatorDirective {
   createValidator = (min) => minValidator(min);
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _MinValidator,
     deps: null,
@@ -78636,7 +78686,7 @@ var MinValidator = class _MinValidator extends AbstractValidatorDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _MinValidator,
     isStandalone: false,
     selector: "input[type=number][min][formControlName],input[type=number][min][formControl],input[type=number][min][ngModel]",
@@ -78655,7 +78705,7 @@ var MinValidator = class _MinValidator extends AbstractValidatorDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: MinValidator,
   decorators: [{
@@ -78703,7 +78753,7 @@ var RequiredValidator = class _RequiredValidator extends AbstractValidatorDirect
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _RequiredValidator,
     deps: null,
@@ -78711,7 +78761,7 @@ var RequiredValidator = class _RequiredValidator extends AbstractValidatorDirect
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _RequiredValidator,
     isStandalone: false,
     selector: ":not([type=checkbox])[required][formControlName],:not([type=checkbox])[required][formControl],:not([type=checkbox])[required][ngModel]",
@@ -78730,7 +78780,7 @@ var RequiredValidator = class _RequiredValidator extends AbstractValidatorDirect
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: RequiredValidator,
   decorators: [{
@@ -78755,7 +78805,7 @@ var CheckboxRequiredValidator = class _CheckboxRequiredValidator extends Require
   createValidator = (input2) => requiredTrueValidator;
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _CheckboxRequiredValidator,
     deps: null,
@@ -78763,7 +78813,7 @@ var CheckboxRequiredValidator = class _CheckboxRequiredValidator extends Require
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _CheckboxRequiredValidator,
     isStandalone: false,
     selector: "input[type=checkbox][required][formControlName],input[type=checkbox][required][formControl],input[type=checkbox][required][ngModel]",
@@ -78779,7 +78829,7 @@ var CheckboxRequiredValidator = class _CheckboxRequiredValidator extends Require
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: CheckboxRequiredValidator,
   decorators: [{
@@ -78817,7 +78867,7 @@ var EmailValidator = class _EmailValidator extends AbstractValidatorDirective {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _EmailValidator,
     deps: null,
@@ -78825,7 +78875,7 @@ var EmailValidator = class _EmailValidator extends AbstractValidatorDirective {
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _EmailValidator,
     isStandalone: false,
     selector: "[email][formControlName],[email][formControl],[email][ngModel]",
@@ -78839,7 +78889,7 @@ var EmailValidator = class _EmailValidator extends AbstractValidatorDirective {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: EmailValidator,
   decorators: [{
@@ -78875,7 +78925,7 @@ var MinLengthValidator = class _MinLengthValidator extends AbstractValidatorDire
   createValidator = (minlength) => minLengthValidator(minlength);
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _MinLengthValidator,
     deps: null,
@@ -78883,7 +78933,7 @@ var MinLengthValidator = class _MinLengthValidator extends AbstractValidatorDire
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _MinLengthValidator,
     isStandalone: false,
     selector: "[minlength][formControlName],[minlength][formControl],[minlength][ngModel]",
@@ -78902,7 +78952,7 @@ var MinLengthValidator = class _MinLengthValidator extends AbstractValidatorDire
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: MinLengthValidator,
   decorators: [{
@@ -78941,7 +78991,7 @@ var MaxLengthValidator = class _MaxLengthValidator extends AbstractValidatorDire
   createValidator = (maxlength) => maxLengthValidator(maxlength);
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _MaxLengthValidator,
     deps: null,
@@ -78949,7 +78999,7 @@ var MaxLengthValidator = class _MaxLengthValidator extends AbstractValidatorDire
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _MaxLengthValidator,
     isStandalone: false,
     selector: "[maxlength][formControlName],[maxlength][formControl],[maxlength][ngModel]",
@@ -78968,7 +79018,7 @@ var MaxLengthValidator = class _MaxLengthValidator extends AbstractValidatorDire
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: MaxLengthValidator,
   decorators: [{
@@ -79008,7 +79058,7 @@ var PatternValidator = class _PatternValidator extends AbstractValidatorDirectiv
   createValidator = (input2) => patternValidator(input2);
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _PatternValidator,
     deps: null,
@@ -79016,7 +79066,7 @@ var PatternValidator = class _PatternValidator extends AbstractValidatorDirectiv
   });
   static \u0275dir = \u0275\u0275ngDeclareDirective({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     type: _PatternValidator,
     isStandalone: false,
     selector: "[pattern][formControlName],[pattern][formControl],[pattern][ngModel]",
@@ -79035,7 +79085,7 @@ var PatternValidator = class _PatternValidator extends AbstractValidatorDirectiv
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: PatternValidator,
   decorators: [{
@@ -79061,7 +79111,7 @@ var REACTIVE_DRIVEN_DIRECTIVES = [FormControlDirective, FormGroupDirective, Form
 var \u0275InternalFormsSharedModule = class _\u0275InternalFormsSharedModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275InternalFormsSharedModule,
     deps: [],
@@ -79069,7 +79119,7 @@ var \u0275InternalFormsSharedModule = class _\u0275InternalFormsSharedModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275InternalFormsSharedModule,
     declarations: [\u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, NumberValueAccessor, RangeValueAccessor, CheckboxControlValueAccessor, SelectControlValueAccessor, SelectMultipleControlValueAccessor, RadioControlValueAccessor, NgControlStatus, NgControlStatusGroup, RequiredValidator, MinLengthValidator, MaxLengthValidator, PatternValidator, CheckboxRequiredValidator, EmailValidator, MinValidator, MaxValidator],
@@ -79077,14 +79127,14 @@ var \u0275InternalFormsSharedModule = class _\u0275InternalFormsSharedModule {
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _\u0275InternalFormsSharedModule
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: \u0275InternalFormsSharedModule,
   decorators: [{
@@ -79646,7 +79696,7 @@ var FormBuilder = class _FormBuilder {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormBuilder,
     deps: [],
@@ -79654,7 +79704,7 @@ var FormBuilder = class _FormBuilder {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormBuilder,
     providedIn: "root"
@@ -79662,7 +79712,7 @@ var FormBuilder = class _FormBuilder {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormBuilder,
   decorators: [{
@@ -79675,7 +79725,7 @@ var FormBuilder = class _FormBuilder {
 var NonNullableFormBuilder = class _NonNullableFormBuilder {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NonNullableFormBuilder,
     deps: [],
@@ -79683,7 +79733,7 @@ var NonNullableFormBuilder = class _NonNullableFormBuilder {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NonNullableFormBuilder,
     providedIn: "root",
@@ -79692,7 +79742,7 @@ var NonNullableFormBuilder = class _NonNullableFormBuilder {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NonNullableFormBuilder,
   decorators: [{
@@ -79721,7 +79771,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UntypedFormBuilder,
     deps: null,
@@ -79729,7 +79779,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _UntypedFormBuilder,
     providedIn: "root"
@@ -79737,7 +79787,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: UntypedFormBuilder,
   decorators: [{
@@ -79747,7 +79797,7 @@ var UntypedFormBuilder = class _UntypedFormBuilder extends FormBuilder {
     }]
   }]
 });
-var VERSION7 = new Version("19.1.2");
+var VERSION7 = new Version("19.1.3");
 var FormsModule = class _FormsModule {
   /**
    * @description
@@ -79768,7 +79818,7 @@ var FormsModule = class _FormsModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormsModule,
     deps: [],
@@ -79776,7 +79826,7 @@ var FormsModule = class _FormsModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormsModule,
     declarations: [NgModel, NgModelGroup, NgForm],
@@ -79784,7 +79834,7 @@ var FormsModule = class _FormsModule {
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _FormsModule,
     imports: [\u0275InternalFormsSharedModule]
@@ -79792,7 +79842,7 @@ var FormsModule = class _FormsModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: FormsModule,
   decorators: [{
@@ -79828,7 +79878,7 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ReactiveFormsModule,
     deps: [],
@@ -79836,7 +79886,7 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ReactiveFormsModule,
     declarations: [FormControlDirective, FormGroupDirective, FormControlName, FormGroupName, FormArrayName],
@@ -79844,7 +79894,7 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _ReactiveFormsModule,
     imports: [\u0275InternalFormsSharedModule]
@@ -79852,7 +79902,7 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: ReactiveFormsModule,
   decorators: [{
@@ -79958,7 +80008,7 @@ function query(selector, animation2, options = null) {
 var AnimationBuilder = class _AnimationBuilder {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AnimationBuilder,
     deps: [],
@@ -79966,7 +80016,7 @@ var AnimationBuilder = class _AnimationBuilder {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _AnimationBuilder,
     providedIn: "root",
@@ -79975,7 +80025,7 @@ var AnimationBuilder = class _AnimationBuilder {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: AnimationBuilder,
   decorators: [{
@@ -80018,7 +80068,7 @@ var BrowserAnimationBuilder = class _BrowserAnimationBuilder extends AnimationBu
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserAnimationBuilder,
     deps: [{
@@ -80030,7 +80080,7 @@ var BrowserAnimationBuilder = class _BrowserAnimationBuilder extends AnimationBu
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserAnimationBuilder,
     providedIn: "root"
@@ -80038,7 +80088,7 @@ var BrowserAnimationBuilder = class _BrowserAnimationBuilder extends AnimationBu
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BrowserAnimationBuilder,
   decorators: [{
@@ -86697,7 +86747,7 @@ var NoopAnimationDriver = class _NoopAnimationDriver {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoopAnimationDriver,
     deps: [],
@@ -86705,14 +86755,14 @@ var NoopAnimationDriver = class _NoopAnimationDriver {
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoopAnimationDriver
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NoopAnimationDriver,
   decorators: [{
@@ -90432,7 +90482,7 @@ var InjectableAnimationEngine = class _InjectableAnimationEngine extends Animati
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _InjectableAnimationEngine,
     deps: [{
@@ -90446,14 +90496,14 @@ var InjectableAnimationEngine = class _InjectableAnimationEngine extends Animati
   });
   static \u0275prov = \u0275\u0275ngDeclareInjectable({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _InjectableAnimationEngine
   });
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: InjectableAnimationEngine,
   decorators: [{
@@ -90527,7 +90577,7 @@ var BrowserAnimationsModule = class _BrowserAnimationsModule {
   }
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserAnimationsModule,
     deps: [],
@@ -90535,14 +90585,14 @@ var BrowserAnimationsModule = class _BrowserAnimationsModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserAnimationsModule,
     exports: [BrowserModule]
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _BrowserAnimationsModule,
     providers: BROWSER_ANIMATIONS_PROVIDERS,
@@ -90551,7 +90601,7 @@ var BrowserAnimationsModule = class _BrowserAnimationsModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: BrowserAnimationsModule,
   decorators: [{
@@ -90565,7 +90615,7 @@ var BrowserAnimationsModule = class _BrowserAnimationsModule {
 var NoopAnimationsModule = class _NoopAnimationsModule {
   static \u0275fac = \u0275\u0275ngDeclareFactory({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoopAnimationsModule,
     deps: [],
@@ -90573,14 +90623,14 @@ var NoopAnimationsModule = class _NoopAnimationsModule {
   });
   static \u0275mod = \u0275\u0275ngDeclareNgModule({
     minVersion: "14.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoopAnimationsModule,
     exports: [BrowserModule]
   });
   static \u0275inj = \u0275\u0275ngDeclareInjector({
     minVersion: "12.0.0",
-    version: "19.1.2",
+    version: "19.1.3",
     ngImport: core_exports,
     type: _NoopAnimationsModule,
     providers: BROWSER_NOOP_ANIMATIONS_PROVIDERS,
@@ -90589,7 +90639,7 @@ var NoopAnimationsModule = class _NoopAnimationsModule {
 };
 \u0275\u0275ngDeclareClassMetadata({
   minVersion: "12.0.0",
-  version: "19.1.2",
+  version: "19.1.3",
   ngImport: core_exports,
   type: NoopAnimationsModule,
   decorators: [{
@@ -123809,85 +123859,11 @@ var NgxExtendedPdfViewerModule = class _NgxExtendedPdfViewerModule {
   }]
 });
 
-// angular:jit:template:file:src/app/announcements/annoncement.component.html
-var annoncement_component_default = `<app-newsletter-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-newsletter-upload>
+// angular:jit:template:file:src/app/events/event.component.html
+var event_component_default = '<div class = "outer">\n    <div class="col s12">\n        <div class="header">\n            <h2 class="white-text center-align fancy-cursive"><b>Community Events</b></h2>\n        </div>\n    </div>\n\n    <div class="inner">\n        <div class = "page-container">\n          <app-calendar class ="calendar"></app-calendar>\n          <div class="events center-align">\n                    <ul>\n                        <li *ngFor="let event of events">\n                            <div class="time">\n                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>\n                            </div>\n                            <div class = "eventTime">\n                                <p>{{generalService.formatTime(event.startDate)}}</p>\n                            </div>\n                            <div class="details">\n                                <h5>{{event.eventName}}</h5>\n                            </div>\n                            <div style="clear: both;"></div>\n                        </li>\n                        <li *ngIf="events.length == 0">\n                          <div class="time">\n<!--                            <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>-->\n                          </div>\n                          <div class = "eventTime">\n<!--                            <p>{{generalService.formatTime(event.startDate)}}</p>-->\n                          </div>\n                          <div class="details">\n                            <h5>No Upcoming Events</h5>\n                          </div>\n                          <div style="clear: both;"></div>\n                        </li>\n                    </ul>\n            </div>\n        </div>\n    </div>\n</div>\n';
 
-<div class = "outer">
-    <div class="col s12">
-        <div class="header">
-            <h2 class="white-text center-align fancy-cursive"><b>Announcements / Events</b></h2>
-        </div>
-    </div>
-
-    <div class="inner">
-        <div class = "page-container">
-            <div class="leftBox">
-                <!-- File Upload -->
-                <div class="form-group center-align" *ngIf="isAdmin">
-                    <input type="file"
-                           style="margin: 10px;"
-                           accept="application/pdf"
-                           id="file"
-                           (change)="handleFileInput($event.target.files)">
-                </div>
-
-                <div class = "pdfView">
-                    <ngx-extended-pdf-viewer [showOpenFileButton]="false"
-                                             [showSidebarButton]="false"
-                                             [showRotateButton]="false"
-                                             [showPropertiesButton]="false"
-                                             [base64Src]="src"
-                                             #pdfViewer>
-
-                    </ngx-extended-pdf-viewer>
-                </div>
-
-                <!-- Newsletter Acordian -->
-                <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects" >
-                    <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="j==0">
-                        <div class="card-container">
-                            <ng-container *ngFor="let document of this.documents; let i = index">
-                                <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showNewsletter(document)" target="_blank">
-                                    <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
-                             <span class="card-title">
-                                <div class="card-title-content">
-                                   <h5 class="project-title">{{ document.friendlyName }}</h5>
-
-                                </div>
-                             </span>
-                                        <p class="project-description flow-text">{{ document.description }}</p>
-                                    </div>
-                                </a>
-                            </ng-container>
-                        </div>
-                    </p-accordionTab>
-                </p-accordion>
-            </div>
-
-            <div class="events">
-                    <ul>
-                        <app-calendar (communityEvents)="this.events"></app-calendar>
-                        <li *ngFor="let event of events">
-                            <div class="time">
-                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
-                            </div>
-                            <div class = "eventTime">
-                                <p>{{generalService.formatTime(event.startDate)}}</p>
-                            </div>
-                            <div class="details">
-                                <h5>{{event.eventName}}</h5>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </li>
-                    </ul>
-            </div>
-        </div>
-    </div>
-</div>
-`;
-
-// angular:jit:style:file:src/app/announcements/annoncement.component.css
-var annoncement_component_default2 = '/* src/app/announcements/annoncement.component.css */\n.centered {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.rsp {\n  min-width: 100%;\n  z-index: -1;\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n}\n.left-align-text {\n  text-align: left;\n}\n.collapsible-body {\n  border-bottom: none;\n  background: var(--color-secondary);\n}\n.collapsible-header {\n  background-color: var(--color-secondary);\n  transition: all 150ms ease-in-out;\n  border-top: 4px solid white !important;\n  border-bottom: 0px solid white !important;\n}\n.collapsible-header:hover {\n  background-color: rgba(2, 119, 189, 0.15);\n  transition: all 150ms ease-in-out;\n}\ntd a {\n  text-decoration: none;\n}\ntd a:hover {\n  text-decoration: underline;\n}\n.container .row {\n  margin-left: 0px !important;\n  margin-right: 0px !important;\n  margin-bottom: 0;\n}\n#description {\n  margin-bottom: 0px !important;\n}\n#downloadButton:hover {\n  transform: translate(0.75rem, 0.75rem);\n}\n#downloadButton {\n  -webkit-box-shadow: none !important;\n  -moz-box-shadow: none !important;\n  box-shadow: none !important;\n  border-radius: 0px;\n  transition: transform 150ms ease-in-out !important;\n  justify-content: center;\n  margin-bottom: 1rem;\n}\n.card-link {\n  background-color: var(--color-primary) !important;\n  border-radius: 0;\n  padding: 0;\n  box-shadow: none;\n}\n.inner {\n  background-color: #ffffffe0;\n  border-radius: 25px;\n  width: 98%;\n  transform: translate(0%, -50px);\n  padding: 10px 10px 30px 30px;\n  box-shadow: 0 0 100px 11px #0006;\n  overflow-wrap: break-word;\n  margin: auto;\n}\n.outer {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n  height: 100vh;\n  overflow: auto;\n  background-color: #1a2023;\n}\n.header {\n  background-image: url("./media/calendar-4ZKFEXIM.png");\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center;\n  padding-top: 25vh;\n  padding-bottom: 12vh;\n  padding-left: 50px;\n  padding-right: 50px;\n  box-shadow: 0 0 8px 3px #000;\n  transform: translateY(-70px);\n}\nh2 {\n  text-shadow: 2px 2px #000000;\n}\nbody {\n  margin: 0;\n  padding: 0;\n}\nsection {\n  width: 100%;\n  height: 100vh;\n}\n.leftBox {\n  width: 50%;\n  height: 100%;\n  float: left;\n  box-sizing: border-box;\n}\n.leftBox .content {\n  padding: 5px;\n  transition: .5s;\n}\n.leftBox .content h1 {\n  margin: 0;\n  padding: 0;\n  font-size: 50px;\n  text-transform: uppercase;\n}\n.leftBox .content p {\n  margin: 10px 0 0;\n  padding: 0;\n}\n.events {\n  position: relative;\n  width: 50%;\n  height: 100%;\n  float: right;\n  box-sizing: border-box;\n}\n.events ul {\n  transform: translateY(-3%);\n  margin: 0;\n  padding: 40px;\n  box-sizing: border-box;\n}\n.events ul li {\n  display: flex;\n  list-style: none;\n  background: #fff;\n  box-sizing: border-box;\n  height: 85px;\n  margin: 10px 0;\n}\n.events ul li .time {\n  position: relative;\n  padding: 20px;\n  background: #262626;\n  box-sizing: border-box;\n  width: 24%;\n  height: 100%;\n  float: left;\n  text-align: center;\n  transition: .5s;\n}\n.events ul li:hover .time {\n  background: #0b6bb8;\n}\n.events ul li .time h2 {\n  position: absolute;\n  margin: 0;\n  padding: 0;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  color: #fff;\n  font-size: 20px;\n  line-height: 30px;\n}\n.events ul li .time h2 span {\n  font-size: 19px;\n}\n.events ul li .details {\n  text-align-last: center;\n  background: #ffffff;\n  box-sizing: border-box;\n  width: 70%;\n  height: 100%;\n  float: left;\n  color: black;\n  font-weight: bolder;\n  padding-top: 15px;\n}\n.events ul li .details h3 {\n  position: relative;\n  margin: 0;\n  padding: 0;\n  font-size: 22px;\n}\n.events ul li .details p {\n  position: relative;\n  margin: 10px 0 0;\n  padding: 0;\n  font-size: 16px;\n}\n.events ul li .details a {\n  display: table;\n  text-decoration: none;\n  padding: 10px 30px;\n  border: 1.5px solid #262626;\n  margin-top: 40px;\n  font-size: 18px;\n  transition: .5s;\n}\n.events ul li .details a:hover {\n  background: #0b6bb8;\n  color: #fff;\n  border-color: #000000;\n}\n@media only screen and (min-width: 993px) {\n  .container {\n    width: 100%;\n  }\n}\n.pdfView {\n  margin-top: 0px;\n  width: 100%;\n  display: inline-block;\n  height: 60%;\n}\n.project-title {\n  font-size: 1.5rem;\n  font-weight: 500;\n  display: flex;\n  place-content: space-between;\n  margin: 0;\n}\n.project-description {\n  font-size: 1rem;\n  font-style: italic;\n}\n.tabs li a {\n  font-weight: bold;\n  transition: 150ms all ease-in-out;\n  color: var(--color-primary) !important;\n  #background-color: var(--color-secondary) !important;\n}\n@media (min-width: 1024px) {\n  .card-content:hover {\n    color: darkblue !important;\n    //background-color: var(--color-primary) !important;\n  }\n}\n.card-content {\n  transition: all 150ms ease-in-out !important;\n  height: 10rem;\n  display: contents;\n  flex-direction: column;\n  justify-content: space-between;\n  width: 200px;\n}\n.card {\n  background-color: var(--color-primary) !important;\n  border-radius: 0;\n  padding: 0;\n  margin-left: 5px;\n  marfin-right: 5px;\n}\n.card-title-content {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.badge {\n  display: flex;\n  align-items: center;\n  min-width: auto;\n}\n.badge i {\n  margin-right: 0.25rem;\n}\nspan.badge.new {\n  border-radius: 20px;\n  padding: 0 0.5rem;\n}\n.tabs li a {\n  font-weight: bold;\n  transition: 150ms all ease-in-out;\n  color: var(--color-primary) !important;\n  #background-color: var(--color-secondary) !important;\n}\nspan.badge.new {\n  text-transform: lowercase;\n}\n.tab a {\n  cursor: pointer;\n}\n.card-panel {\n  background-color: var(--color-secondary);\n}\n.card-panel .not-found-title {\n  text-align: center;\n  font-style: italic;\n  color: var(--color-primary);\n}\n.page-container {\n  display: flow-root;\n}\n.eventTime {\n  writing-mode: vertical-rl;\n  text-orientation: mixed;\n  max-width: 41px;\n  background-color: #0b6bb8;\n  color: white;\n  font-weight: bold;\n  height: 100%;\n  text-align: center;\n  margin-right: -7px;\n  padding-left: 45px;\n}\n@media (max-width: 896px) {\n  .events {\n    width: 100%;\n  }\n  .leftBox {\n    width: 100%;\n  }\n  .page-container {\n    display: flex;\n    flex-direction: column-reverse;\n  }\n  .events ul {\n    padding: 40px 10px 10px 10px;\n  }\n  app-calendar {\n    display: none;\n  }\n}\n';
+// angular:jit:style:file:src/app/events/event.component.css
+var event_component_default2 = '/* src/app/events/event.component.css */\nbody {\n  margin: 0;\n  padding: 0;\n}\n.outer {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n  height: 100vh;\n  overflow: auto;\n  background-color: #1a2023;\n}\n.inner {\n  background-color: #ffffffe0;\n  border-radius: 25px;\n  width: 98%;\n  transform: translate(0%, -50px);\n  padding: 10px 10px 30px 30px;\n  box-shadow: 0 0 100px 11px #0006;\n  overflow-wrap: break-word;\n  margin: auto;\n}\n.header {\n  background-image: url("./media/calendar-4ZKFEXIM.png");\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center;\n  padding-top: 25vh;\n  padding-bottom: 12vh;\n  padding-left: 50px;\n  padding-right: 50px;\n  box-shadow: 0 0 8px 3px #000;\n  transform: translateY(-70px);\n}\nh2 {\n  text-shadow: 2px 2px #000000;\n}\n.events {\n  position: relative;\n  width: 50%;\n  height: 100%;\n  box-sizing: border-box;\n  justify-self: center;\n}\n.page-container {\n  display: flex;\n}\n.calendar {\n  width: 50%;\n}\n.events ul {\n  transform: translateY(-3%);\n  margin: 0;\n  padding: 40px;\n  box-sizing: border-box;\n}\n.events ul li {\n  display: flex;\n  list-style: none;\n  background: #fff;\n  box-sizing: border-box;\n  height: 85px;\n  margin: 10px 0;\n}\n.events ul li .time {\n  position: relative;\n  padding: 20px;\n  background: #262626;\n  box-sizing: border-box;\n  width: 24%;\n  height: 100%;\n  float: left;\n  text-align: center;\n  transition: .5s;\n}\n.events ul li:hover .time {\n  background: #0b6bb8;\n}\n.events ul li .time h2 {\n  position: absolute;\n  margin: 0;\n  padding: 0;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  color: #fff;\n  font-size: 20px;\n  line-height: 30px;\n}\n.events ul li .time h2 span {\n  font-size: 19px;\n}\n.events ul li .details {\n  text-align-last: center;\n  background: #ffffff;\n  box-sizing: border-box;\n  width: 70%;\n  height: 100%;\n  float: left;\n  color: black;\n  font-weight: bolder;\n  padding-top: 15px;\n}\n.events ul li .details h3 {\n  position: relative;\n  margin: 0;\n  padding: 0;\n  font-size: 22px;\n}\n.events ul li .details p {\n  position: relative;\n  margin: 10px 0 0;\n  padding: 0;\n  font-size: 16px;\n}\n.events ul li .details a {\n  display: table;\n  text-decoration: none;\n  padding: 10px 30px;\n  border: 1.5px solid #262626;\n  margin-top: 40px;\n  font-size: 18px;\n  transition: .5s;\n}\n.events ul li .details a:hover {\n  background: #0b6bb8;\n  color: #fff;\n  border-color: #000000;\n}\n.eventTime {\n  writing-mode: vertical-rl;\n  text-orientation: mixed;\n  max-width: 41px;\n  background-color: #0b6bb8;\n  color: white;\n  font-weight: bold;\n  height: 100%;\n  text-align: center;\n  margin-right: -7px;\n  padding-left: 45px;\n}\n@media (max-width: 896px) {\n  .events {\n    width: 100%;\n  }\n  .calendar {\n    width: 100%;\n  }\n  .page-container {\n    display: inline;\n  }\n  .events ul {\n    padding: 40px 10px 10px 10px;\n  }\n}\n';
 
 // src/app/services/event.service.ts
 var __decorate14 = function(decorators, target, key, desc) {
@@ -123925,7 +123901,7 @@ EventService = __decorate14([
   __metadata10("design:paramtypes", [HttpClient])
 ], EventService);
 
-// src/app/services/newsletters.service.ts
+// src/app/services/general.service.ts
 var __decorate15 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
@@ -123933,42 +123909,6 @@ var __decorate15 = function(decorators, target, key, desc) {
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
 var __metadata11 = function(k3, v3) {
-  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
-};
-var NewslettersService = class NewslettersService2 {
-  httpSvc;
-  host = environment.backend + "/newsletters";
-  constructor(httpSvc) {
-    this.httpSvc = httpSvc;
-  }
-  saveToStorage(doc) {
-    return this.httpSvc.post(this.host + "/new", doc);
-  }
-  getAllNewsletters() {
-    return this.httpSvc.get(this.host + "");
-  }
-  getNewsletterById(id) {
-    return this.httpSvc.get(this.host + "/" + id);
-  }
-  static ctorParameters = () => [
-    { type: HttpClient }
-  ];
-};
-NewslettersService = __decorate15([
-  Injectable({
-    providedIn: "root"
-  }),
-  __metadata11("design:paramtypes", [HttpClient])
-], NewslettersService);
-
-// src/app/services/general.service.ts
-var __decorate16 = function(decorators, target, key, desc) {
-  var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
-  else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
-  return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
-};
-var __metadata12 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var GeneralService = class GeneralService2 {
@@ -124016,26 +123956,25 @@ var GeneralService = class GeneralService2 {
   }
   static ctorParameters = () => [];
 };
-GeneralService = __decorate16([
+GeneralService = __decorate15([
   Injectable({
     providedIn: "root"
   }),
-  __metadata12("design:paramtypes", [])
+  __metadata11("design:paramtypes", [])
 ], GeneralService);
 
-// src/app/announcements/annoncement.component.ts
-var __decorate17 = function(decorators, target, key, desc) {
+// src/app/events/event.component.ts
+var __decorate16 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata13 = function(k3, v3) {
+var __metadata12 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
-var AnnoncementComponent = class AnnoncementComponent2 {
+var EventComponent = class EventComponent2 {
   eventService;
-  newslettersService;
   loginService;
   generalService;
   external;
@@ -124060,19 +123999,13 @@ var AnnoncementComponent = class AnnoncementComponent2 {
   src;
   fileToUpload = null;
   showUploadModal;
-  constructor(eventService, newslettersService, loginService, generalService) {
+  constructor(eventService, loginService, generalService) {
     this.eventService = eventService;
-    this.newslettersService = newslettersService;
     this.loginService = loginService;
     this.generalService = generalService;
   }
   ngOnInit() {
     this.loginService.checkAuthToken();
-    this.newslettersService.getAllNewsletters().subscribe((newsletters) => {
-      this.documents = newsletters;
-      this.listOfCategories = [...new Set(newsletters.map((item) => item.category))];
-      this.newslettersService.getNewsletterById(this.documents[0].id).subscribe((newsletter) => this.showNewsletter(newsletter));
-    });
     this.eventService.getAllEvents().subscribe((events) => {
       this.events = events.slice(0, 3);
       this.events.forEach((event2) => {
@@ -124085,25 +124018,8 @@ var AnnoncementComponent = class AnnoncementComponent2 {
     });
     this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
   }
-  showNewsletter(document2) {
-    if (document2.item === "") {
-      this.newslettersService.getNewsletterById(document2.id).subscribe((requestedDocument) => {
-        this.src = requestedDocument.item;
-      });
-    } else {
-      this.src = document2.item;
-    }
-  }
-  handleFileInput(files) {
-    if (files.item(0).size > 5e6) {
-      return;
-    }
-    this.fileToUpload = files.item(0);
-    this.showUploadModal = true;
-  }
   static ctorParameters = () => [
     { type: EventService },
-    { type: NewslettersService },
     { type: LoginService },
     { type: GeneralService }
   ];
@@ -124112,20 +124028,19 @@ var AnnoncementComponent = class AnnoncementComponent2 {
     showUploadModal: [{ type: Output }]
   };
 };
-AnnoncementComponent = __decorate17([
+EventComponent = __decorate16([
   Component({
     selector: "app-annoncement",
-    template: annoncement_component_default,
+    template: event_component_default,
     standalone: false,
-    styles: [annoncement_component_default2]
+    styles: [event_component_default2]
   }),
-  __metadata13("design:paramtypes", [
+  __metadata12("design:paramtypes", [
     EventService,
-    NewslettersService,
     LoginService,
     GeneralService
   ])
-], AnnoncementComponent);
+], EventComponent);
 
 // angular:jit:template:file:src/app/amenities/amenities.component.html
 var amenities_component_default = `<div class="outer">
@@ -124248,13 +124163,13 @@ var amenities_component_default = `<div class="outer">
 var amenities_component_default2 = "/* src/app/amenities/amenities.component.css */\n.centered {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n}\n.header {\n  background-image: url(/assets/amenities-background.jpg);\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center;\n  padding-top: 25vh;\n  padding-bottom: 12vh;\n  padding-left: 50px;\n  padding-right: 50px;\n  box-shadow: 0 0 8px 3px #000;\n  transform: translateY(-70px);\n}\nh2 {\n  text-shadow: 2px 2px #000000;\n}\n.rsp {\n  min-width: 100%;\n  z-index: -1;\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n}\n.left-align-text {\n  text-align: left;\n}\n.collapsible-body {\n  border-bottom: none;\n  background: var(--color-secondary);\n}\n.collapsible-header {\n  background-color: var(--color-secondary);\n  transition: all 150ms ease-in-out;\n  border-top: 4px solid white !important;\n  border-bottom: 0px solid white !important;\n}\n.collapsible-header:hover {\n  background-color: rgba(2, 119, 189, 0.15);\n  transition: all 150ms ease-in-out;\n}\ntd a {\n  text-decoration: none;\n}\ntd a:hover {\n  text-decoration: underline;\n}\n.container .row {\n  margin-left: 0px !important;\n  margin-right: 0px !important;\n}\n#description {\n  margin-bottom: 0px !important;\n}\n#downloadButton:hover {\n  transform: translate(0.75rem, 0.75rem);\n}\n#downloadButton {\n  -webkit-box-shadow: none !important;\n  -moz-box-shadow: none !important;\n  box-shadow: none !important;\n  border-radius: 0px;\n  transition: transform 150ms ease-in-out !important;\n  justify-content: center;\n  margin-bottom: 1rem;\n}\n.card-link {\n  background-color: var(--color-primary) !important;\n  border-radius: 0;\n  padding: 0;\n  box-shadow: none;\n}\n.inner {\n  background-color: #ffffffe0;\n  border-radius: 25px;\n  width: 98%;\n  transform: translate(0%, -50px);\n  padding: 10px 10px 30px 30px;\n  box-shadow: 0 0 100px 11px #0006;\n  overflow-wrap: break-word;\n  margin: auto;\n}\n.outer {\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n  height: 100%;\n  background-color: #1a2023;\n}\ntable {\n  margin-left: auto;\n  margin-right: auto;\n}\nh5 {\n  font-size: 1.4rem;\n}\n@media only screen and (min-width: 993px) {\n  .container {\n    width: 85%;\n  }\n}\nul:not(.browser-default) > li {\n  list-style-type: decimal;\n  font-size: 1.4rem;\n}\nul {\n  padding-left: 30px;\n}\ntd,\nth {\n  vertical-align: top;\n}\nh5 {\n  text-align: center !important;\n}\nth {\n  padding: unset;\n}\n.card-container {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 20px;\n  flex-wrap: wrap;\n  margin-left: 20px;\n  margin-right: 20px;\n}\n.red-button {\n  background-color: darkred;\n  color: white;\n}\n.red-button:hover {\n  background-color: red;\n}\n.center-text {\n  text-align: center;\n}\n.button-bottom {\n  position: absolute;\n  bottom: 5px;\n  text-align: center;\n}\n:host ::ng-deep .card {\n  height: 100%;\n  border-radius: 15px;\n  background-color: #ffffffe0;\n  transform: translateY(-60px);\n}\n@media only screen and (max-width: 600px) {\n  .card-container {\n    grid-template-columns: 1fr;\n    gap: 10px;\n  }\n  .button-bottom {\n    position: relative;\n    margin-left: calc((100% - 100px) / 2);\n    margin-top: 10px;\n  }\n}\n";
 
 // src/app/amenities/amenities.component.ts
-var __decorate18 = function(decorators, target, key, desc) {
+var __decorate17 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata14 = function(k3, v3) {
+var __metadata13 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var AmenitiesComponent = class AmenitiesComponent2 {
@@ -124289,14 +124204,14 @@ var AmenitiesComponent = class AmenitiesComponent2 {
     { type: Location }
   ];
 };
-AmenitiesComponent = __decorate18([
+AmenitiesComponent = __decorate17([
   Component({
     selector: "app-amenities",
     template: amenities_component_default,
     standalone: false,
     styles: [amenities_component_default2]
   }),
-  __metadata14("design:paramtypes", [Location])
+  __metadata13("design:paramtypes", [Location])
 ], AmenitiesComponent);
 
 // angular:jit:template:file:src/app/login/login.component.html
@@ -124306,13 +124221,13 @@ var login_component_default = '<div class = "outer">\n    <div class="main">\n  
 var login_component_default2 = '/* src/app/login/login.component.css */\n@media (min-width: 1024px) {\n  .card-content:hover {\n    color: darkblue !important;\n    //background-color: var(--color-primary) !important;\n  }\n}\n.inner {\n  background-color: #ffffffe0;\n  border-radius: 25px;\n  width: 98%;\n  transform: translate(0%, 30px);\n  padding: 10px 10px 30px 30px;\n  box-shadow: 0 0 100px 11px #0006;\n  overflow-wrap: break-word;\n  margin: auto;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.card-container {\n  #display: flex;\n}\n@media only screen and (min-width: 993px) {\n  .container {\n    width: 85%;\n  }\n}\n.main {\n  background-color: rgba(255, 255, 255, .8);\n  width: 400px;\n  height: 330px;\n  margin: auto;\n  border-radius: 10px;\n  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);\n  transform: translate(4%, 30px);\n}\n.sign {\n  padding-top: 40px;\n  color: #073566;\n  font-family: "Ubuntu", sans-serif;\n  font-weight: bold;\n  font-size: 23px;\n  margin-bottom: 30px;\n}\n.un {\n  width: 76%;\n  color: rgb(38, 50, 56);\n  font-weight: 700;\n  font-size: 14px;\n  letter-spacing: 1px;\n  background: rgba(136, 126, 126, 0.04);\n  padding: 10px 20px;\n  border: none;\n  border-radius: 20px;\n  outline: none;\n  box-sizing: border-box;\n  border: 2px solid rgba(0, 0, 0, 0.02);\n  margin-bottom: 50px;\n  margin-left: 46px;\n  text-align: center;\n  margin-bottom: 27px;\n  font-family: "Ubuntu", sans-serif;\n}\nform.form1 {\n  padding-top: 40px;\n}\n.pass {\n  width: 76%;\n  color: rgb(38, 50, 56);\n  font-weight: 700;\n  font-size: 14px;\n  letter-spacing: 1px;\n  background: rgba(136, 126, 126, 0.04);\n  padding: 10px 20px;\n  border: none;\n  border-radius: 20px;\n  outline: none;\n  box-sizing: border-box;\n  border: 2px solid rgba(0, 0, 0, 0.02);\n  margin-bottom: 50px;\n  margin-left: 46px;\n  text-align: center;\n  margin-bottom: 27px;\n  font-family: "Ubuntu", sans-serif;\n}\n.un:focus,\n.pass:focus {\n  border: 2px solid rgba(0, 0, 0, 0.18) !important;\n}\n.submit {\n  cursor: pointer;\n  border-radius: 5em;\n  color: #fff;\n  background:\n    linear-gradient(\n      to right,\n      #073566,\n      #362fa5);\n  border: 0;\n  padding-left: 40px;\n  padding-right: 40px;\n  padding-bottom: 10px;\n  padding-top: 10px;\n  font-family: "Ubuntu", sans-serif;\n  margin-left: 35%;\n  font-size: 13px;\n  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);\n}\na {\n  text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);\n  color: #E1BEE7;\n  text-decoration: none;\n}\n.outer {\n  background: url("./media/background-U46FACVZ.png") no-repeat;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n  min-height: 1000px;\n}\n@media (max-width: 600px) {\n  .main {\n    border-radius: 0px;\n  }\n}\n';
 
 // src/app/login/login.component.ts
-var __decorate19 = function(decorators, target, key, desc) {
+var __decorate18 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata15 = function(k3, v3) {
+var __metadata14 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var LoginComponent = class LoginComponent2 {
@@ -124348,24 +124263,24 @@ var LoginComponent = class LoginComponent2 {
     { type: Router }
   ];
 };
-LoginComponent = __decorate19([
+LoginComponent = __decorate18([
   Component({
     selector: "app-login",
     template: login_component_default,
     standalone: false,
     styles: [login_component_default2]
   }),
-  __metadata15("design:paramtypes", [LoginService, MessageService, Router])
+  __metadata14("design:paramtypes", [LoginService, MessageService, Router])
 ], LoginComponent);
 
 // src/app/services/TokenInterceptor.ts
-var __decorate20 = function(decorators, target, key, desc) {
+var __decorate19 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata16 = function(k3, v3) {
+var __metadata15 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var TokenInterceptor = class TokenInterceptor2 {
@@ -124385,9 +124300,9 @@ var TokenInterceptor = class TokenInterceptor2 {
     { type: LoginService }
   ];
 };
-TokenInterceptor = __decorate20([
+TokenInterceptor = __decorate19([
   Injectable(),
-  __metadata16("design:paramtypes", [LoginService])
+  __metadata15("design:paramtypes", [LoginService])
 ], TokenInterceptor);
 
 // angular:jit:template:file:src/app/admin/admin.component.html
@@ -124544,13 +124459,13 @@ var CommunityEvent = class {
 };
 
 // src/app/services/settings.service.ts
-var __decorate21 = function(decorators, target, key, desc) {
+var __decorate20 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata17 = function(k3, v3) {
+var __metadata16 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var SettingsService = class SettingsService2 {
@@ -124569,21 +124484,21 @@ var SettingsService = class SettingsService2 {
     { type: HttpClient }
   ];
 };
-SettingsService = __decorate21([
+SettingsService = __decorate20([
   Injectable({
     providedIn: "root"
   }),
-  __metadata17("design:paramtypes", [HttpClient])
+  __metadata16("design:paramtypes", [HttpClient])
 ], SettingsService);
 
 // src/app/admin/admin.component.ts
-var __decorate22 = function(decorators, target, key, desc) {
+var __decorate21 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata18 = function(k3, v3) {
+var __metadata17 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var AdminComponent = class AdminComponent2 {
@@ -124737,14 +124652,14 @@ var AdminComponent = class AdminComponent2 {
     { type: SettingsService }
   ];
 };
-AdminComponent = __decorate22([
+AdminComponent = __decorate21([
   Component({
     selector: "app-admin",
     template: admin_component_default,
     standalone: false,
     styles: [admin_component_default2]
   }),
-  __metadata18("design:paramtypes", [
+  __metadata17("design:paramtypes", [
     LoginService,
     BoardMemberService,
     Router,
@@ -124762,13 +124677,13 @@ var logout_component_default = "";
 var logout_component_default2 = "/* src/app/logout/logout.component.css */\n";
 
 // src/app/logout/logout.component.ts
-var __decorate23 = function(decorators, target, key, desc) {
+var __decorate22 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata19 = function(k3, v3) {
+var __metadata18 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var LogoutComponent = class LogoutComponent2 {
@@ -124787,14 +124702,14 @@ var LogoutComponent = class LogoutComponent2 {
     { type: Router }
   ];
 };
-LogoutComponent = __decorate23([
+LogoutComponent = __decorate22([
   Component({
     selector: "app-logout",
     template: logout_component_default,
     standalone: false,
     styles: [logout_component_default2]
   }),
-  __metadata19("design:paramtypes", [LoginService, Router])
+  __metadata18("design:paramtypes", [LoginService, Router])
 ], LogoutComponent);
 
 // node_modules/primeng/fesm2022/primeng-datepicker.mjs
@@ -167511,11 +167426,11 @@ FullCalendarModule.\u0275inj = \u0275\u0275ngDeclareInjector({
   }]
 });
 
-// angular:jit:template:file:src/app/announcements/calendar/calendar.component.html
-var calendar_component_default = '<full-calendar #calendar id= "calendar" deepChangeDetection="true" [options]="this.calendarOptions"></full-calendar>\n\n<div #fullCalModal id="fullCalModal" class="modal show-modal">\n    <div class="modal-dialog">\n        <div class="modal-header">\n            <h5 #modalTitle id="modalTitle" class="center modal-title"></h5>\n        </div>\n        <div class="modal-content">\n            <div #modalBody id="modalBody" class="modal-body">\n                <p>Date:<br><span style = "padding-left:15px;" #modalDate></span></p>\n                <p>Location:<br><span style = "padding-left:15px;" #modalLocation></span></p>\n                <p>Description:<br><span style = "padding-left:15px;" #modalDescription></span></p>\n            </div>\n        </div>\n    </div>\n</div>\n\n\n\n';
+// angular:jit:template:file:src/app/events/calendar/calendar.component.html
+var calendar_component_default = '<div #fullCalModal id="fullCalModal" class="modal">\n  <div class="modal-dialog">\n    <div class="modal-header">\n      <h5 #modalTitle id="modalTitle" class="center modal-title"></h5>\n    </div>\n    <div class="modal-content">\n      <div #modalBody id="modalBody" class="modal-body">\n        <p>Date:<br><span style="padding-left:15px;" #modalDate></span></p>\n        <p>Location:<br><span style="padding-left:15px;" #modalLocation></span></p>\n        <p>Description:<br><span style="padding-left:15px;" #modalDescription></span></p>\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<full-calendar #calendar id= "calendar" deepChangeDetection="true" [options]="this.calendarOptions"></full-calendar>\n\n';
 
-// angular:jit:style:file:src/app/announcements/calendar/calendar.component.css
-var calendar_component_default2 = "/* src/app/announcements/calendar/calendar.component.css */\n.modal {\n  position: absolute;\n  left: -35%;\n  right: unset;\n  top: 30%;\n  background-color: #fafafa;\n  padding: 0;\n  max-height: unset;\n  width: 80%;\n  overflow-y: auto;\n  border-radius: 2px;\n  will-change: top, opacity;\n  opacity: 100%;\n  z-index: 99999;\n}\n.modal-header {\n  padding-top: 5px;\n  padding-bottom: 1px;\n  background: #0d89ec;\n  color: white;\n}\n.modal-content {\n  padding-top: 0px;\n}\n";
+// angular:jit:style:file:src/app/events/calendar/calendar.component.css
+var calendar_component_default2 = "/* src/app/events/calendar/calendar.component.css */\n.modal {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  background-color: #fafafa;\n  padding: 0;\n  width: 80%;\n  max-height: 80%;\n  overflow-y: auto;\n  border-radius: 8px;\n  z-index: 99999;\n}\n.modal-header {\n  background: #0d89ec;\n  color: white;\n  padding: 10px;\n}\n.modal-content {\n  padding-top: 20px;\n  padding-bottom: 20px;\n  padding-left: 20px;\n  padding-right: 20px;\n}\n.modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  z-index: 99999;\n  display: unset;\n}\n";
 
 // node_modules/@fullcalendar/daygrid/internal.js
 var TableView = class extends DateComponent {
@@ -174086,20 +174001,19 @@ var index6 = createPlugin({
   }
 });
 
-// src/app/announcements/calendar/calendar.component.ts
-var __decorate24 = function(decorators, target, key, desc) {
+// src/app/events/calendar/calendar.component.ts
+var __decorate23 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata20 = function(k3, v3) {
+var __metadata19 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var CalendarComponent = class CalendarComponent2 {
   eventService;
   generalService;
-  options;
   calendarOptions;
   calendarComponent;
   fullCalModal;
@@ -174111,7 +174025,6 @@ var CalendarComponent = class CalendarComponent2 {
   constructor(eventService, generalService) {
     this.eventService = eventService;
     this.generalService = generalService;
-    const name = Calendar.name;
   }
   ngOnInit() {
     this.eventService.getAllEvents().subscribe((events) => {
@@ -174133,7 +174046,7 @@ var CalendarComponent = class CalendarComponent2 {
       headerToolbar: {
         left: "prev,next today",
         center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay"
+        right: ""
       },
       locale: "en",
       // add other plugins
@@ -174162,17 +174075,20 @@ var CalendarComponent = class CalendarComponent2 {
         }
       },
       eventMouseLeave: (event2) => {
-        if (!this.fullCalModal.nativeElement.matches(":hover")) {
-          this.fullCalModal.nativeElement.style.display = "none";
-        }
-        this.fullCalModal.nativeElement.addEventListener("mouseleave", (e3) => {
-          this.fullCalModal.nativeElement.style.display = "none";
-        });
+        this.closeModel(event2);
       }
     };
   }
   getAppointmentsForSpecificDate(arg) {
     console.log(arg);
+  }
+  closeModel(event2) {
+    if (!this.fullCalModal.nativeElement.matches(":hover")) {
+      this.fullCalModal.nativeElement.style.display = "none";
+    }
+    this.fullCalModal.nativeElement.addEventListener("mouseleave", (e3) => {
+      this.fullCalModal.nativeElement.style.display = "none";
+    });
   }
   static ctorParameters = () => [
     { type: EventService },
@@ -174187,120 +174103,15 @@ var CalendarComponent = class CalendarComponent2 {
     modalDate: [{ type: ViewChild, args: ["modalDate"] }]
   };
 };
-CalendarComponent = __decorate24([
+CalendarComponent = __decorate23([
   Component({
     selector: "app-calendar",
     template: calendar_component_default,
     standalone: false,
     styles: [calendar_component_default2]
   }),
-  __metadata20("design:paramtypes", [
-    EventService,
-    GeneralService
-  ])
+  __metadata19("design:paramtypes", [EventService, GeneralService])
 ], CalendarComponent);
-
-// angular:jit:template:file:src/app/announcements/newsletter-upload/newsletter-upload.component.html
-var newsletter_upload_component_default = `<!-- The Modal -->
-<div *ngIf="showUploadModal" id="myModal" class="modal" style='display: block' xmlns="http://www.w3.org/1999/html">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span (click)="setShowUploadModal(false)" class="close">&times;</span>
-        <p>{{fileToUpload.name}}</p>
-
-        <div class = "modal-inputs">
-            <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
-            <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true" autocomplete="off"/>
-        </div>
-
-        <button class="btn blue" (click)="onSubmit()">Submit</button>
-    </div>
-</div>
-`;
-
-// angular:jit:style:file:src/app/announcements/newsletter-upload/newsletter-upload.component.css
-var newsletter_upload_component_default2 = "/* src/app/announcements/newsletter-upload/newsletter-upload.component.css */\n.modal {\n  display: none;\n  position: fixed;\n  z-index: 1;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  background-color: rgb(0, 0, 0);\n  background-color: rgba(0, 0, 0, 0.4);\n  max-height: unset;\n}\n.modal-content {\n  background-color: #fefefe;\n  margin: 15% auto;\n  padding: 20px;\n  border: 1px solid #888;\n  width: 45%;\n}\n.close {\n  color: #aaa;\n  float: right;\n  font-size: 28px;\n  font-weight: bold;\n}\n.close:hover,\n.close:focus {\n  color: black;\n  text-decoration: none;\n  cursor: pointer;\n}\n.modal-inputs {\n  margin-bottom: 10px;\n}\n";
-
-// src/app/announcements/newsletter-upload/newsletter-upload.component.ts
-var __decorate25 = function(decorators, target, key, desc) {
-  var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
-  else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
-  return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
-};
-var __metadata21 = function(k3, v3) {
-  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
-};
-var NewsletterUploadComponent = class NewsletterUploadComponent2 {
-  announcementComponent;
-  newslettersService;
-  messageService;
-  showUploadModal;
-  fileToUpload;
-  documentName = "";
-  description = "";
-  output;
-  constructor(announcementComponent, newslettersService, messageService) {
-    this.announcementComponent = announcementComponent;
-    this.newslettersService = newslettersService;
-    this.messageService = messageService;
-  }
-  ngOnInit() {
-  }
-  setShowUploadModal(bool) {
-    this.announcementComponent.showUploadModal = bool;
-  }
-  onSubmit() {
-    this.setShowUploadModal(false);
-    this.convertFile(this.fileToUpload).subscribe((converted) => {
-      this.newslettersService.saveToStorage({
-        friendlyName: this.documentName,
-        name: this.fileToUpload.name,
-        description: this.description,
-        item: converted,
-        category: "Newsletter Archive"
-      }).subscribe((response) => {
-        this.messageService.add({ severity: "success", summary: "Document Uploaded Successfully" });
-        this.newslettersService.getAllNewsletters().subscribe((result) => {
-          this.announcementComponent.documents = result;
-          this.announcementComponent.listOfCategories = [...new Set(result.map((item) => item.category))];
-          this.announcementComponent.showNewsletter(result[0]);
-        });
-      });
-    });
-  }
-  convertFile(file) {
-    const result = new ReplaySubject(1);
-    const reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = (event2) => result.next(btoa(event2.target.result.toString()));
-    return result;
-  }
-  static ctorParameters = () => [
-    { type: AnnoncementComponent },
-    { type: NewslettersService },
-    { type: MessageService }
-  ];
-  static propDecorators = {
-    showUploadModal: [{ type: Input }],
-    fileToUpload: [{ type: Input }],
-    documentName: [{ type: Output }],
-    description: [{ type: Output }]
-  };
-};
-NewsletterUploadComponent = __decorate25([
-  Component({
-    selector: "app-newsletter-upload",
-    template: newsletter_upload_component_default,
-    standalone: false,
-    styles: [newsletter_upload_component_default2]
-  }),
-  __metadata21("design:paramtypes", [
-    AnnoncementComponent,
-    NewslettersService,
-    MessageService
-  ])
-], NewsletterUploadComponent);
 
 // node_modules/primeng/fesm2022/primeng-progressspinner.mjs
 var theme28 = ({
@@ -186073,7 +185884,7 @@ var BidiModule = class _BidiModule {
 });
 
 // node_modules/@angular/material/fesm2022/core.mjs
-var VERSION8 = new Version("19.1.0");
+var VERSION8 = new Version("19.1.1");
 var MATERIAL_SANITY_CHECKS = new InjectionToken("mat-sanity-checks", {
   providedIn: "root",
   factory: () => true
@@ -201050,7 +200861,7 @@ var MatListModule = class _MatListModule {
 });
 
 // src/app/app.module.ts
-var __decorate26 = function(decorators, target, key, desc) {
+var __decorate24 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
@@ -201061,8 +200872,8 @@ var appRoutes = [
   { path: "about", component: AboutComponent, data: { title: "Mill Creek Community | About" } },
   { path: "admin", component: AdminComponent, data: { title: "Mill Creek Community | Admin" } },
   { path: "documents", component: DocumentsComponent, data: { title: "Mill Creek Community | Documents" } },
-  { path: "contact", component: ContactComponent, data: { title: "Mill Creek Community | Contact Us" } },
-  { path: "announcements", component: AnnoncementComponent, data: { title: "Mill Creek Community | Announcements" } },
+  { path: "contact", component: ContactComponent, data: { title: "Mill Creek Community | Board Members" } },
+  { path: "events", component: EventComponent, data: { title: "Mill Creek Community | Events" } },
   { path: "amenities", component: AmenitiesComponent, data: { title: "Mill Creek Community | Amenities" } },
   { path: "login", component: LoginComponent, data: { title: "Mill Creek Community | Login" } },
   { path: "logout", component: LogoutComponent, data: { title: "Mill Creek Community | Logout" } },
@@ -201070,7 +200881,7 @@ var appRoutes = [
 ];
 var AppModule = class AppModule2 {
 };
-AppModule = __decorate26([
+AppModule = __decorate24([
   NgModule({
     declarations: [
       AppComponent,
@@ -201082,13 +200893,12 @@ AppModule = __decorate26([
       AboutComponent,
       DocumentUploadComponent,
       ViewerComponent,
-      AnnoncementComponent,
+      EventComponent,
       AmenitiesComponent,
       LoginComponent,
       AdminComponent,
       LogoutComponent,
-      CalendarComponent,
-      NewsletterUploadComponent
+      CalendarComponent
     ],
     imports: [
       BrowserModule,
