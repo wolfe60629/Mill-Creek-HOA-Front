@@ -1,0 +1,41 @@
+<div class = "outer">
+    <div class="col s12">
+        <div class="header">
+            <h2 class="white-text center-align fancy-cursive"><b>Community Events</b></h2>
+        </div>
+    </div>
+
+    <div class="inner">
+        <div class = "page-container">
+          <app-calendar class ="calendar"></app-calendar>
+          <div class="events center-align">
+                    <ul>
+                        <li *ngFor="let event of events">
+                            <div class="time">
+                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
+                            </div>
+                            <div class = "eventTime">
+                                <p>{{generalService.formatTime(event.startDate)}}</p>
+                            </div>
+                            <div class="details">
+                                <h5>{{event.eventName}}</h5>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </li>
+                        <li *ngIf="events.length == 0">
+                          <div class="time">
+<!--                            <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>-->
+                          </div>
+                          <div class = "eventTime">
+<!--                            <p>{{generalService.formatTime(event.startDate)}}</p>-->
+                          </div>
+                          <div class="details">
+                            <h5>No Upcoming Events</h5>
+                          </div>
+                          <div style="clear: both;"></div>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+    </div>
+</div>

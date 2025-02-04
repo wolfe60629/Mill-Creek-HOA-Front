@@ -25,7 +25,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {AnnoncementComponent} from './announcements/annoncement.component';
+import {EventComponent} from './events/event.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
 import { LoginComponent } from './login/login.component';
 import {TokenInterceptor} from './services/TokenInterceptor';
@@ -35,8 +35,7 @@ import {TableModule} from 'primeng/table';
 import {ListboxModule} from 'primeng/listbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarComponent } from './announcements/calendar/calendar.component';
-import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
+import { CalendarComponent } from './events/calendar/calendar.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {CardModule} from 'primeng/card';
@@ -57,8 +56,8 @@ const appRoutes: Routes = [
   { path: 'about', component: AboutComponent, data: { title: 'Mill Creek Community | About' } },
   { path: 'admin', component: AdminComponent, data: { title: 'Mill Creek Community | Admin' } },
   { path: 'documents', component: DocumentsComponent, data: { title: 'Mill Creek Community | Documents' } },
-  { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Contact Us' } },
-  { path: 'announcements', component: AnnoncementComponent, data: { title: 'Mill Creek Community | Announcements' } },
+  { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Board Members' } },
+  { path: 'events', component: EventComponent, data: { title: 'Mill Creek Community | Events' } },
   { path: 'amenities', component: AmenitiesComponent, data: { title: 'Mill Creek Community | Amenities' } },
   { path: 'login', component: LoginComponent, data: { title: 'Mill Creek Community | Login' } },
   { path: 'logout', component: LogoutComponent, data: { title: 'Mill Creek Community | Logout' } },
@@ -76,13 +75,12 @@ const appRoutes: Routes = [
     AboutComponent,
     DocumentUploadComponent,
     ViewerComponent,
-    AnnoncementComponent,
+    EventComponent,
     AmenitiesComponent,
     LoginComponent,
     AdminComponent,
     LogoutComponent,
     CalendarComponent,
-    NewsletterUploadComponent
   ],
   imports: [
     BrowserModule,

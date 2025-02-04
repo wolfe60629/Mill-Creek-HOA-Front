@@ -2,7 +2,6 @@ import {Component, ElementRef, OnInit, Output, ViewChild} from '@angular/core';
 import {Doc} from '../types/document';
 import {CommunityEvent} from '../types/communityEvent';
 import {EventService} from '../services/event.service';
-import {NewslettersService} from '../services/newsletters.service';
 import {LoginService} from '../services/login.service';
 import {GeneralService} from '../services/general.service';
 import {SafeResourceUrl} from '@angular/platform-browser';
@@ -10,11 +9,11 @@ import {SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
     selector: 'app-annoncement',
-    templateUrl: './annoncement.component.html',
-    styleUrls: ['./annoncement.component.css'],
+    templateUrl: './event.component.html',
+    styleUrls: ['./event.component.css'],
     standalone: false
 })
-export class AnnoncementComponent implements OnInit {
+export class EventComponent implements OnInit {
   @ViewChild('external') external: ElementRef;
   isAdmin: boolean;
   events: CommunityEvent[];
@@ -28,20 +27,12 @@ export class AnnoncementComponent implements OnInit {
   @Output() showUploadModal: Boolean;
 
   constructor(private eventService: EventService,
-              private newslettersService: NewslettersService,
               private loginService: LoginService,
-              private generalService: GeneralService) {
+              protected generalService: GeneralService) {
   }
 
   ngOnInit(): void {
     this.loginService.checkAuthToken();
-    this.newslettersService.getAllNewsletters().subscribe((newsletters: Doc[]) => {
-      this.documents = newsletters;
-      this.listOfCategories = [...new Set(newsletters.map(item => item.category))];
-
-      // Get the most recent newsletter and show it
-      this.newslettersService.getNewsletterById(this.documents[0].id).subscribe((newsletter: Doc) => this.showNewsletter(newsletter));
-    });
     this.eventService.getAllEvents().subscribe((events: CommunityEvent[]) => {
       this.events = events.slice(0, 3);
 
@@ -58,29 +49,5 @@ export class AnnoncementComponent implements OnInit {
 
     this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
   }
-
-  showNewsletter(document: Doc) {
-    if (document.item === '') {
-      this.newslettersService.getNewsletterById(document.id).subscribe((requestedDocument: Doc) => {
-        this.src = requestedDocument.item;
-      });
-    } else {
-      this.src = document.item;
-    }
-  }
-
-
-  handleFileInput(files: FileList) {
-    // Limit file size to 5MB
-    if (files.item(0).size > 5000000 ) {
-      return;
-    }
-
-    // Open Confirm Modal
-    this.fileToUpload = files.item(0);
-    this.showUploadModal = true;
-  }
-
-
 }
 
