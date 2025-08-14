@@ -43,7 +43,7 @@
     </div>
 
     <!-- User Icon Menu -->
-    <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin">
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin" class="user-menu-btn">
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu  #userMenu="matMenu">

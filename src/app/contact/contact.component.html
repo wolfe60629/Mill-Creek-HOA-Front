@@ -1,80 +1,64 @@
-<div class="outer">
-  <div class="container">
-  <div class="row">
-    <div class="col s12 animated bounceInLeft">
-      <div class="">
-        <h1 class="white-text text-darken-3"><b>Board Members</b></h1>
+<div class="contact-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Contact Us</h1>
+      <p class="hero-subtitle">Get in touch with our community leaders</p>
+    </div>
+  </div>
+
+  <!-- Contact Information -->
+  <div class="content-section">
+    <div class="container">
+      <!-- Board Members -->
+      <div class="contact-section">
+        <h2 class="section-title">Board Members</h2>
+        <div class="contacts-grid">
+          <div 
+            *ngFor="let contact of contacts; let i = index"
+            class="contact-card"
+            [style.animation-delay]="(0.2 * i) + 's'"
+          >
+            <div class="contact-icon">
+              <span class="icon">{{ getIcon(contact.icon) }}</span>
+            </div>
+            <div class="contact-info">
+              <h3 class="contact-name">{{ contact.name }}</h3>
+              <p class="contact-title">{{ contact.title }}</p>
+              <a 
+                href="mailto:{{ contact.email }}" 
+                class="contact-email"
+                [title]="contact.email"
+              >
+                {{ contact.email }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="contact-section">
+        <h2 class="section-title">Quick Links</h2>
+        <div class="links-grid">
+          <a 
+            *ngFor="let staticPage of staticPages; let i = index"
+            href="{{ staticPage.href }}"
+            target="_blank"
+            class="link-card"
+            [style.animation-delay]="(0.2 * i) + 's'"
+          >
+            <div class="link-icon">
+              <span class="icon">{{ getIcon(staticPage.icon) }}</span>
+            </div>
+            <div class="link-content">
+              <h3 class="link-name">{{ staticPage.name }}</h3>
+              <p class="link-description">{{ staticPage.title }}</p>
+            </div>
+            <div class="link-arrow">→</div>
+          </a>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <a
-      *ngFor="let staticPage of staticPages; let i = index"
-      href="{{ staticPage.href }}"
-      target="_blank"
-      class="
-        card-link
-        col
-        offset-s1
-        s10
-        m5
-        offset-m1
-        l3
-        offset-l1
-        animated
-        zoomIn
-        faster
-      "
-    >
-
-      <div class="card-panel light-blue lighten-5">
-        <i
-          class="fa fa-{{ staticPage.icon }} fa-3x light-blue-text text-darken-3"
-          aria-hidden="true"
-        >
-        </i>
-        <p class="center-align flow-text light-blue-text text-darken-3 truncate">
-          <b>{{ staticPage.name }}</b>
-          <br>
-          {{ staticPage.title }}
-        </p>
-      </div>
-    </a>
-  </div>
-
-<div class="row">
-  <a
-          *ngFor="let contact of contacts; let i = index"
-          href="{{ contact.href }}"
-          target="_blank"
-          class="
-        card-link
-        col
-        offset-s1
-        s10
-        m5
-        offset-m1
-        l3
-        offset-l1
-        animated
-        zoomIn
-        faster
-      "
-          [title]="contact.email"
-  >
-    <div class="card-panel light-blue lighten-5">
-      <i
-              class="fa fa-{{ contact.icon }} fa-3x light-blue-text text-darken-3"
-              aria-hidden="true"
-      >
-      </i>
-      <p class="center-align flow-text light-blue-text text-darken-3 truncate">
-        <b>{{ contact.name }}</b>
-        <br>
-        {{ contact.title }}
-      </p>
-    </div>
-  </a>
-</div>
-</div>
 </div>

@@ -18,13 +18,13 @@ import {asNumber} from 'pdf-lib';
 export class DocumentsComponent implements OnInit {
   isAdmin: boolean;
   documents: Doc[] = [];
-  listOfCategories: String[];
+  listOfCategories: string[];
   fileToUpload: File | null = null;
-  mainfestHtml: String;
+  mainfestHtml: string;
   isTryingToDelete: boolean = false;
 
-  @Output() showUploadModal: Boolean;
-  showViewerModal: Boolean;
+  @Output() showUploadModal: boolean;
+  showViewerModal: boolean;
 
   constructor(private documentsService: DocumentsService,
               private sanitizer: DomSanitizer,
@@ -55,7 +55,7 @@ export class DocumentsComponent implements OnInit {
     this.showUploadModal = true;
   }
 
-  showFile(id: Number) {
+  showFile(id: number) {
     if (!this.isTryingToDelete && id) {
       this.documentsService.getDocumentById(id).subscribe((document: Doc) => {
         this.mainfestHtml = document.item;

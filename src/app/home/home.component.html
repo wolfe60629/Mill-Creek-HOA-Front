@@ -1,47 +1,88 @@
-<div class="animated fadeIn outer">
-  <img class = 'rsp centered' src="./assets/background.png">
+<div class="home-container">
+  <!-- Full-screen background image -->
+  <div class="hero-background">
+    <img src="assets/background.png" alt="Mill Creek Community" class="background-image">
+    <div class="overlay"></div>
+    <div class="tech-grid"></div>
+  </div>
 
-  <div class="centered center home-text">
-    <h1 class="text-darken-3 grey-text">{{ titleName }}</h1>
-
-    <div class="link-container animated fadeIn">
-      <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/about">Community Information</a>
+  <!-- Hero content -->
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="title-container">
+        <h1 class="hero-title">{{ titleName }}</h1>
+        <div class="title-accent"></div>
       </div>
-
-        <div class="flow-text">
-          <a class="sublink white-text text-darken-3" href="/amenities">Amenities</a>
-        </div>
-
-      <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/events" routerlink="/events">Community Events</a>
-      </div>
-
-      <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/documents" routerlink="/documents">Documents</a>
-      </div>
-
-      <div class="flow-text">
-          <a class="sublink white-text text-darken-3" href="https://hms-inc.net/">ARC Requests</a>
-      </div>
-
-      <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="/contact" routerlink="/contact">Board Members</a>
-      </div>
-
-      <div class="flow-text">
-        <a class="sublink white-text text-darken-3" href="https://hms.cincwebaxis.com/account/loginmodernthemes">Resident Portal</a>
-      </div>
+      <p class="hero-subtitle">Next-Generation Community Living</p>
 
     </div>
 
+    <!-- High-tech navigation section -->
+    <div class="nav-section">
+      <div class="nav-links">
+        <a href="/about" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">🏠</span>
+          </div>
+          <span class="link-text">Community Info</span>
+        </a>
+        
+        <a href="/amenities" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">⭐</span>
+          </div>
+          <span class="link-text">Smart Amenities</span>
+        </a>
+        
+        <a href="/announcements" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">📋</span>
+          </div>
+          <span class="link-text">Live Updates</span>
+        </a>
+        
+        <a href="/documents" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">📁</span>
+          </div>
+          <span class="link-text">Digital Library</span>
+        </a>
+        
+        <a href="https://hms-inc.net/" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">🔧</span>
+          </div>
+          <span class="link-text">ARC Portal</span>
+        </a>
+        
+        <a href="/contact" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">💬</span>
+          </div>
+          <span class="link-text">Connect</span>
+        </a>
+        
+        <a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="nav-link">
+          <div class="link-icon">
+            <div class="icon-bg"></div>
+            <span class="icon-symbol">🔑</span>
+          </div>
+          <span class="link-text">Resident Hub</span>
+        </a>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="admin">
-  <footer>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="/admin"></a></li>
-    </ul>
-  </footer>
+  <!-- Admin link -->
+  <div class="admin-link">
+    <a href="/admin" title="Admin Access">
+      <div class="admin-icon">⚙️</div>
+    </a>
+  </div>
 </div>

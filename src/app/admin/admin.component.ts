@@ -36,7 +36,7 @@ export class AdminComponent implements OnInit {
               private router: Router,
               private eventService: EventService,
               private messageService: MessageService,
-              private generalService: GeneralService,
+              public generalService: GeneralService,
               private settingsService: SettingsService) { }
 
   ngOnInit(): void {

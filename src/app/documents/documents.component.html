@@ -1,62 +1,96 @@
-<app-document-upload *ngIf="fileToUpload!=null" [fileToUpload]="this.fileToUpload" [showUploadModal]="showUploadModal"></app-document-upload>
-<app-viewer [(showViewerModal)]="showViewerModal" [(manifestHtml)]="mainfestHtml"></app-viewer>
-<p-confirmDialog key="confirm"><input type="text"></p-confirmDialog>
-<div class = "outer">
-    <img class = 'rsp centered' src="./assets/background.png">
-    <div class="inner">
-<div class="container">
+<div class="documents-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Community Documents</h1>
+      <p class="hero-subtitle">Access important community information and resources</p>
+    </div>
+  </div>
 
-    <!-- Title -->
-    <div class="row">
-        <div class="col s12 animated bounceInLeft">
-            <div class="">
-                <h1 class="light-blue-text text-darken-3"><b>Documents</b></h1>
-            </div>
+  <!-- Main Content -->
+  <div class="content-section">
+    <div class="container">
+      <!-- File Upload (Admin Only) -->
+      <div class="upload-section" *ngIf="isAdmin">
+        <div class="upload-card">
+          <h3 class="section-title">Upload Document</h3>
+          <div class="file-upload">
+            <input type="file"
+                   accept="application/pdf"
+                   id="file"
+                   #fileInput
+                   (change)="handleFileInput(fileInput.files)"
+                   class="file-input">
+            <label for="file" class="file-label">
+              <span class="upload-icon">📄</span>
+              <span class="upload-text">Choose PDF File</span>
+            </label>
+          </div>
         </div>
+      </div>
+
+      <!-- Document Categories -->
+      <div class="documents-section" *ngIf="documents.length > 0">
+        <div class="documents-card">
+          <h3 class="section-title">Document Library</h3>
+          <p-accordion class="modern-accordion">
+            <p-accordionTab *ngFor="let currCategory of listOfCategories; let j=index" 
+                           [header]="currCategory" 
+                           [selected]="j==0">
+              <div class="documents-grid">
+                <ng-container *ngFor="let document of documents">
+                  <div *ngIf="document.category == currCategory"
+                       class="document-item"
+                       (click)="showFile(document.id)">
+                    <div class="document-icon">📋</div>
+                    <div class="document-content">
+                      <h4 class="document-title">{{ document.friendlyName }}</h4>
+                      <p class="document-description">{{ document.description }}</p>
+                    </div>
+                    <div class="document-actions">
+                      <button *ngIf="isAdmin" 
+                              class="delete-btn" 
+                              pTooltip="Delete Document" 
+                              (click)="onDelete(document)">
+                        🗑️
+                      </button>
+                      <div class="document-arrow">→</div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+
+      <!-- No Documents Message -->
+      <div class="no-documents" *ngIf="documents.length === 0">
+        <div class="no-documents-card">
+          <div class="no-documents-icon">📚</div>
+          <h3>No Documents Available</h3>
+          <p>Check back later for community documents and resources.</p>
+        </div>
+      </div>
     </div>
-
-    <!-- File Upload -->
-    <div class="form-group" *ngIf="isAdmin">
-    <input type="file"
-           style=""
-           accept="application/pdf"
-           id="file"
-           (change)="handleFileInput($event.target.files)">
-
-    </div>
-
-
-    <!-- Document Acordian -->
-         <p-accordion *ngIf="this.documents.length > 0" class="" id="starred-projects">
-             <p-accordionTab *ngFor="let currCategory of listOfCategories; let j=index" header="{{ currCategory }}" StyleClass="acc-tab" [selected]="j==0">
-                 <div class="card-container">
-                    <ng-container *ngFor="let document of this.documents; let i = index">
-                         <a *ngIf="document.category == currCategory" class="card animated zoomIn faster col s10 offset-s1 m5 l5 flex" [ngClass]="{ 'offset-l3': i % 3 !== 0, 'offset-m3': i % 3 !== 0 }" (click)="showFile(document.id)" target="_blank">
-                             <div class="card-content light-blue lighten-5 light-blue-text text-darken-3">
-                             <span class="card-title">
-                                <div class="card-title-content">
-                                   <h5 class="project-title">{{ document.friendlyName }}</h5>
-                                    <span>
-                                        <button pButton class = "p-button-text"><i *ngIf="isAdmin" pTooltip = "Delete Document" class="pi pi-trash" (click)="onDelete(document)"></i></button>
-                                    </span>
-                                </div>
-                             </span>
-                                 <p class="project-description flow-text">{{ document.description }}</p>
-                          </div>
-                        </a>
-                    </ng-container>
-                 </div>
-          </p-accordionTab>
-      </p-accordion>
-
-  <ng-template #elseBlock>
-    <div class="card-panel animated zoomIn faster">
-      <p class="not-found-title">projects not found</p>
-    </div>
-  </ng-template>
-</div>
   </div>
 </div>
+
+<!-- Document Upload Modal -->
+<app-document-upload *ngIf="fileToUpload!=null" 
+                     [fileToUpload]="fileToUpload" 
+                     [showUploadModal]="showUploadModal">
+</app-document-upload>
+
+<!-- Document Viewer Modal -->
+<app-viewer [(showViewerModal)]="showViewerModal" 
+            [(manifestHtml)]="mainfestHtml">
+</app-viewer>
+
+<!-- Confirm Dialog -->
+<p-confirmDialog key="confirm">
+  <input type="text">
+</p-confirmDialog>
 
 
 

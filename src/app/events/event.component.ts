@@ -4,7 +4,7 @@ import {CommunityEvent} from '../types/communityEvent';
 import {EventService} from '../services/event.service';
 import {LoginService} from '../services/login.service';
 import {GeneralService} from '../services/general.service';
-import {SafeResourceUrl} from '@angular/platform-browser';
+ 
 
 
 @Component({
@@ -18,13 +18,13 @@ export class EventComponent implements OnInit {
   isAdmin: boolean;
   events: CommunityEvent[];
   documents: Doc[] = [];
-  listOfCategories: String[];
+  listOfCategories: string[];
   monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
-  src: SafeResourceUrl;
+  src?: string;
   fileToUpload: File | null = null;
 
-  @Output() showUploadModal: Boolean;
+  @Output() showUploadModal: boolean;
 
   constructor(private eventService: EventService,
               private loginService: LoginService,
