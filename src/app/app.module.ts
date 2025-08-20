@@ -28,7 +28,6 @@ import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {EventComponent} from './events/event.component';
 import { AnnoncementComponent } from './announcements/annoncement.component';
-import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
 import { LoginComponent } from './login/login.component';
 import {TokenInterceptor} from './services/TokenInterceptor';
@@ -87,7 +86,6 @@ const appRoutes: Routes = [
     AdminComponent,
     LogoutComponent,
     CalendarComponent,
-    NewsletterUploadComponent,
   ],
   imports: [
     BrowserModule,
