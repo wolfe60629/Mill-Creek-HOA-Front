@@ -180,8 +180,6 @@ button {
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
   box-shadow: var(--shadow-soft);
 }
 
