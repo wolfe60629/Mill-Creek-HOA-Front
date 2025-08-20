@@ -20,11 +20,11 @@
         <p-table [value]="communityEvents" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
           <ng-template pTemplate="header">
             <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Location</th>
-              <th>Date / Time</th>
-              <th class="actions-col">Actions</th>
+              <th id= "community-event-name">Name</th>
+              <th id= "community-event-description">Description</th>
+              <th id= "community-event-location">Location</th>
+              <th id= "community-event-datetime">Date / Time</th>
+              <th id = "community-event-actions" class="actions-col">Actions</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
@@ -77,10 +77,10 @@
         <p-table [value]="boardMembers" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
           <ng-template pTemplate="header">
             <tr>
-              <th>Title</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th class="actions-col">Actions</th>
+              <th id="board-member-title">Title</th>
+              <th id="board-member-name">Name</th>
+              <th id="board-member-email">Email</th>
+              <th id="board-member-actions" class="actions-col">Actions</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
