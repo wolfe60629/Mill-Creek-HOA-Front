@@ -1,41 +1,65 @@
-<div class = "outer">
-    <div class="col s12">
-        <div class="header">
-            <h2 class="white-text center-align fancy-cursive"><b>Community Events</b></h2>
-        </div>
+<div class="events-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Events</h1>
+      <p class="hero-subtitle">Stay informed about upcoming activities</p>
     </div>
+  </div>
 
-    <div class="inner">
-        <div class = "page-container">
-          <app-calendar class ="calendar"></app-calendar>
-          <div class="events center-align">
-                    <ul>
-                        <li *ngFor="let event of events">
-                            <div class="time">
-                                <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>
-                            </div>
-                            <div class = "eventTime">
-                                <p>{{generalService.formatTime(event.startDate)}}</p>
-                            </div>
-                            <div class="details">
-                                <h5>{{event.eventName}}</h5>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </li>
-                        <li *ngIf="events.length == 0">
-                          <div class="time">
-<!--                            <h2>{{event.startDate.getDate()}}<br><span>{{monthNames[event.startDate.getMonth()]}}</span></h2>-->
-                          </div>
-                          <div class = "eventTime">
-<!--                            <p>{{generalService.formatTime(event.startDate)}}</p>-->
-                          </div>
-                          <div class="details">
-                            <h5>No Upcoming Events</h5>
-                          </div>
-                          <div style="clear: both;"></div>
-                        </li>
-                    </ul>
+  <!-- Main Content -->
+  <div class="content-section">
+    <div class="container">
+      <div class="content-grid">
+        <!-- Left Column - Calendar -->
+        <div class="left-column">
+          <div class="calendar-card">
+            <h3 class="section-title">Calendar</h3>
+            <div class="calendar-section">
+              <app-calendar></app-calendar>
             </div>
+          </div>
         </div>
+
+        <!-- Right Column - Events List -->
+        <div class="right-column">
+          <div class="events-card">
+            <h3 class="section-title">Upcoming Events</h3>
+            <!-- Admin quick-add -->
+            <div *ngIf="isAdmin" class="quick-add">
+              <button *ngIf="!showAddForm" class="add-btn" (click)="openAddEvent()">+ Add Event</button>
+              <div *ngIf="showAddForm" class="add-form">
+                <input type="text" class="form-input" placeholder="Event name" [(ngModel)]="newEventName" />
+                <input type="text" class="form-input" placeholder="Location (optional)" [(ngModel)]="newEventLocation" />
+                <textarea rows="2" class="form-input" placeholder="Description (optional)" [(ngModel)]="newEventDescription"></textarea>
+                <label class="form-label">Start</label>
+                <input type="datetime-local" class="form-input" [(ngModel)]="newEventStart" />
+                <label class="form-label">End (optional)</label>
+                <input type="datetime-local" class="form-input" [(ngModel)]="newEventEnd" />
+                <div class="form-actions">
+                  <button class="save-btn" (click)="saveNewEvent()">Save</button>
+                  <button class="cancel-btn" (click)="cancelAddEvent()">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="events-list" *ngIf="events && events.length > 0">
+              <div *ngFor="let event of events" class="event-item">
+                <div class="event-date">
+                  <div class="date-number">{{event.startDate.getDate()}}</div>
+                  <div class="date-month">{{monthNames[event.startDate.getMonth()]}}</div>
+                </div>
+                <div class="event-details">
+                  <h4 class="event-name">{{event.eventName}}</h4>
+                  <p class="event-time">{{generalService.formatTime(event.startDate)}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="no-events" *ngIf="!events || events.length === 0">
+              <p>No upcoming events scheduled</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

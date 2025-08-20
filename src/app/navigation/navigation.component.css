@@ -1,17 +1,22 @@
 /* Modern Navigation Component */
 .navbar-container {
-  position: fixed;
+  /* restore normal flow so sidenav has a height context */
+  position: relative; /* not fixed */
+  height: auto;
+  background: transparent;
+  z-index: auto;
+}
+
+/* Make toolbar sticky instead of fixed so container retains height */
+.navbar {
+  position: sticky; /* was fixed */
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.9) !important;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.navbar {
-  background: transparent !important;
   color: #ffffff !important;
   height: 70px;
   padding: 0 2rem;
@@ -20,67 +25,25 @@
   justify-content: space-between;
 }
 
-/* Mobile Menu Button */
-.mobile-menu-btn {
-  display: none;
-  color: #ffffff !important;
-  margin-right: 1rem;
-}
+/* Spacer no longer needed when sticky (optional: keep if jump occurs) */
+.navbar-space { height: 0; }
 
-.mobile-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
+/* Mobile Menu Button */
+.mobile-menu-btn { display: none; color: #ffffff !important; margin-right: 1rem; }
+.mobile-menu-btn:hover { background: rgba(255, 255, 255, 0.1) !important; }
 
 /* Desktop Menu */
-.menu-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
+.menu-container { flex: 1; display: flex; justify-content: center; }
 
-.navbar-links {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2rem;
-  align-items: center;
-}
-
-.navbar-links li {
-  margin: 0;
-}
-
-.navbar-links a {
-  color: #ffffff !important;
-  text-decoration: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.navbar-links a:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff !important;
-}
-
-.navbar-links li.active a {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff !important;
-}
+.navbar-links { display: flex; list-style: none; margin: 0; padding: 0; gap: 2rem; align-items: center; }
+.navbar-links li { margin: 0; }
+.navbar-links a { color: #ffffff !important; text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s ease; position: relative; }
+.navbar-links a:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff !important; }
+.navbar-links li.active a { background: rgba(255, 255, 255, 0.15); color: #ffffff !important; }
 
 /* User Menu */
-.user-menu-btn {
-  color: #ffffff !important;
-  margin-left: 1rem;
-}
-
-.user-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
+.user-menu-btn { color: #ffffff !important; margin-left: 1rem; }
+.user-menu-btn:hover { background: rgba(255, 255, 255, 0.1) !important; }
 
 /* Mobile Sidenav */
 .sidenav-menu {
@@ -88,68 +51,26 @@
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   width: 280px;
+  /* remove manual margin, fixedTopGap now handles offset */
+  margin-top: 0;
 }
 
-.nav-list {
-  padding: 1rem 0;
-}
-
-.nav-list a {
-  color: #ffffff !important;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.nav-list a:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff !important;
-}
-
-/* Navbar Space */
-.navbar-space {
-  height: 70px;
-}
+.nav-list { padding: 1rem 0; }
+.nav-list a { color: #ffffff !important; padding: 1rem 2rem; font-size: 1rem; font-weight: 500; transition: all 0.2s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.nav-list a:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff !important; }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 0 1rem;
-    height: 60px;
-  }
-  
-  .mobile-menu-btn {
-    display: block;
-  }
-  
-  .menu-container {
-    display: none;
-  }
-  
-  .navbar-space {
-    height: 60px;
-  }
-  
-  .sidenav-menu {
-    width: 100%;
-    max-width: 320px;
-  }
+  .navbar { padding: 0 1rem; height: 60px; }
+  .navbar-space { height: 60px; }
+  .mobile-menu-btn { display: block; }
+  .menu-container { display: none; }
+  .sidenav-menu { width: 100%; max-width: 320px; }
 }
 
 @media (max-width: 480px) {
-  .navbar {
-    padding: 0 0.75rem;
-  }
-  
-  .sidenav-menu {
-    width: 100%;
-  }
-  
-  .nav-list a {
-    padding: 1rem 1.5rem;
-    font-size: 0.95rem;
-  }
+  .navbar { padding: 0 0.5rem; }
+  .sidenav-menu { width: 100%; }
+  .nav-list a { padding: 1rem 1.5rem; font-size: 0.95rem; }
 }
 

@@ -19,6 +19,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ButtonModule} from 'primeng/button';
 import {ToastModule} from 'primeng/toast';
 import {DropdownModule} from 'primeng/dropdown';
+import {TabViewModule} from 'primeng/tabview';
 import { ViewerComponent } from './documents/viewer/viewer.component';
 import {DocumentUploadComponent} from './documents/document-upload/document-upload';
 import {MultiSelectModule} from 'primeng/multiselect';
@@ -26,6 +27,8 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {EventComponent} from './events/event.component';
+import { AnnoncementComponent } from './announcements/annoncement.component';
+import { NewsletterUploadComponent } from './announcements/newsletter-upload/newsletter-upload.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
 import { LoginComponent } from './login/login.component';
 import {TokenInterceptor} from './services/TokenInterceptor';
@@ -40,6 +43,7 @@ import {RadioButtonModule} from 'primeng/radiobutton';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {CardModule} from 'primeng/card';
 import {SidebarModule} from "primeng/sidebar";
+import {DialogModule} from 'primeng/dialog';
 import {TooltipModule} from "primeng/tooltip";
 import { providePrimeNG } from 'primeng/config'
 import Material from '@primeng/themes/material'
@@ -58,6 +62,7 @@ const appRoutes: Routes = [
   { path: 'documents', component: DocumentsComponent, data: { title: 'Mill Creek Community | Documents' } },
   { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Board Members' } },
   { path: 'events', component: EventComponent, data: { title: 'Mill Creek Community | Events' } },
+  { path: 'announcements', component: AnnoncementComponent, data: { title: 'Mill Creek Community | Announcements' } },
   { path: 'amenities', component: AmenitiesComponent, data: { title: 'Mill Creek Community | Amenities' } },
   { path: 'login', component: LoginComponent, data: { title: 'Mill Creek Community | Login' } },
   { path: 'logout', component: LogoutComponent, data: { title: 'Mill Creek Community | Logout' } },
@@ -76,11 +81,13 @@ const appRoutes: Routes = [
     DocumentUploadComponent,
     ViewerComponent,
     EventComponent,
+    AnnoncementComponent,
     AmenitiesComponent,
     LoginComponent,
     AdminComponent,
     LogoutComponent,
     CalendarComponent,
+    NewsletterUploadComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +98,7 @@ const appRoutes: Routes = [
     ButtonModule,
     ToastModule,
     DropdownModule,
+    TabViewModule,
     MultiSelectModule,
     AutoCompleteModule,
     NgxExtendedPdfViewerModule,
@@ -102,6 +110,7 @@ const appRoutes: Routes = [
     ProgressSpinnerModule,
     CardModule,
     SidebarModule,
+    DialogModule,
     TooltipModule,
     ReactiveFormsModule.withConfig({ callSetDisabledState: 'whenDisabledForLegacyCode' }),
     MatIcon,

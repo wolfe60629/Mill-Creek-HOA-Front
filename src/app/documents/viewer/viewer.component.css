@@ -1,16 +1,17 @@
 /* The Modal (background) */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    z-index: 1000;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    max-height: unset;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
 }
 
 .show-modal {
@@ -19,37 +20,119 @@
 
 /* Modal Content/Box */
 .modal-content {
-    background-color: #fefefe;
-    margin: 70px auto; /* 15% from the top and centered */
-    padding: 20px;
-    width: 85%; /* Could be more or less, depending on screen size */
-    height:90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    position: fixed; /* Ensure it stays in place */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the modal */
+    margin: 0;
+    padding: 0;
 }
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
+.modal-title {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+/* Close Button */
+.close-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
     cursor: pointer;
+    transition: color 0.2s ease;
 }
 
-.modal-inputs {
-    margin-bottom: 10px;
+.close-btn:hover {
+    color: #ff4d4d;
 }
 
+/* Loading Spinner */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ffffff;
+}
 
-.pdfView {
-    margin-top:0px;
-    width:100%;
-    display: inline-block;
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* PDF Viewer */
+.pdf-viewer {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ensure ngx-extended-pdf-viewer fills its container */
+::ng-deep ngx-extended-pdf-viewer {
+    width: 100%;
+    height: 100%;
+    margin: 0; /* Remove any default margins */
+    padding: 0; /* Remove any default paddings */
+    border: none; /* Remove any borders */
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 10px;
+    margin-top: 20px;
+}
+
+/* Fullscreen Button */
+.fullscreen-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 @media (max-width: 1024px) {
@@ -60,6 +143,169 @@
     }
 
     ::ng-deep ngx-extended-pdf-viewer .html {
-        height: 60%!important;
+        height: 90vh !important    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .pdf-viewer {
+        height: 100%;
+        width: 100%;
+    }
+
+    ::ng-deep ngx-extended-pdf-viewer {
+        height: 100%;
+        width: 100%;
     }
 }
+
+@media (max-width: 480px) {
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+        width: 100vw; /* Full viewport width */
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        overflow: hidden; /* Prevent content overflow */
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+    }
+
+    .close-btn {
+        font-size: 1.2rem;
+    }
+
+    .fullscreen-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .pdf-viewer {
+        flex: 1;
+        height: 100%; /* Full height within the modal */
+        width: 100%; /* Full width within the modal */
+    }
+
+    ::ng-deep ngx-extended-pdf-viewer {
+        height: 100%; /* Full height within the modal */
+        width: 100%; /* Full width within the modal */
+    }
+}
+
+/* Reset old modal styles and implement full-screen overlay */
+.pdf-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  font-family: inherit;
+}
+
+.pdf-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+.pdf-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: #111;
+}
+
+.pdf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  background: linear-gradient(to bottom,#1e1e1e,#161616);
+  border-bottom: 1px solid #2a2a2a;
+  min-height: 44px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.pdf-title { font-size: .95rem; font-weight: 600; color: #fafafa; letter-spacing:.5px; }
+.pdf-toolbar-spacer { flex: 1; }
+
+.pdf-btn {
+  background: #262626;
+  color: #eee;
+  border: 1px solid #333;
+  padding: .4rem .7rem;
+  border-radius: 6px;
+  font-size: .85rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap:.25rem;
+  transition: background .15s,border-color .15s,color .15s;
+}
+.pdf-btn:hover { background:#303030; }
+.pdf-btn:active { background:#3a3a3a; }
+
+.pdf-body {
+  flex: 1;
+  position: relative;
+  min-height: 0; /* allow flex child to shrink */
+  background: #000;
+  overflow: hidden;
+  display: flex;
+}
+
+.embedded-pdf, ::ng-deep ngx-extended-pdf-viewer.embedded-pdf {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  --toolbar-background: #1e1e1e;
+  --toolbar-border: #222;
+}
+
+/* Make the internal viewer occupy all available space */
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf .ng2-pdf-viewer-container,
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf .pdfViewer,
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf .page {
+  max-width: 100% !important;
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 600px) {
+  .pdf-toolbar { padding: .4rem .5rem; min-height: 48px; }
+  .pdf-btn { padding: .55rem .75rem; font-size: .9rem; }
+  .pdf-title { font-size: .85rem; }
+}
+
+/* Handle notches & safe areas */
+@supports(padding: max(0px)) {
+  .pdf-toolbar { padding-left: max(.75rem, env(safe-area-inset-left)); padding-right: max(.75rem, env(safe-area-inset-right)); padding-top: max(.5rem, env(safe-area-inset-top)); }
+  .pdf-body { padding-bottom: max(0rem, env(safe-area-inset-bottom)); }
+}
+
+/* Dark scrollbars (optional) */
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf ::-webkit-scrollbar { width: 10px; }
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf ::-webkit-scrollbar-track { background:#111; }
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf ::-webkit-scrollbar-thumb { background:#333; border-radius:6px; }
+::ng-deep ngx-extended-pdf-viewer.embedded-pdf ::-webkit-scrollbar-thumb:hover { background:#444; }
+
+/* Remove legacy modal rules to avoid conflicts */
+.modal, .modal-content, .modal-header, .modal-footer { all: unset; }

@@ -1,207 +1,118 @@
-<div class="admin-container">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">Administration</h1>
-      <p class="hero-subtitle">Manage community events and board members</p>
+<!-- Modern Admin Page -->
+<div class="admin-page">
+  <header class="admin-hero">
+    <h1 class="admin-title">Administration</h1>
+    <p class="admin-sub">Manage events & board members</p>
+
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="tab-btn" [class.active]="activeTab==='events'" (click)="setTab('events')" role="tab" aria-selected="{{activeTab==='events'}}">📅 Events</button>
+      <button type="button" class="tab-btn" [class.active]="activeTab==='board'" (click)="setTab('board')" role="tab" aria-selected="{{activeTab==='board'}}">👥 Board</button>
     </div>
-  </div>
+  </header>
 
-  <!-- Main Content -->
-  <div class="content-section">
-    <div class="container">
-      <div class="admin-layout">
-        <!-- Left Sidebar - Navigation -->
-        <div class="admin-sidebar">
-          <div class="sidebar-card">
-            <h3 class="sidebar-title">Management</h3>
-            <div class="nav-list">
-              <button 
-                *ngFor="let group of referenceGroups" 
-                class="nav-item"
-                [class.active]="selectedReferenceGroup.groupCode === group.groupCode"
-                (click)="onReferenceGroupSelected()">
-                <span class="nav-icon">
-                  {{ group.groupCode === 'community_events' ? '📅' : '👥' }}
-                </span>
-                <span class="nav-text">{{ group.label }}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Content Area -->
-        <div class="admin-content">
-          <!-- Community Events Management -->
-          <div *ngIf="selectedReferenceGroup.groupCode === 'community_events'" class="content-card">
-            <div class="content-header">
-              <h2 class="content-title">Community Events</h2>
-              <button class="add-btn" (click)="addNewEventRow()">
-                <span class="btn-icon">➕</span>
-                Add Event
-              </button>
-            </div>
-
-            <div class="table-container">
-              <p-table [value]="communityEvents" [resizableColumns]="true" [autoLayout]="true" class="modern-table">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Event Name</th>
-                    <th>Description</th>
-                    <th>Location</th>
-                    <th>Date & Time</th>
-                    <th>Actions</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-communityEvent>
-                  <tr>
-                    <td>
-                      <input *ngIf="!communityEvent.readonly" 
-                             type="text" 
-                             [(ngModel)]="communityEvent.eventName"
-                             class="table-input"/>
-                      <span *ngIf="communityEvent.readonly">{{communityEvent.eventName}}</span>
-                    </td>
-                    <td>
-                      <input *ngIf="!communityEvent.readonly" 
-                             type="text" 
-                             [(ngModel)]="communityEvent.description"
-                             class="table-input"/>
-                      <span *ngIf="communityEvent.readonly">{{communityEvent.description}}</span>
-                    </td>
-                    <td>
-                      <input *ngIf="!communityEvent.readonly" 
-                             type="text" 
-                             [(ngModel)]="communityEvent.location"
-                             class="table-input"/>
-                      <span *ngIf="communityEvent.readonly">{{communityEvent.location}}</span>
-                    </td>
-                    <td>
-                      <div *ngIf="!communityEvent.readonly" class="date-inputs">
-                        <input type="datetime-local" [(ngModel)]="communityEvent.startDate" class="table-input"/>
-                        <input type="datetime-local" [(ngModel)]="communityEvent.endDate" class="table-input"/>
-                      </div>
-                      <div *ngIf="communityEvent.readonly" class="date-display">
-                        <p>{{generalService.formatTimeAndDate(communityEvent.startDate)}}</p>
-                        <p *ngIf="communityEvent.endDate">{{generalService.formatTimeAndDate(communityEvent.endDate)}}</p>
-                      </div>
-                    </td>
-                    <td class="actions-cell">
-                      <div class="action-buttons" *ngIf="communityEvent.readonly">
-                        <button class="action-btn edit-btn" 
-                                pTooltip="Edit" 
-                                (click)="editRow(communityEvent)">
-                          ✏️
-                        </button>
-                        <button class="action-btn delete-btn" 
-                                pTooltip="Delete" 
-                                (click)="onDeleteCommunityEvent(communityEvent)">
-                          🗑️
-                        </button>
-                      </div>
-                      <div class="action-buttons" *ngIf="!communityEvent.readonly">
-                        <button class="action-btn save-btn" 
-                                pTooltip="Save" 
-                                (click)="onEventSave(communityEvent)">
-                          ✅
-                        </button>
-                        <button class="action-btn cancel-btn" 
-                                pTooltip="Cancel" 
-                                (click)="cancelEdit(communityEvent)">
-                          ❌
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-
-            <div *ngIf="communityEvents.length === 0" class="empty-state">
-              <div class="empty-icon">📅</div>
-              <h3>No Community Events</h3>
-              <p>Start by adding your first community event</p>
-            </div>
-          </div>
-
-          <!-- Board Members Management -->
-          <div *ngIf="selectedReferenceGroup.groupCode === 'board_members'" class="content-card">
-            <div class="content-header">
-              <h2 class="content-title">Board Members</h2>
-              <button class="add-btn" (click)="addNewBoardMemberRow()">
-                <span class="btn-icon">➕</span>
-                Add Member
-              </button>
-            </div>
-
-            <div class="table-container">
-              <p-table [value]="boardMembers" [resizableColumns]="true" [autoLayout]="true" class="modern-table">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Title</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-boardMember>
-                  <tr>
-                    <td>
-                      <input *ngIf="!boardMember.readonly" 
-                             type="text" 
-                             [(ngModel)]="boardMember.title"
-                             class="table-input"/>
-                      <span *ngIf="boardMember.readonly">{{boardMember.title}}</span>
-                    </td>
-                    <td>
-                      <input *ngIf="!boardMember.readonly" 
-                             type="text" 
-                             [(ngModel)]="boardMember.name"
-                             class="table-input"/>
-                      <span *ngIf="boardMember.readonly">{{boardMember.name}}</span>
-                    </td>
-                    <td>
-                      <input *ngIf="!boardMember.readonly" 
-                             type="text" 
-                             [(ngModel)]="boardMember.email"
-                             class="table-input"/>
-                      <span *ngIf="boardMember.readonly">{{boardMember.email}}</span>
-                    </td>
-                    <td class="actions-cell">
-                      <div class="action-buttons" *ngIf="boardMember.readonly">
-                        <button class="action-btn edit-btn" 
-                                pTooltip="Edit" 
-                                (click)="editRow(boardMember)">
-                          ✏️
-                        </button>
-                        <button class="action-btn delete-btn" 
-                                pTooltip="Delete" 
-                                (click)="onDeleteBoardMember(boardMember)">
-                          🗑️
-                        </button>
-                      </div>
-                      <div class="action-buttons" *ngIf="!boardMember.readonly">
-                        <button class="action-btn save-btn" 
-                                pTooltip="Save" 
-                                (click)="onBoardMemberSave(boardMember)">
-                          ✅
-                        </button>
-                        <button class="action-btn cancel-btn" 
-                                pTooltip="Cancel" 
-                                *ngIf="!boardMember.newMember"
-                                (click)="cancelEdit(boardMember)">
-                          ❌
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
-            </div>
-          </div>
-        </div>
+  <div class="tab-panels">
+    <section class="admin-section" aria-labelledby="events-heading" [attr.data-active]="activeTab==='events'">
+      <div class="panel-header">
+        <h2 id="events-heading">Events</h2>
+        <button type="button" class="primary-btn" (click)="addNewEventRow()">➕ Add</button>
       </div>
-    </div>
+      <div class="data-panel">
+        <p-table [value]="communityEvents" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Date / Time</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.eventName" class="in" placeholder="Title" />
+                <span *ngIf="row.readonly">{{row.eventName || '—'}}</span>
+              </td>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.description" class="in" placeholder="Description" />
+                <span *ngIf="row.readonly" class="muted">{{row.description || '—'}} </span>
+              </td>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.location" class="in" placeholder="Location" />
+                <span *ngIf="row.readonly">{{row.location || '—'}}</span>
+              </td>
+              <td>
+                <div *ngIf="!row.readonly" class="date-stack">
+                  <input type="datetime-local" [(ngModel)]="row.startDate" class="in" />
+                  <input type="datetime-local" [(ngModel)]="row.endDate" class="in" />
+                </div>
+                <div *ngIf="row.readonly" class="date-display small-text">
+                  <div>{{generalService.formatTimeAndDate(row.startDate) || '—'}}</div>
+                  <div *ngIf="row.endDate">→ {{generalService.formatTimeAndDate(row.endDate)}}</div>
+                </div>
+              </td>
+              <td class="actions-col">
+                <div *ngIf="row.readonly" class="row-actions">
+                  <button type="button" class="icon-btn" pTooltip="Edit" (click)="editRow(row)">✏️</button>
+                  <button type="button" class="icon-btn warn" pTooltip="Delete" (click)="onDeleteCommunityEvent(row)">🗑️</button>
+                </div>
+                <div *ngIf="!row.readonly" class="row-actions">
+                  <button type="button" class="icon-btn success" pTooltip="Save" (click)="onEventSave(row)">✔️</button>
+                  <button type="button" class="icon-btn warn" pTooltip="Cancel" (click)="cancelEdit(row)">✖️</button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div *ngIf="communityEvents?.length===0" class="empty">No events yet.</div>
+      </div>
+    </section>
+
+    <section class="admin-section" aria-labelledby="board-heading" [attr.data-active]="activeTab==='board'">
+      <div class="panel-header">
+        <h2 id="board-heading">Board Members</h2>
+        <button type="button" class="primary-btn" (click)="addNewBoardMemberRow()">➕ Add</button>
+      </div>
+      <div class="data-panel">
+        <p-table [value]="boardMembers" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Title</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th class="actions-col">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.title" class="in" placeholder="Title" />
+                <span *ngIf="row.readonly">{{row.title || '—'}}</span>
+              </td>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.name" class="in" placeholder="Name" />
+                <span *ngIf="row.readonly">{{row.name || '—'}}</span>
+              </td>
+              <td>
+                <input *ngIf="!row.readonly" [(ngModel)]="row.email" class="in" placeholder="Email" />
+                <span *ngIf="row.readonly" class="email">{{row.email || '—'}}</span>
+              </td>
+              <td class="actions-col">
+                <div *ngIf="row.readonly" class="row-actions">
+                  <button type="button" class="icon-btn" pTooltip="Edit" (click)="editRow(row)">✏️</button>
+                  <button type="button" class="icon-btn warn" pTooltip="Delete" (click)="onDeleteBoardMember(row)">🗑️</button>
+                </div>
+                <div *ngIf="!row.readonly" class="row-actions">
+                  <button type="button" class="icon-btn success" pTooltip="Save" (click)="onBoardMemberSave(row)">✔️</button>
+                  <button *ngIf="!row.newMember" type="button" class="icon-btn warn" pTooltip="Cancel" (click)="cancelEdit(row)">✖️</button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div *ngIf="boardMembers?.length===0" class="empty">No members yet.</div>
+      </div>
+    </section>
   </div>
 </div>
 

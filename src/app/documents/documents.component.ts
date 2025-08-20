@@ -73,7 +73,7 @@ export class DocumentsComponent implements OnInit {
       accept: () => {
         this.showViewerModal = false;
         this.documentsService.deleteDocument(doc).subscribe(() => {
-              this.messageService.add({severity: 'success', summary: 'Request Deleted Successfully!'});
+              this.messageService.add({severity: 'success', summary: 'Document Deleted Successfully!'});
               this.documentsService.getAllDocuments().subscribe(((documentArr: Doc[]) => {
                 this.documents = documentArr;
               }));

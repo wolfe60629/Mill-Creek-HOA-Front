@@ -87,13 +87,13 @@
 }
 
 .hero-title {
-  font-size: 3.2rem;
+  font-size: 4rem; /* Increase font size for better readability */
   font-weight: 700;
   color: #ffffff;
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7); /* Enhance text shadow for contrast */
   animation: modernTitleIntro 0.8s ease-out forwards;
   opacity: 0;
   transform: translateY(20px);
@@ -160,7 +160,7 @@
 
 /* High-Tech Navigation Section */
 .nav-section {
-  background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 1.5rem;
@@ -203,16 +203,17 @@
 }
 
 .nav-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  max-width: 900px;
+  display: flex; /* Use flexbox for a single row */
+  flex-wrap: nowrap; /* Prevent wrapping */
+  justify-content: space-between; /* Distribute buttons evenly */
+  gap: 1rem; /* Add spacing between buttons */
+  overflow-x: auto; /* Allow horizontal scrolling if needed */
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  padding: 1rem 1.25rem;
+  padding: 1rem 2.25rem;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   text-decoration: none;
@@ -222,6 +223,7 @@
   position: relative;
   overflow: hidden;
   gap: 0.75rem;
+  margin: 3px;
 }
 
 .nav-link::before {
@@ -332,13 +334,42 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-title {
+    font-size: 3rem; /* Adjust font size for tablets */
+    text-align: center; /* Ensure proper alignment */
+    word-wrap: break-word; /* Prevent text from running off the screen */
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem; /* Adjust subtitle size for tablets */
+  }
+
+  .hero-content {
+    padding: 0 1.5rem; /* Add padding for better spacing */
+    align-items: center; /* Center content horizontally */
+    text-align: center; /* Ensure text is centered */
+  }
+
+  .nav-links {
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center; /* Center align buttons */
+    gap: 1rem; /* Add spacing between buttons */
+  }
+
+  .home-container {
+    padding: 1rem; /* Add padding for better spacing */
+  }
+}
+
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 2.8rem;
+    font-size: 2.5rem; /* Adjust font size for smaller screens */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7); /* Maintain contrast */
   }
   
   .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1rem; /* Adjust subtitle size */
   }
   
   .nav-section {
@@ -346,20 +377,18 @@
   }
   
   .nav-links {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    justify-content: center; /* Center align buttons */
+    gap: 0.5rem; /* Reduce gap between buttons */
   }
   
   .nav-link {
-    padding: 1rem 1.25rem;
-    flex-direction: column;
-    text-align: center;
-    gap: 0.75rem;
+    padding: 0.75rem 1rem; /* Adjust padding for smaller buttons */
+    font-size: 0.85rem; /* Adjust text size */
   }
   
-  .link-text {
-    text-align: center;
-    font-size: 0.85rem;
+  .home-container {
+    padding: 1rem; /* Add padding for better spacing */
   }
   
   .admin-link {

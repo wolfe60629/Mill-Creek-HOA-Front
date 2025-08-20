@@ -2,7 +2,7 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <h1 class="hero-title">Community Amenities</h1>
+      <h1 class="hero-title">Amenities</h1>
       <p class="hero-subtitle">World-class facilities for our residents</p>
     </div>
   </div>
@@ -119,10 +119,9 @@
     </div>
   </div>
 
-  <!-- Pool Rules Sidebar -->
-  <p-sidebar [(visible)]="visibleSidebar1" (onHide)="closeRules()" position="right" styleClass="modern-sidebar">
+  <!-- Pool Rules Dialog (centered and responsive) -->
+  <p-dialog [(visible)]="visibleSidebar1" modal="true" [style]="{width: '90vw', maxWidth: '900px'}" [contentStyle]="{maxHeight: '70vh', overflow: 'auto'}" (onHide)="closeRules()" header="Pool Rules">
     <div class="sidebar-content">
-      <h3 class="sidebar-title">Pool Rules</h3>
       <div class="rules-content">
         <ul class="rules-list">
           <li>In April 2021, Governor Kemp lifted most of the requirements for Covid-19, including community swimming pools. However, Mill Creek residents are still cautioned to be aware of the spread of Covid-19 and should take recommended precautions, including washing hands frequently in the bathrooms and maintaining a safe distance from others.</li>
@@ -150,12 +149,11 @@
         </ul>
       </div>
     </div>
-  </p-sidebar>
+  </p-dialog>
 
-  <!-- Court Rules Sidebar -->
-  <p-sidebar [(visible)]="visibleSidebar2" (onHide)="closeRules()" position="right" styleClass="modern-sidebar">
+  <!-- Court Rules Dialog (centered and responsive) -->
+  <p-dialog [(visible)]="visibleSidebar2" modal="true" [style]="{width: '90vw', maxWidth: '900px'}" [contentStyle]="{maxHeight: '70vh', overflow: 'auto'}" (onHide)="closeRules()" header="Basketball/Tennis Court Rules">
     <div class="sidebar-content">
-      <h3 class="sidebar-title">Basketball/Tennis Court Rules</h3>
       <div class="rules-content">
         <ul class="rules-list">
           <li>Basketball and tennis courts are intended for Mill Creek residents and their guests for basketball and tennis play only. All other activities that the courts are not designed for are strictly prohibited.</li>
@@ -171,5 +169,5 @@
         </ul>
       </div>
     </div>
-  </p-sidebar>
+  </p-dialog>
 </div>

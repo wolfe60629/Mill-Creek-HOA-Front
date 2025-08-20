@@ -22,7 +22,7 @@ export class DocumentUploadComponent implements OnInit {
        name: ''
    };
 
-    private output: String[];
+     output: string[] = [];
     protected categoryType: string = 'Meeting Minutes';
 
   constructor(private documentsComponent: DocumentsComponent,

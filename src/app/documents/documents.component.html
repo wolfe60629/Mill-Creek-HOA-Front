@@ -2,8 +2,8 @@
   <!-- Hero Section -->
   <div class="hero-section">
     <div class="hero-content">
-      <h1 class="hero-title">Community Documents</h1>
-      <p class="hero-subtitle">Access important community information and resources</p>
+      <h1 class="hero-title">Documents</h1>
+      <p class="hero-subtitle">Access important information and resources</p>
     </div>
   </div>
 
@@ -82,8 +82,10 @@
                      [showUploadModal]="showUploadModal">
 </app-document-upload>
 
-<!-- Document Viewer Modal -->
-<app-viewer [(showViewerModal)]="showViewerModal" 
+<!-- Document Viewer Modal with Backdrop -->
+<div class="modal-backdrop" [class.active]="showViewerModal" (click)="showViewerModal = false"></div>
+<app-viewer [class.active]="showViewerModal" 
+            [(showViewerModal)]="showViewerModal" 
             [(manifestHtml)]="mainfestHtml">
 </app-viewer>
 
