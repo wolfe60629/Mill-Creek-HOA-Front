@@ -1,0 +1,78 @@
+name: Deploy
+
+run-name: Deploy - ${{ github.event.inputs.branch }} (Build #${{ github.event.inputs.run_number }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'develop'
+        type: choice
+        options:
+          - develop
+          - main
+          - release/6.0
+      run_number:
+        description: 'Build run number to deploy (check the Build workflow runs)'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.event.inputs.branch }}-${{ github.event.inputs.run_number }}
+          path: dist/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download build metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: build-metadata-${{ github.event.inputs.branch }}-${{ github.event.inputs.run_number }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display build information
+        run: |
+          echo "Deploying build from:"
+          cat build-info.txt
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Angular CLI and gh-pages package
+        run: |
+          npm install -g @angular/cli
+          npm install angular-cli-ghpages --save-dev
+
+      - name: Deploy application to GitHub Pages
+        run: npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.event.inputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Run:** ${{ github.event.inputs.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Information" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat build-info.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
