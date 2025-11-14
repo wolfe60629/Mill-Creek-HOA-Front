@@ -28,6 +28,13 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
+      - name: Sanitize branch name for artifact
+        id: sanitize
+        run: |
+          branch="${{ github.event.inputs.branch }}"
+          branch_safe=$(echo "$branch" | sed 's/[\/\\:*?"<>|]/-/g')
+          echo "branch_safe=$branch_safe" >> $GITHUB_OUTPUT
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -37,14 +44,14 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-${{ github.event.inputs.branch }}-${{ github.event.inputs.run_number }}
+          name: build-${{ steps.sanitize.outputs.branch_safe }}-${{ github.event.inputs.run_number }}
           path: dist/
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download build metadata
         uses: actions/download-artifact@v4
         with:
-          name: build-metadata-${{ github.event.inputs.branch }}-${{ github.event.inputs.run_number }}
+          name: build-metadata-${{ steps.sanitize.outputs.branch_safe }}-${{ github.event.inputs.run_number }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Display build information

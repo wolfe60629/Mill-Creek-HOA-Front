@@ -37,10 +37,17 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Sanitize branch name for artifact
+        id: sanitize
+        run: |
+          $branch = "${{ github.ref_name }}" -replace '[/\\:*?"<>|]', '-'
+          echo "branch_safe=$branch" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ github.ref_name }}-${{ github.run_number }}
+          name: build-${{ steps.sanitize.outputs.branch_safe }}-${{ github.run_number }}
           path: dist/
           retention-days: 30
 
@@ -48,6 +55,7 @@ jobs:
         run: |
           echo "Build metadata for run ${{ github.run_number }}" > build-info.txt
           echo "Branch: ${{ github.ref_name }}" >> build-info.txt
+          echo "Branch (sanitized): ${{ steps.sanitize.outputs.branch_safe }}" >> build-info.txt
           echo "Commit: ${{ github.sha }}" >> build-info.txt
           echo "Run ID: ${{ github.run_id }}" >> build-info.txt
           echo "Run Number: ${{ github.run_number }}" >> build-info.txt
@@ -56,6 +64,6 @@ jobs:
       - name: Upload build metadata
         uses: actions/upload-artifact@v4
         with:
-          name: build-metadata-${{ github.ref_name }}-${{ github.run_number }}
+          name: build-metadata-${{ steps.sanitize.outputs.branch_safe }}-${{ github.run_number }}
           path: build-info.txt
           retention-days: 30
