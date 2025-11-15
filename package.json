@@ -34,7 +34,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@primeng/themes": "^19.0.5",
     "@syncfusion/ej2-angular-inputs": "^19.4.52",
-    "@t-ypes/jest": "^29.5.14",
+    "@types/jest": "^29.5.14",
     "@types/materialize-css": "^1.0.14",
     "angular-material-event-calendar": "^0.1.4",
     "animate.css": "^4.1.1",
