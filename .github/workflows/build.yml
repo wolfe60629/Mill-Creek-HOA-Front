@@ -28,17 +28,14 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
-
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli
 
       - name: Install dependencies
         run: npm install
 
       - name: Build application
-        run: npm run build
+        run: npx ng build --configuration production
 
       - name: Sanitize branch name for artifact
         id: sanitize
