@@ -5641,7 +5641,7 @@ function getDocument(src = {}) {
   }
   const docParams = {
     docId,
-    apiVersion: "4.7.715",
+    apiVersion: "4.7.728",
     data,
     password,
     disableAutoFetch,
@@ -7428,8 +7428,8 @@ class InternalRenderTask {
     }
   }
 }
-const version = "4.7.715";
-const build = "6a89a2697";
+const version = "4.7.728";
+const build = "7b20f7367";
 
 
 /***/ }),
@@ -20071,8 +20071,8 @@ var text_layer = __webpack_require__(814);
 
 
 
-const pdfjsVersion = "4.7.715";
-const pdfjsBuild = "6a89a2697";
+const pdfjsVersion = "4.7.728";
+const pdfjsBuild = "7b20f7367";
 
 
 /***/ }),
@@ -21480,6 +21480,16 @@ function toggleExpandedBtn(button, toggle, view = null) {
   button.classList.toggle("toggled", toggle);
   button.setAttribute("aria-expanded", toggle);
   view?.classList.toggle("hidden", !toggle);
+  if (view && !view.classList.contains("hidden")) {
+    const rect = button.getBoundingClientRect();
+    const container = button.closest("#toolbarViewer");
+    if (container) {
+      const containerRect = container.getBoundingClientRect();
+      const distanceFromRight = containerRect.right - rect.right;
+      view.style.removeProperty("inset-inline-end");
+      view.style.setProperty("inset-inline-end", distanceFromRight + "px");
+    }
+  }
 }
 const calcRound = function () {
   const e = document.createElement("div");
@@ -22309,7 +22319,7 @@ var pdf = __webpack_require__(905);
 
 
 ;// ./web/ngx-extended-pdf-viewer-version.js
-const ngxExtendedPdfViewerVersion = '22.2.0';
+const ngxExtendedPdfViewerVersion = '22.3.9';
 ;// ./web/event_utils.js
 const WaitOnType = {
   EVENT: "event",
@@ -26433,6 +26443,11 @@ class PDFFindController {
     this._pageViewMode = pageViewMode;
     this.onIsPageVisible = null;
     this.#reset();
+    this._eventBus.on("pageviewmodechanged", ({
+      pageViewMode
+    }) => {
+      this._pageViewMode = pageViewMode;
+    });
     if (listenToEventBus) {
       eventBus._on("find", this.#onFind.bind(this));
       eventBus._on("findbarclose", this.#onFindBarClose.bind(this));
@@ -34470,7 +34485,7 @@ class PDFViewer {
   #maxZoom = MAX_SCALE;
   #minZoom = MIN_SCALE;
   constructor(options) {
-    const viewerVersion = "4.7.715";
+    const viewerVersion = "4.7.728";
     if (pdf.version !== viewerVersion) {
       throw new Error(`The API version "${pdf.version}" does not match the Viewer version "${viewerVersion}".`);
     }
@@ -34578,6 +34593,10 @@ class PDFViewer {
           watchScroll(this.#outerScrollContainer, this._scrollUpdate.bind(this));
         }
       }
+      this.eventBus.dispatch("pageviewmodechanged", {
+        source: this,
+        pageViewMode: viewMode
+      });
     }
   }
   #findParentWithScrollbar(element) {
@@ -37891,7 +37910,21 @@ const PDFViewerApplication = {
           initialDest: openAction?.dest
         });
         const initialBookmark = this.initialBookmark;
-        const zoom = AppOptions.get("defaultZoomValue");
+        let zoom = AppOptions.get("defaultZoomValue");
+        if (!zoom || zoom === '') {
+          try {
+            zoom = await this.store.get('zoom');
+            if (typeof zoom === 'string') {
+              zoom = zoom?.replace("%", "");
+            }
+            if (!isNaN(Number(zoom))) {
+              zoom = Number(zoom) / 100;
+            }
+          } catch (error) {}
+        }
+        if (!pdfViewer.currentScaleValue && zoom && zoom !== '') {
+          pdfViewer.currentScaleValue = zoom;
+        }
         let hash = zoom ? `zoom=${zoom}` : null;
         let rotation = null;
         let sidebarView = AppOptions.get("sidebarViewOnLoad");
@@ -38227,6 +38260,10 @@ const PDFViewerApplication = {
     }
   },
   _cleanup() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
     if (!this.pdfDocument) {
       return;
     }
@@ -38494,19 +38531,25 @@ const PDFViewerApplication = {
     });
     if (viewerContainer) {
       let resizeTimeout;
-      const resizeObserver = new ResizeObserver(entries => {
-        for (const entry of entries) {
-          if (entry.target === mainContainer) {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
+      let previousWidth = mainContainer.clientWidth;
+      let previousHeight = mainContainer.clientHeight;
+      this.resizeObserver = new ResizeObserver(entries => {
+        const newWidth = mainContainer.clientWidth;
+        const newHeight = mainContainer.clientHeight;
+        if (newWidth !== previousWidth || newHeight !== previousHeight) {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            if (mainContainer.offsetParent) {
               eventBus.dispatch("resize", {
                 source: mainContainer
               });
-            }, 50);
-          }
+            }
+          }, 50);
+          previousWidth = newWidth;
+          previousHeight = newHeight;
         }
       });
-      resizeObserver.observe(mainContainer);
+      this.resizeObserver.observe(mainContainer);
     } else {
       window.addEventListener("resize", () => eventBus.dispatch("resize", {
         source: window
@@ -39391,8 +39434,8 @@ PDFViewerApplication.serviceWorkerOptions = ServiceWorkerOptions;
 
 
 
-const pdfjsVersion = "4.7.715";
-const pdfjsBuild = "6a89a2697";
+const pdfjsVersion = "4.7.728";
+const pdfjsBuild = "7b20f7367";
 const AppConstants = {
   LinkTarget: LinkTarget,
   RenderingStates: RenderingStates,
