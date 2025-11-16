@@ -36,7 +36,7 @@ jobs:
           echo "branch_safe=$branch_safe" >> $GITHUB_OUTPUT
 
       - name: Download build artifacts from specific run
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
@@ -47,7 +47,7 @@ jobs:
           skip_unpack: false
 
       - name: Download build metadata from specific run
-        uses: dawidd6/action-download-artifact@v3
+        uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: build.yml
