@@ -43,7 +43,8 @@ jobs:
           run_id: ${{ github.event.inputs.run_id }}
           name: build-${{ steps.sanitize.outputs.branch_safe }}-*
           name_is_regexp: true
-          path: dist/
+          path: artifacts/
+          skip_unpack: false
 
       - name: Download build metadata from specific run
         uses: dawidd6/action-download-artifact@v3
@@ -53,7 +54,27 @@ jobs:
           run_id: ${{ github.event.inputs.run_id }}
           name: build-metadata-${{ steps.sanitize.outputs.branch_safe }}-*
           name_is_regexp: true
-          path: ./
+          path: artifacts/
+          skip_unpack: false
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R artifacts/
+
+      - name: Move artifacts to correct locations
+        run: |
+          # Find and move the build directory
+          build_dir=$(find artifacts -type d -name "build-*" | head -n 1)
+          if [ -n "$build_dir" ]; then
+            mv "$build_dir"/* dist/ 2>/dev/null || true
+          fi
+          
+          # Find and move the metadata file
+          metadata_file=$(find artifacts -name "build-info.txt" | head -n 1)
+          if [ -n "$metadata_file" ]; then
+            cp "$metadata_file" ./build-info.txt
+          fi
 
       - name: Display build information
         run: |
