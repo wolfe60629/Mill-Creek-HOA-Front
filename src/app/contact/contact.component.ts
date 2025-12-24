@@ -33,7 +33,18 @@ export class ContactComponent implements OnInit {
               'instagram')]
         );
     });
+  }
 
-
+  getIcon(iconName: string): string {
+    const iconMap: { [key: string]: string } = {
+      'user': '👤',
+      'facebook': '📘',
+      'instagram': '📷',
+      'email': '✉️',
+      'phone': '📞',
+      'location': '📍',
+      'website': '🌐'
+    };
+    return iconMap[iconName] || '📋';
   }
 }

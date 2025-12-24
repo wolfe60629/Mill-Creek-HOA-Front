@@ -19,7 +19,7 @@
             <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
         <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true" autocomplete="off"/>
 
-            <p-autoComplete *ngIf="categoryType==='Other'" [(ngModel)]="category.name" [suggestions]="this.output" (completeMethod)="search($event)"
+            <p-autoComplete *ngIf="categoryType==='Other'" [(ngModel)]="category.name" [suggestions]="output" (completeMethod)="search($event)"
                             placeholder="Enter a Category"></p-autoComplete>
 
             <input id="year" *ngIf="categoryType==='Meeting Minutes'" [(ngModel)]="category.name" type="number"  minLength="4" maxlength="4"

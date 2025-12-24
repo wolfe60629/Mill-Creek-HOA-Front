@@ -1,5 +1,5 @@
-/* Modern Documents Page */
-.documents-container {
+/* Modern Announcements Page */
+.announcements-container {
   min-height: 100vh;
   color: #333333;
 }
@@ -54,13 +54,27 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+}
+
+/* Content Grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+/* Left Column */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 /* Upload Section */
 .upload-section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .upload-card {
@@ -118,12 +132,12 @@
   font-weight: 500;
 }
 
-/* Documents Section */
-.documents-section {
+/* PDF Section */
+.pdf-section {
   margin-bottom: 2rem;
 }
 
-.documents-card {
+.pdf-card {
   background: #ffffff;
   border-radius: 16px;
   padding: 2rem;
@@ -131,117 +145,156 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.documents-grid {
+.pdf-viewer {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+  margin-bottom: 2rem;
+}
+
+.newsletter-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.newsletter-grid {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.document-item {
+.newsletter-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
   background: #f8f9fa;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
 }
 
-.document-item:hover {
+.newsletter-item:hover {
   background: #e9ecef;
   border-color: #dee2e6;
   transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.document-icon {
-  font-size: 2rem;
+.newsletter-icon {
+  font-size: 1.5rem;
   flex-shrink: 0;
 }
 
-.document-content {
+.newsletter-content {
   flex: 1;
 }
 
-.document-title {
-  font-size: 1.1rem;
+.newsletter-title {
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   color: #333333;
 }
 
-.document-description {
+.newsletter-description {
   font-size: 0.9rem;
   color: #6c757d;
   margin: 0;
-  line-height: 1.4;
 }
 
-.document-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.delete-btn:hover {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.document-arrow {
+.newsletter-arrow {
   font-size: 1.2rem;
   color: #007bff;
   transition: transform 0.2s ease;
 }
 
-.document-item:hover .document-arrow {
+.newsletter-item:hover .newsletter-arrow {
   transform: translateX(5px);
 }
 
-/* No Documents */
-.no-documents {
-  text-align: center;
-  padding: 3rem 0;
+/* Right Column */
+.right-column {
+  display: flex;
+  flex-direction: column;
 }
 
-.no-documents-card {
+.events-card {
   background: #ffffff;
   border-radius: 16px;
-  padding: 3rem 2rem;
+  padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  max-width: 500px;
-  margin: 0 auto;
+  height: fit-content;
 }
 
-.no-documents-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
+.calendar-section {
+  margin-bottom: 2rem;
 }
 
-.no-documents-card h3 {
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.event-date {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.date-number {
   font-size: 1.5rem;
+  font-weight: 700;
+  color: #007bff;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.event-details {
+  flex: 1;
+}
+
+.event-name {
+  font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.25rem 0;
   color: #333333;
 }
 
-.no-documents-card p {
-  font-size: 1rem;
+.event-time {
+  font-size: 0.9rem;
   color: #6c757d;
   margin: 0;
+}
+
+.no-events {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
 }
 
 /* Modern Accordion */
@@ -265,43 +318,6 @@
   padding: 1rem 0;
 }
 
-/* Adjusted Modal Backdrop */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8); /* Slightly darker for better contrast */
-  z-index: 1000;
-  backdrop-filter: blur(15px); /* Increased blur for elegance */
-  display: none; /* Ensure it is hidden by default */
-}
-
-.modal-backdrop.active {
-  display: block; /* Show only when active */
-}
-
-/* Adjusted Viewer Modal */
-app-viewer {
-  position: fixed;
-  z-index: 1001;
-  background: rgba(0, 0, 0, 0.95); /* Darker background for better focus */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px; /* Slightly more rounded corners */
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7); /* Softer shadow */
-  padding: 3rem; /* Increased padding for better spacing */
-  max-width: 80%; /* Adjusted width */
-  max-height: 80%; /* Adjusted height */
-  overflow: auto;
-  display: none; /* Ensure it is hidden by default */
-  animation: fadeIn 0.3s ease-out;
-}
-
-app-viewer.active {
-  display: block; /* Show only when active */
-}
-
 /* Animations */
 @keyframes fadeInUp {
   from {
@@ -314,16 +330,14 @@ app-viewer.active {
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .hero-section {
     padding: 5rem 1rem 2rem;
@@ -346,12 +360,10 @@ app-viewer.active {
   }
   
   .upload-card,
-  .documents-card {
+  .pdf-card,
+  .newsletter-card,
+  .events-card {
     padding: 1.5rem;
-  }
-  
-  .document-item {
-    padding: 1.25rem;
   }
 }
 
@@ -365,21 +377,21 @@ app-viewer.active {
   }
   
   .upload-card,
-  .documents-card {
+  .pdf-card,
+  .newsletter-card,
+  .events-card {
     padding: 1.25rem;
   }
   
-  .document-item {
+  .newsletter-item {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   
-  .document-actions {
-    justify-content: center;
-  }
-  
-  .no-documents-card {
-    padding: 2rem 1.5rem;
+  .event-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
   }
 }

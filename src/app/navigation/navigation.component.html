@@ -1,59 +1,59 @@
-
 <mat-sidenav-container class="navbar-container navbar-fixed">
   <!-- Sidebar for Mobile (Initially hidden on large screens) -->
-  <mat-sidenav #sidenav mode="over" class="sidenav-menu" [opened]="false">
+  <mat-sidenav #sidenav mode="over" position="start" class="sidenav-menu" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="70">
     <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/about" (click)="sidenav.close()">Community Information</a>
+      <a mat-list-item routerLink="/about" (click)="sidenav.close()">About</a>
       <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
-      <a mat-list-item routerLink="/events" (click)="sidenav.close()">Community Events</a>
+      <a mat-list-item routerLink="/events" (click)="sidenav.close()">Events</a>
       <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
       <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
       <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Board Members</a>
       <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
     </mat-nav-list>
   </mat-sidenav>
-  <!-- Top Navbar -->
-  <mat-toolbar class="navbar z-depth-0 white">
-    <!-- Mobile Menu Icon -->
-    <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn">
-      <mat-icon>menu</mat-icon>
-    </button>
-
-    <!-- Desktop Menu -->
-    <div class="menu-container">
-      <ul class="navbar-links">
-        <li [ngClass]="route === '/about' ? 'active' : ''">
-          <a routerLink="/about" class="black-text text-darken-3">Community Info</a>
-        </li>
-        <li [ngClass]="route === '/amenities' ? 'active' : ''">
-          <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
-        </li>
-        <li [ngClass]="route === '/events' ? 'active' : ''">
-          <a routerLink="/events" class="black-text text-darken-3">Community Events</a>
-        </li>
-        <li [ngClass]="route === '/documents' ? 'active' : ''">
-          <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
-        </li>
-        <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
-        <li [ngClass]="route === '/contact' ? 'active' : ''">
-          <a routerLink="/contact" class="black-text text-darken-3">Board Members</a>
-        </li>
-        <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
-      </ul>
-    </div>
-
-    <!-- User Icon Menu -->
-    <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu  #userMenu="matMenu">
-      <button mat-menu-item (click)="openAdmin()">
-        <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+  <mat-sidenav-content>
+    <!-- Top Navbar -->
+    <mat-toolbar class="navbar z-depth-0 white" [style.height]="'var(--navbar-height)'">
+      <!-- Mobile Menu Icon -->
+      <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn">
+        <mat-icon>menu</mat-icon>
       </button>
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon> Logout
+
+      <!-- Desktop Menu -->
+      <div class="menu-container">
+        <ul class="navbar-links">
+          <li [ngClass]="route === '/about' ? 'active' : ''">
+            <a routerLink="/about" class="black-text text-darken-3">About</a>
+          </li>
+          <li [ngClass]="route === '/amenities' ? 'active' : ''">
+            <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
+          </li>
+          <li [ngClass]="route === '/events' ? 'active' : ''">
+            <a routerLink="/events" class="black-text text-darken-3">Events</a>
+          </li>
+          <li [ngClass]="route === '/documents' ? 'active' : ''">
+            <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
+          </li>
+          <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
+          <li [ngClass]="route === '/contact' ? 'active' : ''">
+            <a routerLink="/contact" class="black-text text-darken-3">Board Members</a>
+          </li>
+          <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
+        </ul>
+      </div>
+
+      <!-- User Icon Menu -->
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin" class="user-menu-btn">
+        <mat-icon>account_circle</mat-icon>
       </button>
-    </mat-menu>
-  </mat-toolbar>
+      <mat-menu  #userMenu="matMenu">
+        <button mat-menu-item (click)="openAdmin()">
+          <mat-icon>admin_panel_settings</mat-icon> Admin Panel
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon> Logout
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+  </mat-sidenav-content>
 </mat-sidenav-container>
-<div class ='navbar-space'></div>

@@ -9,11 +9,10 @@ export class TokenInterceptor implements HttpInterceptor {
     constructor(public loginService: LoginService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const request = req.clone({
-            setHeaders: {
-                Authorization: `${this.loginService.getAuthorizationHeaderValue()}`
-            }
-        });
+        const token = this.loginService.getAuthorizationHeaderValue()?.toString() || '';
+        const request = token
+            ? req.clone({ setHeaders: { Authorization: `${token}` } })
+            : req;
         return next.handle(request);
     }
 

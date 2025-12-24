@@ -39,3 +39,7 @@
     z-index: 99999; /* Ensure it's behind the modal */
     display: unset;
 }
+
+::ng-deep .fc-toolbar-title {
+  color: #333333 !important;
+}

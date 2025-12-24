@@ -1,0 +1,114 @@
+name: Deploy
+
+run-name: Deploy - ${{ github.event.inputs.branch }} (Run ID ${{ github.event.inputs.run_id }})
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'develop'
+        type: choice
+        options:
+          - develop
+          - main
+          - release/6.0
+      run_id:
+        description: 'Build workflow run ID to deploy (check Build workflow runs - click on a run and check the URL for the run ID)'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Sanitize branch name for artifact
+        id: sanitize
+        run: |
+          branch="${{ github.event.inputs.branch }}"
+          branch_safe=$(echo "$branch" | sed 's/[\/\\:*?"<>|]/-/g')
+          echo "branch_safe=$branch_safe" >> $GITHUB_OUTPUT
+
+      - name: Download build artifacts from specific run
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: build-${{ steps.sanitize.outputs.branch_safe }}-*
+          name_is_regexp: true
+          path: artifacts/
+          skip_unpack: false
+
+      - name: Download build metadata from specific run
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: build.yml
+          run_id: ${{ github.event.inputs.run_id }}
+          name: build-metadata-${{ steps.sanitize.outputs.branch_safe }}-*
+          name_is_regexp: true
+          path: artifacts/
+          skip_unpack: false
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R artifacts/
+
+      - name: Move artifacts to correct locations
+        run: |
+          # Find and move the build directory
+          build_dir=$(find artifacts -type d -name "build-*" | head -n 1)
+          if [ -n "$build_dir" ]; then
+            mv "$build_dir"/* dist/ 2>/dev/null || true
+          fi
+          
+          # Find and move the metadata file
+          metadata_file=$(find artifacts -name "build-info.txt" | head -n 1)
+          if [ -n "$metadata_file" ]; then
+            cp "$metadata_file" ./build-info.txt
+          fi
+
+      - name: Display build information
+        run: |
+          echo "Deploying build from:"
+          cat build-info.txt
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Angular CLI and gh-pages package
+        run: |
+          npm install -g @angular/cli
+          npm install angular-cli-ghpages --save-dev
+
+      - name: Deploy application to GitHub Pages
+        run: npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Complete! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.event.inputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Run ID:** ${{ github.event.inputs.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Information" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat build-info.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+

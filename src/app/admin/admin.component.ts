@@ -17,18 +17,14 @@ import {SettingsService} from '../services/settings.service';
     standalone: false
 })
 
-
 export class AdminComponent implements OnInit {
-  referenceGroups: ReferenceGroup[];
-  boardMembers: BoardMember[];
-  communityEvents: CommunityEvent[];
+  boardMembers: BoardMember[] = [];
+  communityEvents: CommunityEvent[] = [];
 
-  selectedReferenceGroup: ReferenceGroup;
+  activeTab: 'events' | 'board' | 'settings' = 'events';
   isRequestEmailEdit: boolean = false;
   loading = false;
-  addLabel: string;
   requestEmail: Setting;
-
   confirmationDialogKey = 'admin-values-confirmation-dialog';
 
   constructor(private loginService: LoginService,
@@ -36,70 +32,54 @@ export class AdminComponent implements OnInit {
               private router: Router,
               private eventService: EventService,
               private messageService: MessageService,
-              private generalService: GeneralService,
+              public generalService: GeneralService,
               private settingsService: SettingsService) { }
 
   ngOnInit(): void {
-    // Check if authentication has happened
     const tokenValue = this.loginService.getAuthorizationHeaderValue();
-    if (tokenValue == null || tokenValue === '') {
+    if (!tokenValue) {
       this.router.navigate(['/login']);
+      return;
     }
     this.loginService.checkAuthToken();
 
-    // Load Possible Reference Groups
-    this.referenceGroups = [
-        {label: '👥 Board Members', groupCode: 'board_members'},
-      {label: '📅 Community Events', groupCode: 'community_events'},
-    ];
+    this.loadBoardMembers();
+    this.loadEvents();
+  }
 
-      this.selectedReferenceGroup = this.referenceGroups[0];
-
-      // Load Board Members
-      this.boardMemberService.getAllBoardMembers().subscribe(boardMembers => {
-        boardMembers.forEach((boardMember) => {
-          boardMember.readonly = true;
-        });
-
+  private loadBoardMembers() {
+    console.log('[Admin] Loading board members');
+    this.boardMemberService.getAllBoardMembers().subscribe({
+      next: boardMembers => {
+        console.log('[Admin] Board members response', boardMembers);
+        if (!Array.isArray(boardMembers)) { return; }
+        boardMembers.forEach(b => b.readonly = true);
         this.boardMembers = boardMembers;
-        this.addNewBoardMemberRow();
-
-        // Load Community Events
-        this.eventService.getAllEvents().subscribe((events) => {
-          events.forEach((event) => {
-            event.readonly = true;
-          });
-
-          this.communityEvents = events;
-        });
-      });
+      },
+      error: err => { console.warn('[Admin] Board members load failed', err); this.messageService.add({severity: 'warn', summary: 'Failed to load board members', detail: err}); }
+    });
   }
 
-  addValue() {
+  private loadEvents() {
+    console.log('[Admin] Loading events');
+    this.eventService.getAllEvents().subscribe({
+      next: events => {
+        console.log('[Admin] Events response', events);
+        if (!Array.isArray(events)) { return; }
+        events.forEach(e => e.readonly = true);
+        this.communityEvents = events;
+      },
+      error: err => { console.warn('[Admin] Events load failed', err); this.messageService.add({severity: 'warn', summary: 'Failed to load events', detail: err}); }
+    });
   }
 
-  onReferenceGroupSelected() {
-    this.loading = true;
-      this.addLabel = 'Add Value';
-  }
+  setTab(tab: 'events' | 'board' | 'settings') { console.log('[Admin] Switching tab to', tab); this.activeTab = tab; }
 
-
-  editRow(boardMemberRow: BoardMember) {
-    boardMemberRow.readonly = false;
-  }
-
-  cancelEdit(boardMemberRow: BoardMember) {
-    boardMemberRow.readonly = true;
-  }
+  editRow(row: any) { row.readonly = false; }
+  cancelEdit(row: any) { row.readonly = true; }
 
   addNewBoardMemberRow() {
-    this.boardMembers.push({
-      title: '',
-      name: '',
-      email: '',
-      readonly: false,
-      newMember: true
-    });
+    this.boardMembers.push({ title: '', name: '', email: '', readonly: false, newMember: true });
   }
 
   addNewEventRow() {
@@ -113,77 +93,51 @@ export class AdminComponent implements OnInit {
   }
 
   onEventSave(communityEvent: CommunityEvent) {
-    if (!communityEvent) {
-      return;
-    }
-
+    if (!communityEvent) return;
     this.eventService.saveNewEvent(communityEvent).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Event Saved Successfully!'});
       communityEvent.readonly = true;
-    }, (err) => {
-      this.messageService.add({severity: 'warn', summary: err});
-    });
+    }, err => this.messageService.add({severity: 'warn', summary: err}));
   }
 
   onBoardMemberSave(boardMember: BoardMember) {
-    if (!boardMember || Object.values(boardMember).some(value => value === null || value === "")) {
+    if (!boardMember || Object.values(boardMember).some(v => v === null || v === '')) {
       this.messageService.add({severity: 'warn', summary: 'Please fill in all fields.'});
       return;
     }
-
     this.boardMemberService.saveNewBoardMember(boardMember).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Board Member Saved Successfully!'});
       boardMember.readonly = true;
-
       if (boardMember.newMember) {
         boardMember.newMember = false;
         this.addNewBoardMemberRow();
       }
-
-    }, (err) => {
-      this.messageService.add({severity: 'warn', summary: err});
-    });
+    }, err => this.messageService.add({severity: 'warn', summary: err}));
   }
-
 
   onDeleteCommunityEvent(communityEvent: CommunityEvent) {
-    if (!communityEvent) {
-      return;
-    }
-
+    if (!communityEvent) return;
     this.eventService.deleteEvent(communityEvent).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Event Deleted Successfully!'});
-      this.eventService.getAllEvents().subscribe((events) => {
-        events.forEach((event) => {event.readonly = true; });
+      this.eventService.getAllEvents().subscribe(events => {
+        events.forEach(e => e.readonly = true);
         this.communityEvents = events;
       });
-    }, (err) => {
-      this.messageService.add({severity: 'warn', summary: err});
-    });
+    }, err => this.messageService.add({severity: 'warn', summary: err}));
   }
 
-
   onDeleteBoardMember(boardMember: BoardMember) {
-    if (!boardMember) {
-      return;
-    }
-
+    if (!boardMember) return;
     this.boardMemberService.deleteBoardMember(boardMember).subscribe(() => {
       this.messageService.add({severity: 'success', summary: 'Board Member Deleted Successfully!'});
-      this.boardMemberService.getAllBoardMembers().subscribe((boardMembers: BoardMember[]) => {
-        boardMembers.forEach((board) => {board.readonly = true; });
+      this.boardMemberService.getAllBoardMembers().subscribe(boardMembers => {
+        boardMembers.forEach(b => b.readonly = true);
         this.boardMembers = boardMembers;
         this.addNewBoardMemberRow();
       });
-    }, (err) => {
-      this.messageService.add({severity: 'warn', summary: err});
-    });
+    }, err => this.messageService.add({severity: 'warn', summary: err}));
   }
-}
 
-class ReferenceGroup {
-  label: String;
-  groupCode: String;
-  readonly ?: boolean;
+  trackByFn(index: number, item: any) { return item?.id || item?._id || item?.email || item?.eventName || index; }
 }
 

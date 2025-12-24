@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Doc} from '../types/document';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +9,24 @@ import {Observable, Subscription} from 'rxjs';
 
 export class LoginService {
   host = environment.backend + '/login';
-  private authenticationToken: String = '';
+  private authenticationToken: string = '';
 
   constructor(private httpSvc: HttpClient) { }
 
-  public getAuthToken(username: String, password: String): Subscription {
+  public getAuthToken(username: string, password: string): Subscription {
     return this.httpSvc.post(this.host, {'username': username, 'password': password})
          .subscribe((token: TokenResponse) => {
-           this.authenticationToken = token.sessionId;
-           localStorage.setItem('authenticationToken', this.authenticationToken.toString());
+           this.authenticationToken = token.sessionId?.toString() || '';
+           localStorage.setItem('authenticationToken', this.authenticationToken);
          });
   }
 
-  getAuthorizationHeaderValue (): String {
-      if (this.authenticationToken === '' && localStorage.getItem('authenticationToken')) {
-          // Check local storage
-         return localStorage.getItem('authenticationToken');
-      } else {
-          return this.authenticationToken;
-      }
+  getAuthorizationHeaderValue(): string {
+    if (this.authenticationToken && this.authenticationToken.length > 0) {
+      return this.authenticationToken;
+    }
+    const stored = localStorage.getItem('authenticationToken');
+    return stored ? stored.toString() : '';
   }
 
     public checkAuthToken() {
@@ -53,13 +51,14 @@ export class LoginService {
             );
     }
 
-  logout (): String {
-      localStorage.clear();
-     return this.authenticationToken = '';
+  logout(): string {
+    localStorage.removeItem('authenticationToken');
+    this.authenticationToken = '';
+    return this.authenticationToken;
   }
 }
 
 
 class TokenResponse {
-  sessionId: String;
+  sessionId: string;
 }

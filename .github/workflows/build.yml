@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - release/**
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'develop'
+  schedule:
+    # Run daily at 2 AM UTC for CI
+    - cron: '0 2 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_ENV: development
+
+      - name: Build application
+        run: npx ng build --configuration production
+
+      - name: Sanitize branch name for artifact
+        id: sanitize
+        run: |
+          $branch = "${{ github.ref_name }}" -replace '[/\\:*?"<>|]', '-'
+          echo "branch_safe=$branch" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.sanitize.outputs.branch_safe }}-${{ github.run_number }}
+          path: dist/
+          retention-days: 30
+
+      - name: Create build metadata
+        run: |
+          echo "Build metadata for run ${{ github.run_number }}" > build-info.txt
+          echo "Branch: ${{ github.ref_name }}" >> build-info.txt
+          echo "Branch (sanitized): ${{ steps.sanitize.outputs.branch_safe }}" >> build-info.txt
+          echo "Commit: ${{ github.sha }}" >> build-info.txt
+          echo "Run ID: ${{ github.run_id }}" >> build-info.txt
+          echo "Run Number: ${{ github.run_number }}" >> build-info.txt
+          echo "Timestamp: $(date -u)" >> build-info.txt
+
+      - name: Upload build metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-metadata-${{ steps.sanitize.outputs.branch_safe }}-${{ github.run_number }}
+          path: build-info.txt
+          retention-days: 30
