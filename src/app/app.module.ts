@@ -27,7 +27,6 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {EventComponent} from './events/event.component';
-import { AnnoncementComponent } from './announcements/annoncement.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
 import { LoginComponent } from './login/login.component';
 import {TokenInterceptor} from './services/TokenInterceptor';
@@ -61,7 +60,6 @@ const appRoutes: Routes = [
   { path: 'documents', component: DocumentsComponent, data: { title: 'Mill Creek Community | Documents' } },
   { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Board Members' } },
   { path: 'events', component: EventComponent, data: { title: 'Mill Creek Community | Events' } },
-  { path: 'announcements', component: AnnoncementComponent, data: { title: 'Mill Creek Community | Announcements' } },
   { path: 'amenities', component: AmenitiesComponent, data: { title: 'Mill Creek Community | Amenities' } },
   { path: 'login', component: LoginComponent, data: { title: 'Mill Creek Community | Login' } },
   { path: 'logout', component: LogoutComponent, data: { title: 'Mill Creek Community | Logout' } },
@@ -80,7 +78,6 @@ const appRoutes: Routes = [
     DocumentUploadComponent,
     ViewerComponent,
     EventComponent,
-    AnnoncementComponent,
     AmenitiesComponent,
     LoginComponent,
     AdminComponent,

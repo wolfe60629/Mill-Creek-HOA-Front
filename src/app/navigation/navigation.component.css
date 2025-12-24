@@ -14,7 +14,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.9) !important;
+  background: rgb(20, 20, 20) !important;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff !important;
