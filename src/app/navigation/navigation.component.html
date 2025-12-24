@@ -2,12 +2,13 @@
   <!-- Sidebar for Mobile (Initially hidden on large screens) -->
   <mat-sidenav #sidenav mode="over" position="start" class="sidenav-menu" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="70">
     <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/home" (click)="sidenav.close()">Home</a>
       <a mat-list-item routerLink="/about" (click)="sidenav.close()">About</a>
       <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
       <a mat-list-item routerLink="/events" (click)="sidenav.close()">Events</a>
       <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
       <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Board Members</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Connect</a>
       <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
     </mat-nav-list>
   </mat-sidenav>
@@ -22,6 +23,9 @@
       <!-- Desktop Menu -->
       <div class="menu-container">
         <ul class="navbar-links">
+          <li [ngClass]="route === '/home' ? 'active' : ''">
+            <a routerLink="/home" class="black-text text-darken-3">Home</a>
+          </li>
           <li [ngClass]="route === '/about' ? 'active' : ''">
             <a routerLink="/about" class="black-text text-darken-3">About</a>
           </li>
