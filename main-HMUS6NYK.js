@@ -71251,12 +71251,13 @@ var navigation_component_default = `<mat-sidenav-container class="navbar-contain
   <!-- Sidebar for Mobile (Initially hidden on large screens) -->
   <mat-sidenav #sidenav mode="over" position="start" class="sidenav-menu" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="70">
     <mat-nav-list class="nav-list">
+      <a mat-list-item routerLink="/home" (click)="sidenav.close()">Home</a>
       <a mat-list-item routerLink="/about" (click)="sidenav.close()">About</a>
       <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
       <a mat-list-item routerLink="/events" (click)="sidenav.close()">Events</a>
       <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
       <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Board Members</a>
+      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Connect</a>
       <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
     </mat-nav-list>
   </mat-sidenav>
@@ -71271,6 +71272,9 @@ var navigation_component_default = `<mat-sidenav-container class="navbar-contain
       <!-- Desktop Menu -->
       <div class="menu-container">
         <ul class="navbar-links">
+          <li [ngClass]="route === '/home' ? 'active' : ''">
+            <a routerLink="/home" class="black-text text-darken-3">Home</a>
+          </li>
           <li [ngClass]="route === '/about' ? 'active' : ''">
             <a routerLink="/about" class="black-text text-darken-3">About</a>
           </li>
@@ -71308,7 +71312,7 @@ var navigation_component_default = `<mat-sidenav-container class="navbar-contain
 </mat-sidenav-container>`;
 
 // angular:jit:style:src/app/navigation/navigation.component.css
-var navigation_component_default2 = "/* src/app/navigation/navigation.component.css */\n.navbar-container {\n  position: relative;\n  height: auto;\n  background: transparent;\n  z-index: auto;\n}\n.navbar {\n  position: sticky;\n  top: 0;\n  left: 0;\n  right: 0;\n  z-index: 1000;\n  background: rgba(0, 0, 0, 0.9) !important;\n  backdrop-filter: blur(20px);\n  border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n  height: 70px;\n  padding: 0 2rem;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.navbar-space {\n  height: 0;\n}\n.mobile-menu-btn {\n  display: none;\n  color: #ffffff !important;\n  margin-right: 1rem;\n}\n.mobile-menu-btn:hover {\n  background: rgba(255, 255, 255, 0.1) !important;\n}\n.menu-container {\n  flex: 1;\n  display: flex;\n  justify-content: center;\n}\n.navbar-links {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  gap: 2rem;\n  align-items: center;\n}\n.navbar-links li {\n  margin: 0;\n}\n.navbar-links a {\n  color: #ffffff !important;\n  text-decoration: none;\n  font-size: 0.95rem;\n  font-weight: 500;\n  padding: 0.5rem 1rem;\n  border-radius: 8px;\n  transition: all 0.2s ease;\n  position: relative;\n}\n.navbar-links a:hover {\n  background: rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n}\n.navbar-links li.active a {\n  background: rgba(255, 255, 255, 0.15);\n  color: #ffffff !important;\n}\n.user-menu-btn {\n  color: #ffffff !important;\n  margin-left: 1rem;\n}\n.user-menu-btn:hover {\n  background: rgba(255, 255, 255, 0.1) !important;\n}\n.sidenav-menu {\n  background: rgba(0, 0, 0, 0.95);\n  backdrop-filter: blur(20px);\n  border-right: 1px solid rgba(255, 255, 255, 0.1);\n  width: 280px;\n  margin-top: 0;\n}\n.nav-list {\n  padding: 1rem 0;\n}\n.nav-list a {\n  color: #ffffff !important;\n  padding: 1rem 2rem;\n  font-size: 1rem;\n  font-weight: 500;\n  transition: all 0.2s ease;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n}\n.nav-list a:hover {\n  background: rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n}\n@media (max-width: 768px) {\n  .navbar {\n    padding: 0 1rem;\n    height: 60px;\n  }\n  .navbar-space {\n    height: 60px;\n  }\n  .mobile-menu-btn {\n    display: block;\n  }\n  .menu-container {\n    display: none;\n  }\n  .sidenav-menu {\n    width: 100%;\n    max-width: 320px;\n  }\n}\n@media (max-width: 480px) {\n  .navbar {\n    padding: 0 0.5rem;\n  }\n  .sidenav-menu {\n    width: 100%;\n  }\n  .nav-list a {\n    padding: 1rem 1.5rem;\n    font-size: 0.95rem;\n  }\n}\n";
+var navigation_component_default2 = "/* src/app/navigation/navigation.component.css */\n.navbar-container {\n  position: relative;\n  height: auto;\n  background: transparent;\n  z-index: auto;\n}\n.navbar {\n  position: sticky;\n  top: 0;\n  left: 0;\n  right: 0;\n  z-index: 1000;\n  background: rgb(20, 20, 20) !important;\n  backdrop-filter: blur(20px);\n  border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n  height: 70px;\n  padding: 0 2rem;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.navbar-space {\n  height: 0;\n}\n.mobile-menu-btn {\n  display: none;\n  color: #ffffff !important;\n  margin-right: 1rem;\n}\n.mobile-menu-btn:hover {\n  background: rgba(255, 255, 255, 0.1) !important;\n}\n.menu-container {\n  flex: 1;\n  display: flex;\n  justify-content: center;\n}\n.navbar-links {\n  display: flex;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  gap: 2rem;\n  align-items: center;\n}\n.navbar-links li {\n  margin: 0;\n}\n.navbar-links a {\n  color: #ffffff !important;\n  text-decoration: none;\n  font-size: 0.95rem;\n  font-weight: 500;\n  padding: 0.5rem 1rem;\n  border-radius: 8px;\n  transition: all 0.2s ease;\n  position: relative;\n}\n.navbar-links a:hover {\n  background: rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n}\n.navbar-links li.active a {\n  background: rgba(255, 255, 255, 0.15);\n  color: #ffffff !important;\n}\n.user-menu-btn {\n  color: #ffffff !important;\n  margin-left: 1rem;\n}\n.user-menu-btn:hover {\n  background: rgba(255, 255, 255, 0.1) !important;\n}\n.sidenav-menu {\n  background: rgba(0, 0, 0, 0.95);\n  backdrop-filter: blur(20px);\n  border-right: 1px solid rgba(255, 255, 255, 0.1);\n  width: 280px;\n  margin-top: 0;\n}\n.nav-list {\n  padding: 1rem 0;\n}\n.nav-list a {\n  color: #ffffff !important;\n  padding: 1rem 2rem;\n  font-size: 1rem;\n  font-weight: 500;\n  transition: all 0.2s ease;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n}\n.nav-list a:hover {\n  background: rgba(255, 255, 255, 0.1);\n  color: #ffffff !important;\n}\n@media (max-width: 768px) {\n  .navbar {\n    padding: 0 1rem;\n    height: 60px;\n  }\n  .navbar-space {\n    height: 60px;\n  }\n  .mobile-menu-btn {\n    display: block;\n  }\n  .menu-container {\n    display: none;\n  }\n  .sidenav-menu {\n    width: 100%;\n    max-width: 320px;\n  }\n}\n@media (max-width: 480px) {\n  .navbar {\n    padding: 0 0.5rem;\n  }\n  .sidenav-menu {\n    width: 100%;\n  }\n  .nav-list a {\n    padding: 1rem 1.5rem;\n    font-size: 0.95rem;\n  }\n}\n";
 
 // src/environments/environment.ts
 var environment = {
@@ -71445,7 +71449,7 @@ var documents_component_default2 = `/* src/app/documents/documents.component.css
       135deg,
       rgba(0, 0, 0, 0.6) 0%,
       rgba(0, 0, 0, 0.3) 100%);
-  padding: 6rem 2rem 3rem;
+  padding: 4rem 2rem 3rem;
   text-align: center;
   position: relative;
 }
@@ -73399,7 +73403,7 @@ var contact_component_default2 = `/* src/app/contact/contact.component.css */
       135deg,
       rgba(0, 0, 0, 0.7) 0%,
       rgba(0, 0, 0, 0.4) 100%);
-  padding: 8rem 2rem 4rem;
+  padding: 4rem 2rem 4rem;
   text-align: center;
   position: relative;
 }
@@ -73478,7 +73482,7 @@ var contact_component_default2 = `/* src/app/contact/contact.component.css */
   margin-bottom: 3rem;
 }
 .contact-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(0 0 0 / 40%);
   border-radius: 16px;
   padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73841,7 +73845,7 @@ var about_component_default2 = `/* src/app/about/about.component.css */
       135deg,
       rgba(0, 0, 0, 0.7) 0%,
       rgba(0, 0, 0, 0.4) 100%);
-  padding: 8rem 2rem 4rem;
+  padding: 4rem 2rem 4rem;
   text-align: center;
   position: relative;
 }
@@ -73898,7 +73902,7 @@ var about_component_default2 = `/* src/app/about/about.component.css */
   margin-top: 2rem;
 }
 .feature-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(0 0 0 / 40%);
   border-radius: 16px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -74051,10 +74055,10 @@ FooterComponent = __decorate10([
 ], FooterComponent);
 
 // angular:jit:template:src/app/home/home.component.html
-var home_component_default = '<div class="home-container">\n  <!-- Full-screen background image -->\n  <div class="hero-background">\n    <img src="assets/background.png" alt="Mill Creek Community" class="background-image">\n    <div class="overlay"></div>\n    <div class="tech-grid"></div>\n  </div>\n\n  <!-- Hero content -->\n  <div class="hero-content">\n    <div class="hero-text">\n      <div class="title-container">\n        <h1 class="hero-title">{{ titleName }}</h1>\n        <div class="title-accent"></div>\n      </div>\n    </div>\n\n    <!-- High-tech navigation section -->\n    <div class="nav-section">\n      <div class="nav-links single-line">\n        <!-- Navigation buttons -->\n        <a href="/about" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F3E0}</span>\n          </div>\n          <span class="link-text">About</span>\n        </a>\n\n        <a href="/amenities" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u2B50</span>\n          </div>\n          <span class="link-text">Amenities</span>\n        </a>\n\n        <a href="/announcements" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4CB}</span>\n          </div>\n          <span class="link-text">Community Events</span>\n        </a>\n\n        <a href="/documents" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4C1}</span>\n          </div>\n          <span class="link-text">Digital Library</span>\n        </a>\n\n        <a href="https://hms-inc.net/" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F527}</span>\n          </div>\n          <span class="link-text">ARC Portal</span>\n        </a>\n\n        <a href="/contact" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4AC}</span>\n          </div>\n          <span class="link-text">Connect</span>\n        </a>\n\n        <a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F511}</span>\n          </div>\n          <span class="link-text">Resident Hub</span>\n        </a>\n      </div>\n    </div>\n  </div>\n\n  <!-- Admin link -->\n  <div class="admin-link">\n    <a href="/admin" title="Admin Access">\n      <div class="admin-icon">\u2699\uFE0F</div>\n    </a>\n  </div>\n</div>\n';
+var home_component_default = '<div class="home-container">\n  <!-- Full-screen background image -->\n  <div class="hero-background">\n    <img src="assets/background.png" alt="Mill Creek Community" class="background-image">\n    <div class="overlay"></div>\n    <div class="tech-grid"></div>\n  </div>\n\n  <!-- Hero content -->\n  <div class="hero-content">\n    <div class="hero-text">\n      <div class="title-container">\n        <h1 class="hero-title">{{ titleName }}</h1>\n        <div class="title-accent"></div>\n      </div>\n    </div>\n\n    <!-- High-tech navigation section -->\n    <div class="nav-section">\n      <div class="nav-links single-line">\n        <!-- Navigation buttons -->\n        <a href="/about" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F3E0}</span>\n          </div>\n          <span class="link-text">About</span>\n        </a>\n\n        <a href="/amenities" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u2B50</span>\n          </div>\n          <span class="link-text">Amenities</span>\n        </a>\n\n        <a href="/events" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4CB}</span>\n          </div>\n          <span class="link-text">Events</span>\n        </a>\n\n        <a href="/documents" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4C1}</span>\n          </div>\n          <span class="link-text">Documents</span>\n        </a>\n\n        <a href="https://hms-inc.net/" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F527}</span>\n          </div>\n          <span class="link-text">ARC Portal</span>\n        </a>\n\n        <a href="/contact" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F4AC}</span>\n          </div>\n          <span class="link-text">Connect</span>\n        </a>\n\n        <a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="nav-link">\n          <div class="link-icon">\n            <div class="icon-bg"></div>\n            <span class="icon-symbol">\u{1F511}</span>\n          </div>\n          <span class="link-text">Resident Hub</span>\n        </a>\n      </div>\n    </div>\n  </div>\n\n  <!-- Admin link -->\n  <div class="admin-link">\n    <a href="/admin" title="Admin Access">\n      <div class="admin-icon">\u2699\uFE0F</div>\n    </a>\n  </div>\n</div>\n';
 
 // angular:jit:style:src/app/home/home.component.css
-var home_component_default2 = '/* src/app/home/home.component.css */\n.home-container {\n  position: relative;\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  font-family:\n    "Inter",\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    Roboto,\n    sans-serif;\n}\n.hero-background {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -2;\n}\n.background-image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  object-position: center;\n  filter: brightness(0.8) contrast(1.1) saturate(1.05);\n}\n.overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background:\n    linear-gradient(\n      135deg,\n      rgba(0, 0, 0, 0.6) 0%,\n      rgba(0, 0, 0, 0.4) 30%,\n      rgba(0, 0, 0, 0.3) 60%,\n      rgba(0, 0, 0, 0.5) 100%);\n  z-index: -1;\n}\n.tech-grid {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-image:\n    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),\n    linear-gradient(\n      90deg,\n      rgba(255, 255, 255, 0.08) 1px,\n      transparent 1px);\n  background-size: 50px 50px;\n  z-index: -1;\n  animation: gridMove 20s linear infinite;\n}\n@keyframes gridMove {\n  0% {\n    transform: translate(0, 0);\n  }\n  100% {\n    transform: translate(50px, 50px);\n  }\n}\n.hero-content {\n  text-align: center;\n  z-index: 1;\n  max-width: 1200px;\n  padding: 0 2rem;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.hero-text {\n  margin-bottom: 3rem;\n  animation: fadeInUp 1.2s ease-out;\n}\n.title-container {\n  position: relative;\n  display: inline-block;\n  margin-bottom: 1rem;\n}\n.hero-title {\n  font-size: 4rem;\n  font-weight: 700;\n  color: #ffffff;\n  margin: 0;\n  letter-spacing: -0.02em;\n  line-height: 1.1;\n  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);\n  animation: modernTitleIntro 0.8s ease-out forwards;\n  opacity: 0;\n  transform: translateY(20px);\n}\n@keyframes modernTitleIntro {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.title-accent {\n  position: absolute;\n  bottom: -8px;\n  left: 50%;\n  transform: translateX(-50%);\n  width: 60px;\n  height: 2px;\n  background: #ffffff;\n  border-radius: 1px;\n  animation: accentSlide 0.6s ease-out 0.3s forwards;\n  opacity: 0;\n}\n@keyframes accentSlide {\n  0% {\n    opacity: 0;\n    transform: translateX(-50%) scaleX(0);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(-50%) scaleX(1);\n  }\n}\n@keyframes subtitleFadeIn {\n  0% {\n    opacity: 0;\n    transform: translateY(15px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.hero-subtitle {\n  font-size: 1.2rem;\n  color: #e0e0e0;\n  margin: 0 0 2.5rem 0;\n  font-weight: 400;\n  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);\n  letter-spacing: 0.01em;\n  animation: subtitleFadeIn 0.6s ease-out 0.4s forwards;\n  opacity: 0;\n  transform: translateY(15px);\n}\n.nav-section {\n  background: rgba(0, 0, 0, 0.75);\n  backdrop-filter: blur(20px);\n  border-radius: 16px;\n  padding: 1.5rem;\n  border: 1px solid rgba(255, 255, 255, 0.15);\n  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);\n  animation: navSectionEntrance 0.8s ease-out 0.6s forwards;\n  opacity: 0;\n  transform: translateY(20px);\n  position: relative;\n  overflow: hidden;\n}\n.nav-section::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: -100%;\n  width: 100%;\n  height: 100%;\n  background:\n    linear-gradient(\n      90deg,\n      transparent,\n      rgba(255, 255, 255, 0.08),\n      transparent);\n  animation: subtleGlow 4s ease-in-out infinite;\n}\n@keyframes navSectionEntrance {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@keyframes subtleGlow {\n  0%, 100% {\n    left: -100%;\n  }\n  50% {\n    left: 100%;\n  }\n}\n.nav-links {\n  display: flex;\n  flex-wrap: nowrap;\n  justify-content: space-between;\n  gap: 1rem;\n  overflow-x: auto;\n}\n.nav-link {\n  display: flex;\n  align-items: center;\n  padding: 1rem 2.25rem;\n  background: rgba(255, 255, 255, 0.08);\n  border-radius: 12px;\n  text-decoration: none;\n  color: #ffffff;\n  transition: all 0.2s ease;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  position: relative;\n  overflow: hidden;\n  gap: 0.75rem;\n  margin: 3px;\n}\n.nav-link::before {\n  content: "";\n  position: absolute;\n  top: 0;\n  left: -100%;\n  width: 100%;\n  height: 100%;\n  background:\n    linear-gradient(\n      90deg,\n      transparent,\n      rgba(255, 255, 255, 0.15),\n      transparent);\n  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);\n}\n.nav-link:hover::before {\n  left: 100%;\n}\n.nav-link:hover {\n  background: rgba(255, 255, 255, 0.15);\n  border-color: rgba(255, 255, 255, 0.3);\n  transform: translateY(-2px);\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);\n}\n.link-icon {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 40px;\n  height: 40px;\n  flex-shrink: 0;\n}\n.icon-bg {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 8px;\n  transition: all 0.2s ease;\n}\n.nav-link:hover .icon-bg {\n  background: rgba(255, 255, 255, 0.2);\n  transform: scale(1.05);\n}\n.icon-symbol {\n  font-size: 1.2rem;\n  z-index: 1;\n  position: relative;\n}\n.link-text {\n  font-size: 0.9rem;\n  font-weight: 500;\n  color: #ffffff;\n  line-height: 1.2;\n  flex-grow: 1;\n  text-align: left;\n}\n.admin-link {\n  position: fixed;\n  top: 2rem;\n  right: 2rem;\n  z-index: 100;\n}\n.admin-link a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 48px;\n  height: 48px;\n  background: rgba(0, 0, 0, 0.8);\n  border-radius: 50%;\n  border: 1px solid rgba(255, 255, 255, 0.3);\n  transition: all 0.2s ease;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);\n  backdrop-filter: blur(10px);\n}\n.admin-link a:hover {\n  background: rgba(255, 255, 255, 0.9);\n  border-color: #ffffff;\n  transform: scale(1.05);\n  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);\n}\n.admin-icon {\n  font-size: 1.2rem;\n  color: #ffffff;\n}\n@keyframes fadeInUp {\n  from {\n    opacity: 0;\n    transform: translateY(40px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@media (max-width: 1024px) {\n  .hero-title {\n    font-size: 3rem;\n    text-align: center;\n    word-wrap: break-word;\n  }\n  .hero-subtitle {\n    font-size: 1.1rem;\n  }\n  .hero-content {\n    padding: 0 1.5rem;\n    align-items: center;\n    text-align: center;\n  }\n  .nav-links {\n    flex-wrap: wrap;\n    justify-content: center;\n    gap: 1rem;\n  }\n  .home-container {\n    padding: 1rem;\n  }\n}\n@media (max-width: 768px) {\n  .hero-title {\n    font-size: 2.5rem;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n  }\n  .hero-subtitle {\n    font-size: 1rem;\n  }\n  .nav-section {\n    padding: 1.5rem;\n  }\n  .nav-links {\n    flex-wrap: wrap;\n    justify-content: center;\n    gap: 0.5rem;\n  }\n  .nav-link {\n    padding: 0.75rem 1rem;\n    font-size: 0.85rem;\n  }\n  .home-container {\n    padding: 1rem;\n  }\n  .admin-link {\n    top: 1.5rem;\n    right: 1.5rem;\n  }\n  .admin-link a {\n    width: 48px;\n    height: 48px;\n  }\n}\n@media (max-width: 480px) {\n  .hero-content {\n    padding: 0 1rem;\n  }\n  .hero-title {\n    font-size: 2.2rem;\n  }\n  .hero-subtitle {\n    font-size: 1.1rem;\n  }\n  .nav-links {\n    grid-template-columns: 1fr;\n    max-width: 300px;\n  }\n  .nav-section {\n    padding: 1.25rem;\n  }\n}\n';
+var home_component_default2 = '/* src/app/home/home.component.css */\n.home-container {\n  position: relative;\n  width: 100vw;\n  height: 100vh;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  font-family:\n    "Inter",\n    -apple-system,\n    BlinkMacSystemFont,\n    "Segoe UI",\n    Roboto,\n    sans-serif;\n}\n.hero-background {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: -2;\n}\n.background-image {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  object-position: center;\n  filter: brightness(0.8) contrast(1.1) saturate(1.05);\n}\n.overlay {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background:\n    linear-gradient(\n      135deg,\n      rgba(0, 0, 0, 0.6) 0%,\n      rgba(0, 0, 0, 0.4) 30%,\n      rgba(0, 0, 0, 0.3) 60%,\n      rgba(0, 0, 0, 0.5) 100%);\n  z-index: -1;\n}\n.tech-grid {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-image:\n    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),\n    linear-gradient(\n      90deg,\n      rgba(255, 255, 255, 0.08) 1px,\n      transparent 1px);\n  background-size: 50px 50px;\n  z-index: -1;\n  animation: gridMove 20s linear infinite;\n}\n@keyframes gridMove {\n  0% {\n    transform: translate(0, 0);\n  }\n  100% {\n    transform: translate(50px, 50px);\n  }\n}\n.hero-content {\n  text-align: center;\n  z-index: 1;\n  max-width: 1200px;\n  padding: 0 2rem;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n.hero-text {\n  margin-bottom: 3rem;\n  animation: fadeInUp 1.2s ease-out;\n}\n.title-container {\n  position: relative;\n  display: inline-block;\n  margin-bottom: 1rem;\n}\n.hero-title {\n  font-size: 4rem;\n  font-weight: 700;\n  color: #ffffff;\n  margin: 0;\n  letter-spacing: -0.02em;\n  line-height: 1.1;\n  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);\n  animation: modernTitleIntro 0.8s ease-out forwards;\n  opacity: 0;\n  transform: translateY(20px);\n}\n@keyframes modernTitleIntro {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.title-accent {\n  position: absolute;\n  bottom: -8px;\n  left: 50%;\n  transform: translateX(-50%);\n  width: 60px;\n  height: 2px;\n  background: rgba(255, 255, 255, 0.6);\n  border-radius: 1px;\n  animation: accentSlide 0.6s ease-out 0.3s forwards;\n  opacity: 0;\n}\n@keyframes accentSlide {\n  0% {\n    opacity: 0;\n    transform: translateX(-50%) scaleX(0);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(-50%) scaleX(1);\n  }\n}\n@keyframes subtitleFadeIn {\n  0% {\n    opacity: 0;\n    transform: translateY(15px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.hero-subtitle {\n  font-size: 1.2rem;\n  color: #e0e0e0;\n  margin: 0 0 2.5rem 0;\n  font-weight: 400;\n  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);\n  letter-spacing: 0.01em;\n  animation: subtitleFadeIn 0.6s ease-out 0.4s forwards;\n  opacity: 0;\n  transform: translateY(15px);\n}\n.nav-section {\n  background: rgba(0, 0, 0, 0.75);\n  backdrop-filter: blur(20px);\n  border-radius: 16px;\n  padding: 1.5rem;\n  border: 1px solid rgba(255, 255, 255, 0.15);\n  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);\n  animation: navSectionEntrance 0.8s ease-out 0.6s forwards;\n  opacity: 0;\n  transform: translateY(20px);\n  position: relative;\n  overflow: hidden;\n}\n@keyframes navSectionEntrance {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n.nav-links {\n  display: flex;\n  flex-wrap: nowrap;\n  justify-content: space-between;\n  gap: 1rem;\n  overflow-x: auto;\n}\n.nav-link {\n  display: flex;\n  align-items: center;\n  padding: 1rem 2.25rem;\n  background: rgba(255, 255, 255, 0.08);\n  border-radius: 12px;\n  text-decoration: none;\n  color: #ffffff;\n  transition: all 0.2s ease;\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  position: relative;\n  overflow: hidden;\n  gap: 0.75rem;\n  margin: 3px;\n}\n.nav-link:hover {\n  background: rgba(255, 255, 255, 0.15);\n  border-color: rgba(255, 255, 255, 0.3);\n  transform: translateY(-2px);\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);\n}\n.link-icon {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 40px;\n  height: 40px;\n  flex-shrink: 0;\n}\n.icon-bg {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 8px;\n  transition: all 0.2s ease;\n}\n.nav-link:hover .icon-bg {\n  background: rgba(255, 255, 255, 0.2);\n  transform: scale(1.05);\n}\n.icon-symbol {\n  font-size: 1.2rem;\n  z-index: 1;\n  position: relative;\n}\n.link-text {\n  font-size: 0.9rem;\n  font-weight: 500;\n  color: #ffffff;\n  line-height: 1.2;\n  flex-grow: 1;\n  text-align: left;\n}\n.admin-link {\n  position: fixed;\n  top: 2rem;\n  right: 2rem;\n  z-index: 100;\n}\n.admin-link a {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 48px;\n  height: 48px;\n  background: rgba(0, 0, 0, 0.8);\n  border-radius: 50%;\n  border: 1px solid rgba(255, 255, 255, 0.3);\n  transition: all 0.2s ease;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);\n  backdrop-filter: blur(10px);\n}\n.admin-link a:hover {\n  background: rgba(255, 255, 255, 0.9);\n  border-color: #ffffff;\n  transform: scale(1.05);\n  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);\n}\n.admin-icon {\n  font-size: 1.2rem;\n  color: #ffffff;\n}\n@keyframes fadeInUp {\n  from {\n    opacity: 0;\n    transform: translateY(40px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n@media (max-width: 1024px) {\n  .hero-title {\n    font-size: 3rem;\n    text-align: center;\n    word-wrap: break-word;\n  }\n  .hero-subtitle {\n    font-size: 1.1rem;\n  }\n  .hero-content {\n    padding: 0 1.5rem;\n    align-items: center;\n    text-align: center;\n  }\n  .nav-links {\n    flex-wrap: wrap;\n    justify-content: center;\n    gap: 1rem;\n  }\n  .home-container {\n    padding: 1rem;\n  }\n}\n@media (max-width: 768px) {\n  .hero-title {\n    font-size: 2.5rem;\n    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);\n  }\n  .hero-subtitle {\n    font-size: 1rem;\n  }\n  .nav-section {\n    padding: 1.5rem;\n  }\n  .nav-links {\n    flex-wrap: wrap;\n    justify-content: center;\n    gap: 0.5rem;\n  }\n  .nav-link {\n    padding: 0.75rem 1rem;\n    font-size: 0.85rem;\n  }\n  .home-container {\n    padding: 1rem;\n  }\n  .admin-link {\n    top: 1.5rem;\n    right: 1.5rem;\n  }\n  .admin-link a {\n    width: 48px;\n    height: 48px;\n  }\n}\n@media (max-width: 480px) {\n  .hero-content {\n    padding: 0 1rem;\n  }\n  .hero-title {\n    font-size: 2.2rem;\n  }\n  .hero-subtitle {\n    font-size: 1.1rem;\n  }\n  .nav-links {\n    grid-template-columns: 1fr;\n    max-width: 300px;\n  }\n  .nav-section {\n    padding: 1.25rem;\n  }\n}\n';
 
 // src/app/home/home.component.ts
 var __decorate11 = function(decorators, target, key, desc) {
@@ -125431,7 +125435,7 @@ var event_component_default2 = `/* src/app/events/event.component.css */
       135deg,
       rgba(0, 0, 0, 0.6) 0%,
       rgba(0, 0, 0, 0.3) 100%);
-  padding: 6rem 2rem 3rem;
+  padding: 4rem 2rem 3rem;
   text-align: center;
   position: relative;
 }
@@ -125844,441 +125848,6 @@ EventComponent = __decorate16([
   ])
 ], EventComponent);
 
-// angular:jit:template:src/app/announcements/annoncement.component.html
-var annoncement_component_default = '<div class="announcements-container">\n  <!-- Hero Section -->\n  <div class="hero-section">\n    <div class="hero-content">\n      <h1 class="hero-title">Announcements & Events</h1>\n      <p class="hero-subtitle">Stay updated with news and upcoming events</p>\n    </div>\n  </div>\n\n  <!-- Main Content -->\n  <div class="content-section">\n    <div class="container">\n      <div class="content-grid">\n        <!-- Left Column - Documents & Newsletters -->\n        <div class="left-column">\n          <!-- File Upload (Admin Only) -->\n          <div class="upload-section" *ngIf="isAdmin">\n            <div class="upload-card">\n              <h3 class="section-title">Upload Newsletter</h3>\n              <div class="file-upload">\n                <input type="file"\n                       accept="application/pdf"\n                       id="file"\n                       #fileInput\n                       (change)="handleFileInput(fileInput.files)"\n                       class="file-input">\n                <label for="file" class="file-label">\n                  <span class="upload-icon">\u{1F4C4}</span>\n                  <span class="upload-text">Choose PDF File</span>\n                </label>\n              </div>\n            </div>\n          </div>\n\n          <!-- PDF Viewer -->\n          <div class="pdf-section" *ngIf="src">\n            <div class="pdf-card">\n              <h3 class="section-title">Current Newsletter</h3>\n              <div class="pdf-viewer">\n                <ngx-extended-pdf-viewer \n                  [showOpenFileButton]="false"\n                  [showSidebarButton]="false"\n                  [showRotateButton]="false"\n                  [showPropertiesButton]="false"\n                  [base64Src]="src"\n                  #pdfViewer>\n                </ngx-extended-pdf-viewer>\n              </div>\n            </div>\n          </div>\n\n          <!-- Newsletter Archive -->\n          <div class="newsletter-section" *ngIf="documents.length > 0">\n            <div class="newsletter-card">\n              <h3 class="section-title">Newsletter Archive</h3>\n              <p-accordion class="modern-accordion">\n                <p-accordionTab *ngFor="let currCategory of listOfCategories; let j = index" \n                               [header]="currCategory" \n                               [selected]="j==0">\n                  <div class="newsletter-grid">\n                    <ng-container *ngFor="let document of documents">\n                      <div *ngIf="document.category == currCategory"\n                           class="newsletter-item"\n                           (click)="showNewsletter(document)">\n                        <div class="newsletter-icon">\u{1F4F0}</div>\n                        <div class="newsletter-content">\n                          <h4 class="newsletter-title">{{ document.friendlyName }}</h4>\n                          <p class="newsletter-description">{{ document.description }}</p>\n                        </div>\n                        <div class="newsletter-arrow">\u2192</div>\n                      </div>\n                    </ng-container>\n                  </div>\n                </p-accordionTab>\n              </p-accordion>\n            </div>\n          </div>\n        </div>\n\n        <!-- Right Column - Events Calendar -->\n        <div class="right-column">\n          <div class="events-card">\n            <h3 class="section-title">Events</h3>\n            <div class="calendar-section">\n              <app-calendar></app-calendar>\n            </div>\n            <div class="events-list" *ngIf="events.length > 0">\n              <div *ngFor="let event of events" class="event-item">\n                <div class="event-date">\n                  <div class="date-number">{{event.startDate.getDate()}}</div>\n                  <div class="date-month">{{monthNames[event.startDate.getMonth()]}}</div>\n                </div>\n                <div class="event-details">\n                  <h4 class="event-name">{{event.eventName}}</h4>\n                  <p class="event-time">{{generalService.formatTime(event.startDate)}}</p>\n                </div>\n              </div>\n            </div>\n            <div class="no-events" *ngIf="events.length === 0">\n              <p>No upcoming events scheduled</p>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- Newsletter Upload Modal -->\n<app-newsletter-upload *ngIf="fileToUpload!=null" \n                       [fileToUpload]="fileToUpload" \n                       [showUploadModal]="showUploadModal">\n</app-newsletter-upload>\n';
-
-// angular:jit:style:src/app/announcements/annoncement.component.css
-var annoncement_component_default2 = `/* src/app/announcements/annoncement.component.css */
-.announcements-container {
-  min-height: 100vh;
-  color: #333333;
-}
-.hero-section {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(0, 0, 0, 0.6) 0%,
-      rgba(0, 0, 0, 0.3) 100%);
-  padding: 6rem 2rem 3rem;
-  text-align: center;
-  position: relative;
-}
-.hero-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-  z-index: -1;
-}
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-.hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  color: #ffffff;
-  animation: fadeInUp 0.8s ease-out forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-.hero-subtitle {
-  font-size: 1.2rem;
-  color: #e0e0e0;
-  margin: 0;
-  font-weight: 400;
-  animation: fadeInUp 0.8s ease-out 0.2s forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-.content-section {
-  padding: 3rem 2rem;
-}
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.content-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-.left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-.upload-section {
-  margin-bottom: 2rem;
-}
-.upload-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-  color: #333333;
-}
-.file-upload {
-  position: relative;
-}
-.file-input {
-  position: absolute;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-.file-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  border: 2px dashed #dee2e6;
-  border-radius: 12px;
-  background: #f8f9fa;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.file-label:hover {
-  border-color: #007bff;
-  background: #f0f8ff;
-}
-.upload-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.upload-text {
-  font-size: 1.1rem;
-  color: #6c757d;
-  font-weight: 500;
-}
-.pdf-section {
-  margin-bottom: 2rem;
-}
-.pdf-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-.pdf-viewer {
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #dee2e6;
-}
-.newsletter-section {
-  margin-bottom: 2rem;
-}
-.newsletter-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-.newsletter-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.newsletter-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-}
-.newsletter-item:hover {
-  background: #e9ecef;
-  border-color: #dee2e6;
-  transform: translateX(5px);
-}
-.newsletter-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-.newsletter-content {
-  flex: 1;
-}
-.newsletter-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-  color: #333333;
-}
-.newsletter-description {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-.newsletter-arrow {
-  font-size: 1.2rem;
-  color: #007bff;
-  transition: transform 0.2s ease;
-}
-.newsletter-item:hover .newsletter-arrow {
-  transform: translateX(5px);
-}
-.right-column {
-  display: flex;
-  flex-direction: column;
-}
-.events-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  height: fit-content;
-}
-.calendar-section {
-  margin-bottom: 2rem;
-}
-.events-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.event-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #007bff;
-}
-.event-date {
-  text-align: center;
-  flex-shrink: 0;
-}
-.date-number {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #007bff;
-  line-height: 1;
-}
-.date-month {
-  font-size: 0.8rem;
-  color: #6c757d;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-.event-details {
-  flex: 1;
-}
-.event-name {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-  color: #333333;
-}
-.event-time {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-.no-events {
-  text-align: center;
-  padding: 2rem;
-  color: #6c757d;
-}
-.modern-accordion ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 1rem 1.5rem;
-  font-weight: 600;
-  color: #333333;
-}
-.modern-accordion ::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
-  background: #007bff;
-  border-color: #007bff;
-  color: #ffffff;
-}
-.modern-accordion ::ng-deep .p-accordion .p-accordion-content {
-  border: none;
-  padding: 1rem 0;
-}
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@media (max-width: 1024px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-}
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 5rem 1rem 2rem;
-  }
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-  .content-section {
-    padding: 2rem 1rem;
-  }
-  .section-title {
-    font-size: 1.3rem;
-  }
-  .upload-card,
-  .pdf-card,
-  .newsletter-card,
-  .events-card {
-    padding: 1.5rem;
-  }
-}
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  .upload-card,
-  .pdf-card,
-  .newsletter-card,
-  .events-card {
-    padding: 1.25rem;
-  }
-  .newsletter-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.75rem;
-  }
-  .event-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.75rem;
-  }
-}
-`;
-
-// src/app/announcements/annoncement.component.ts
-var __decorate17 = function(decorators, target, key, desc) {
-  var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
-  else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
-  return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
-};
-var __metadata13 = function(k3, v3) {
-  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
-};
-var AnnoncementComponent = class AnnoncementComponent2 {
-  documentsService;
-  eventService;
-  loginService;
-  generalService;
-  isAdmin;
-  events = [];
-  documents = [];
-  listOfCategories = [];
-  monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  src;
-  fileToUpload = null;
-  showUploadModal = false;
-  constructor(documentsService, eventService, loginService, generalService) {
-    this.documentsService = documentsService;
-    this.eventService = eventService;
-    this.loginService = loginService;
-    this.generalService = generalService;
-  }
-  ngOnInit() {
-    this.loginService.checkAuthToken();
-    this.eventService.getAllEvents().subscribe((events) => {
-      const firstThree = events.slice(0, 3).map((evt) => {
-        const normalized = __spreadValues({}, evt);
-        normalized.startDate = new Date(evt.startDate);
-        if (evt.endDate) {
-          normalized.endDate = new Date(evt.endDate);
-        }
-        return normalized;
-      });
-      this.events = [...firstThree];
-    });
-    this.documentsService.getAllDocuments().subscribe((result) => {
-      this.documents = result;
-      this.listOfCategories = [...new Set(result.map((item) => item.category))];
-    });
-    this.isAdmin = this.loginService.getAuthorizationHeaderValue().length > 0;
-  }
-  handleFileInput(files) {
-    if (!files || files.length === 0) {
-      return;
-    }
-    if (files.item(0).size > 5e6) {
-      return;
-    }
-    this.fileToUpload = files.item(0);
-    this.showUploadModal = true;
-  }
-  showNewsletter(document2) {
-    if (!document2) {
-      return;
-    }
-    this.src = document2.item;
-  }
-  static ctorParameters = () => [
-    { type: DocumentsService },
-    { type: EventService },
-    { type: LoginService },
-    { type: GeneralService }
-  ];
-};
-AnnoncementComponent = __decorate17([
-  Component({
-    selector: "app-announcements",
-    template: annoncement_component_default,
-    standalone: false,
-    styles: [annoncement_component_default2]
-  }),
-  __metadata13("design:paramtypes", [
-    DocumentsService,
-    EventService,
-    LoginService,
-    GeneralService
-  ])
-], AnnoncementComponent);
-
 // angular:jit:template:src/app/amenities/amenities.component.html
 var amenities_component_default = `<div class="amenities-container">
   <!-- Hero Section -->
@@ -126467,7 +126036,7 @@ var amenities_component_default2 = `/* src/app/amenities/amenities.component.css
       135deg,
       rgba(0, 0, 0, 0.7) 0%,
       rgba(0, 0, 0, 0.4) 100%);
-  padding: 8rem 2rem 4rem;
+  padding: 4rem 2rem 4rem;
   text-align: center;
   position: relative;
 }
@@ -126524,7 +126093,7 @@ var amenities_component_default2 = `/* src/app/amenities/amenities.component.css
   margin-top: 2rem;
 }
 .amenity-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgb(0 0 0 / 40%);
   border-radius: 16px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -126746,13 +126315,13 @@ var amenities_component_default2 = `/* src/app/amenities/amenities.component.css
 `;
 
 // src/app/amenities/amenities.component.ts
-var __decorate18 = function(decorators, target, key, desc) {
+var __decorate17 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata14 = function(k3, v3) {
+var __metadata13 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var AmenitiesComponent = class AmenitiesComponent2 {
@@ -126787,14 +126356,14 @@ var AmenitiesComponent = class AmenitiesComponent2 {
     { type: Location }
   ];
 };
-AmenitiesComponent = __decorate18([
+AmenitiesComponent = __decorate17([
   Component({
     selector: "app-amenities",
     template: amenities_component_default,
     standalone: false,
     styles: [amenities_component_default2]
   }),
-  __metadata14("design:paramtypes", [Location])
+  __metadata13("design:paramtypes", [Location])
 ], AmenitiesComponent);
 
 // angular:jit:template:src/app/login/login.component.html
@@ -126804,13 +126373,13 @@ var login_component_default = '<div class = "outer">\n    <div class="main">\n  
 var login_component_default2 = '/* src/app/login/login.component.css */\n@media (min-width: 1024px) {\n  .card-content:hover {\n    color: #000000 !important;\n    //background-color: var(--color-primary) !important;\n  }\n}\n.inner {\n  background-color: #ffffffe0;\n  border-radius: 25px;\n  width: 98%;\n  transform: translate(0%, 30px);\n  padding: 10px 10px 30px 30px;\n  box-shadow: 0 0 100px 11px #0006;\n  overflow-wrap: break-word;\n  margin: auto;\n}\n.form-group {\n  margin-bottom: 10px;\n}\n.card-container {\n  #display: flex;\n}\n@media only screen and (min-width: 993px) {\n  .container {\n    width: 85%;\n  }\n}\n.main {\n  background-color: rgba(255, 255, 255, .8);\n  width: 400px;\n  height: 330px;\n  margin: auto;\n  border-radius: 10px;\n  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);\n  transform: translate(4%, 30px);\n  color: #000000;\n}\n.sign {\n  padding-top: 40px;\n  color: #000000;\n  font-family: "Ubuntu", sans-serif;\n  font-weight: bold;\n  font-size: 23px;\n  margin-bottom: 30px;\n}\n.un {\n  width: 76%;\n  color: rgb(38, 50, 56);\n  font-weight: 700;\n  font-size: 14px;\n  letter-spacing: 1px;\n  background: rgba(136, 126, 126, 0.04);\n  padding: 10px 20px;\n  border: none;\n  border-radius: 20px;\n  outline: none;\n  box-sizing: border-box;\n  border: 2px solid rgba(0, 0, 0, 0.02);\n  margin-bottom: 50px;\n  margin-left: 46px;\n  text-align: center;\n  margin-bottom: 27px;\n  font-family: "Ubuntu", sans-serif;\n}\nform.form1 {\n  padding-top: 40px;\n}\n.pass {\n  width: 76%;\n  color: rgb(38, 50, 56);\n  font-weight: 700;\n  font-size: 14px;\n  letter-spacing: 1px;\n  background: rgba(136, 126, 126, 0.04);\n  padding: 10px 20px;\n  border: none;\n  border-radius: 20px;\n  outline: none;\n  box-sizing: border-box;\n  border: 2px solid rgba(0, 0, 0, 0.02);\n  margin-bottom: 50px;\n  margin-left: 46px;\n  text-align: center;\n  margin-bottom: 27px;\n  font-family: "Ubuntu", sans-serif;\n}\n.un:focus,\n.pass:focus {\n  border: 2px solid rgba(0, 0, 0, 0.18) !important;\n}\n.submit {\n  cursor: pointer;\n  border-radius: 5em;\n  color: #fff;\n  background:\n    linear-gradient(\n      to right,\n      #073566,\n      #362fa5);\n  border: 0;\n  padding-left: 40px;\n  padding-right: 40px;\n  padding-bottom: 10px;\n  padding-top: 10px;\n  font-family: "Ubuntu", sans-serif;\n  margin-left: 35%;\n  font-size: 13px;\n  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);\n}\na {\n  text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);\n  color: #000000;\n  text-decoration: none;\n}\n.outer {\n  background: url("./media/background-U46FACVZ.png") no-repeat;\n  background-repeat: no-repeat;\n  background-position: center;\n  background-size: cover;\n  min-height: 1000px;\n}\n@media (max-width: 600px) {\n  .main {\n    border-radius: 0px;\n  }\n}\n';
 
 // src/app/login/login.component.ts
-var __decorate19 = function(decorators, target, key, desc) {
+var __decorate18 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata15 = function(k3, v3) {
+var __metadata14 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var LoginComponent = class LoginComponent2 {
@@ -126846,24 +126415,24 @@ var LoginComponent = class LoginComponent2 {
     { type: Router }
   ];
 };
-LoginComponent = __decorate19([
+LoginComponent = __decorate18([
   Component({
     selector: "app-login",
     template: login_component_default,
     standalone: false,
     styles: [login_component_default2]
   }),
-  __metadata15("design:paramtypes", [LoginService, MessageService, Router])
+  __metadata14("design:paramtypes", [LoginService, MessageService, Router])
 ], LoginComponent);
 
 // src/app/services/TokenInterceptor.ts
-var __decorate20 = function(decorators, target, key, desc) {
+var __decorate19 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata16 = function(k3, v3) {
+var __metadata15 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var TokenInterceptor = class TokenInterceptor2 {
@@ -126880,9 +126449,9 @@ var TokenInterceptor = class TokenInterceptor2 {
     { type: LoginService }
   ];
 };
-TokenInterceptor = __decorate20([
+TokenInterceptor = __decorate19([
   Injectable(),
-  __metadata16("design:paramtypes", [LoginService])
+  __metadata15("design:paramtypes", [LoginService])
 ], TokenInterceptor);
 
 // angular:jit:template:src/app/admin/admin.component.html
@@ -127023,13 +126592,13 @@ var CommunityEvent = class {
 };
 
 // src/app/services/settings.service.ts
-var __decorate21 = function(decorators, target, key, desc) {
+var __decorate20 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata17 = function(k3, v3) {
+var __metadata16 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var SettingsService = class SettingsService2 {
@@ -127048,21 +126617,21 @@ var SettingsService = class SettingsService2 {
     { type: HttpClient }
   ];
 };
-SettingsService = __decorate21([
+SettingsService = __decorate20([
   Injectable({
     providedIn: "root"
   }),
-  __metadata17("design:paramtypes", [HttpClient])
+  __metadata16("design:paramtypes", [HttpClient])
 ], SettingsService);
 
 // src/app/admin/admin.component.ts
-var __decorate22 = function(decorators, target, key, desc) {
+var __decorate21 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata18 = function(k3, v3) {
+var __metadata17 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var AdminComponent = class AdminComponent2 {
@@ -127213,14 +126782,14 @@ var AdminComponent = class AdminComponent2 {
     { type: SettingsService }
   ];
 };
-AdminComponent = __decorate22([
+AdminComponent = __decorate21([
   Component({
     selector: "app-admin",
     template: admin_component_default,
     standalone: false,
     styles: [admin_component_default2]
   }),
-  __metadata18("design:paramtypes", [
+  __metadata17("design:paramtypes", [
     LoginService,
     BoardMemberService,
     Router,
@@ -127238,13 +126807,13 @@ var logout_component_default = "";
 var logout_component_default2 = "/* src/app/logout/logout.component.css */\n";
 
 // src/app/logout/logout.component.ts
-var __decorate23 = function(decorators, target, key, desc) {
+var __decorate22 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata19 = function(k3, v3) {
+var __metadata18 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var LogoutComponent = class LogoutComponent2 {
@@ -127263,14 +126832,14 @@ var LogoutComponent = class LogoutComponent2 {
     { type: Router }
   ];
 };
-LogoutComponent = __decorate23([
+LogoutComponent = __decorate22([
   Component({
     selector: "app-logout",
     template: logout_component_default,
     standalone: false,
     styles: [logout_component_default2]
   }),
-  __metadata19("design:paramtypes", [LoginService, Router])
+  __metadata18("design:paramtypes", [LoginService, Router])
 ], LogoutComponent);
 
 // node_modules/primeng/fesm2022/primeng-datepicker.mjs
@@ -180660,13 +180229,13 @@ var index6 = createPlugin({
 });
 
 // src/app/events/calendar/calendar.component.ts
-var __decorate24 = function(decorators, target, key, desc) {
+var __decorate23 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
   return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
 };
-var __metadata20 = function(k3, v3) {
+var __metadata19 = function(k3, v3) {
   if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k3, v3);
 };
 var CalendarComponent = class CalendarComponent2 {
@@ -180761,14 +180330,14 @@ var CalendarComponent = class CalendarComponent2 {
     modalDate: [{ type: ViewChild, args: ["modalDate"] }]
   };
 };
-CalendarComponent = __decorate24([
+CalendarComponent = __decorate23([
   Component({
     selector: "app-calendar",
     template: calendar_component_default,
     standalone: false,
     styles: [calendar_component_default2]
   }),
-  __metadata20("design:paramtypes", [EventService, GeneralService])
+  __metadata19("design:paramtypes", [EventService, GeneralService])
 ], CalendarComponent);
 
 // node_modules/primeng/fesm2022/primeng-progressspinner.mjs
@@ -203719,7 +203288,7 @@ var MatListModule = class _MatListModule {
 });
 
 // src/app/app.module.ts
-var __decorate25 = function(decorators, target, key, desc) {
+var __decorate24 = function(decorators, target, key, desc) {
   var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d2;
   if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r3 = Reflect.decorate(decorators, target, key, desc);
   else for (var i3 = decorators.length - 1; i3 >= 0; i3--) if (d2 = decorators[i3]) r3 = (c3 < 3 ? d2(r3) : c3 > 3 ? d2(target, key, r3) : d2(target, key)) || r3;
@@ -203732,7 +203301,6 @@ var appRoutes = [
   { path: "documents", component: DocumentsComponent, data: { title: "Mill Creek Community | Documents" } },
   { path: "contact", component: ContactComponent, data: { title: "Mill Creek Community | Board Members" } },
   { path: "events", component: EventComponent, data: { title: "Mill Creek Community | Events" } },
-  { path: "announcements", component: AnnoncementComponent, data: { title: "Mill Creek Community | Announcements" } },
   { path: "amenities", component: AmenitiesComponent, data: { title: "Mill Creek Community | Amenities" } },
   { path: "login", component: LoginComponent, data: { title: "Mill Creek Community | Login" } },
   { path: "logout", component: LogoutComponent, data: { title: "Mill Creek Community | Logout" } },
@@ -203740,7 +203308,7 @@ var appRoutes = [
 ];
 var AppModule = class AppModule2 {
 };
-AppModule = __decorate25([
+AppModule = __decorate24([
   NgModule({
     declarations: [
       AppComponent,
@@ -203753,7 +203321,6 @@ AppModule = __decorate25([
       DocumentUploadComponent,
       ViewerComponent,
       EventComponent,
-      AnnoncementComponent,
       AmenitiesComponent,
       LoginComponent,
       AdminComponent,
