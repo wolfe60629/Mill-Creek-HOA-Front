@@ -9,11 +9,7 @@ on:
         description: 'Branch to deploy from'
         required: true
         default: 'develop'
-        type: choice
-        options:
-          - develop
-          - main
-          - release/6.0
+        type: string
       run_id:
         description: 'Build workflow run ID to deploy (check Build workflow runs - click on a run and check the URL for the run ID)'
         required: true
