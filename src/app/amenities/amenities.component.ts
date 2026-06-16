@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {CommunityEvent} from '../types/communityEvent';
-import {EventService} from '../services/event.service';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-amenities',
@@ -10,40 +8,46 @@ import { Location } from '@angular/common';
     standalone: false
 })
 export class AmenitiesComponent implements OnInit {
-  visibleSidebar1: boolean;
-  visibleSidebar2: boolean;
+  visibleSidebar1 = false;
+  visibleSidebar2 = false;
 
-  constructor(private location: Location) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    // if ?poolRules is in the URL, open the pool rules sidebar
-    if (window.location.href.includes('?poolRules=true')) {
-      this.visibleSidebar1 = true;
-    }
-
-    // if ?courtRules is in the URL, open the court rules sidebar
-    if (window.location.href.includes('?courtRules=true')) {
-      this.visibleSidebar2 = true;
-    }
+    this.route.queryParams.subscribe(params => {
+      this.visibleSidebar1 = params['poolRules'] === 'true';
+      this.visibleSidebar2 = params['courtRules'] === 'true';
+    });
   }
 
-  openCourtRules() {
-    // Add ?courtRules=true to the end of the URL
-    this.location.replaceState(this.location.path() + '?courtRules=true');
+  openCourtRules(): void {
+    this.router.navigate([], {
+      fragment: 'amenities',
+      queryParams: { courtRules: 'true' },
+      queryParamsHandling: 'merge',
+    });
     this.visibleSidebar2 = true;
   }
 
-  openPoolRules() {
-    // Add ?courtRules=true to the end of the URL
-    this.location.replaceState(this.location.path() + '?poolRules=true');
+  openPoolRules(): void {
+    this.router.navigate([], {
+      fragment: 'amenities',
+      queryParams: { poolRules: 'true' },
+      queryParamsHandling: 'merge',
+    });
     this.visibleSidebar1 = true;
   }
 
-  closeRules() {
+  closeRules(): void {
     this.visibleSidebar1 = false;
     this.visibleSidebar2 = false;
-
-    // remove ? from href
-    this.location.replaceState(this.location.path().split("?")[0]);
+    this.router.navigate([], {
+      fragment: 'amenities',
+      queryParams: { poolRules: null, courtRules: null },
+      queryParamsHandling: 'merge',
+    });
   }
 }

@@ -1,74 +1,92 @@
-import {Component, EventEmitter, Injectable, Input, OnInit, Output, OnChanges, SimpleChanges, ChangeDetectorRef} from '@angular/core';
-import {NgModel} from '@angular/forms';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-viewer',
-    templateUrl: './viewer.component.html',
-    styleUrls: ['./viewer.component.css'],
-    standalone: false
+  selector: 'app-viewer',
+  templateUrl: './viewer.component.html',
+  styleUrls: ['./viewer.component.css'],
+  standalone: false,
 })
-export class ViewerComponent implements OnInit, OnChanges {
-  @Input() showViewerModal: boolean = false;
+export class ViewerComponent implements OnChanges, AfterViewInit, OnDestroy {
+  @Input() showViewerModal = false;
   @Output() showViewerModalChange = new EventEmitter<boolean>();
 
-  @Input() manifestHtml: String;
-  @Output() manifestHtmlChange = new EventEmitter<String>();
+  @Input() manifestHtml: string;
+  @Output() manifestHtmlChange = new EventEmitter<string>();
+
+  @Input() documentTitle = '';
+
+  @ViewChild('pdfOverlay') pdfOverlay?: ElementRef<HTMLElement>;
 
   src: SafeResourceUrl;
-  isLoading: boolean = true; // Manage loading state
-  zoom: string = '100%'; // Initialize zoom property
+  zoom = 'page-width';
 
-  private resizeHandler = () => this.setAdaptiveZoom();
+  private resizeHandler = () => {
+    this.zoom = 'page-width';
+  };
 
-  constructor(private sanitizer: DomSanitizer, private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngAfterViewInit(): void {
+    if (this.showViewerModal) {
+      this.attachOverlayToBody();
+    }
+    window.addEventListener('resize', this.resizeHandler);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.manifestHtml) {
-      this.isLoading = true; // Start loading when manifestHtml changes
       this.src = changes.manifestHtml.currentValue;
-      console.log('PDF Source Updated:', this.src); // Debugging log
-      this.cdr.detectChanges(); // Trigger change detection
-      setTimeout(() => this.isLoading = false, 1000); // Simulate loading delay
+      this.cdr.detectChanges();
     }
 
     if (changes.showViewerModal) {
       this.showViewerModal = changes.showViewerModal.currentValue;
+      document.body.style.overflow = this.showViewerModal ? 'hidden' : '';
+
+      if (this.showViewerModal) {
+        setTimeout(() => this.attachOverlayToBody());
+      }
     }
   }
 
-  ngOnInit(): void {
-    this.setAdaptiveZoom();
-    window.addEventListener('resize', this.resizeHandler);
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.resizeHandler);
+    document.body.style.overflow = '';
+
+    const overlay = this.pdfOverlay?.nativeElement;
+    if (overlay) {
+      overlay.classList.remove('is-open');
+      if (overlay.parentElement === document.body) {
+        overlay.remove();
+      }
+    }
   }
 
-  private setAdaptiveZoom(): void {
-    const w = window.innerWidth;
-    if (w < 480) {
-      this.zoom = 'page-fit'; // let viewer fit width
-    } else if (w < 900) {
-      this.zoom = '125%';
-    } else {
-      this.zoom = '100%';
+  private attachOverlayToBody(): void {
+    const overlay = this.pdfOverlay?.nativeElement;
+    if (!overlay || overlay.parentElement === document.body) {
+      return;
     }
+
+    document.body.appendChild(overlay);
   }
 
   closeViewer(): void {
     this.showViewerModal = false;
     this.showViewerModalChange.emit(false);
-  }
-
-  toggleFullScreen(): void {
-    const elem = document.getElementById('pdfViewerShell');
-    if (elem) {
-      if (!document.fullscreenElement) {
-        elem.requestFullscreen().catch(err => {
-          console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    }
+    document.body.style.overflow = '';
   }
 }

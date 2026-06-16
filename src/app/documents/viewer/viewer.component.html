@@ -1,19 +1,39 @@
-<!-- Reworked full-screen PDF overlay -->
-<div class="pdf-overlay" *ngIf="showViewerModal">
+<div
+  #pdfOverlay
+  class="pdf-overlay"
+  [class.is-open]="showViewerModal"
+  [attr.aria-hidden]="!showViewerModal"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="documentTitle || 'Document viewer'">
+  <div class="pdf-overlay-backdrop" (click)="closeViewer()"></div>
+
   <div class="pdf-shell" id="pdfViewerShell">
-    <div class="pdf-toolbar">
-      <div class="pdf-title">Document Viewer</div>
-      <div class="pdf-toolbar-spacer"></div>
-      <button type="button" class="pdf-btn" (click)="toggleFullScreen()" aria-label="Fullscreen">⛶</button>
-      <button type="button" class="pdf-btn" (click)="closeViewer()" aria-label="Close">✕</button>
-    </div>
-    <div class="pdf-body">
+    <header class="pdf-chrome">
+      <mat-icon class="pdf-chrome-icon" aria-hidden="true">description</mat-icon>
+      <h2 class="pdf-chrome-title">{{ documentTitle || 'Document' }}</h2>
+      <div class="pdf-chrome-spacer"></div>
+      <button type="button" class="pdf-chrome-btn pdf-chrome-btn-close" (click)="closeViewer()" aria-label="Close viewer">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+
+    <div class="pdf-body" *ngIf="showViewerModal">
       <ngx-extended-pdf-viewer
         [showOpenFileButton]="false"
-        [showSidebarButton]="true"
-        [showRotateButton]="true"
+        [showSidebarButton]="false"
+        [showRotateButton]="false"
         [showPropertiesButton]="false"
-        [showFindButton]="true"
+        [showFindButton]="false"
+        [showPagingButtons]="true"
+        [showZoomButtons]="true"
+        [showPresentationModeButton]="false"
+        [showDownloadButton]="false"
+        [showPrintButton]="false"
+        [showSecondaryToolbarButton]="false"
+        [showSpreadButton]="false"
+        [showScrollingButton]="false"
+        [showHandToolButton]="false"
         [textLayer]="true"
         [useBrowserLocale]="true"
         [mobileFriendlyZoom]="true"
@@ -25,5 +45,4 @@
       ></ngx-extended-pdf-viewer>
     </div>
   </div>
-  <div class="pdf-overlay-backdrop" (click)="closeViewer()"></div>
 </div>

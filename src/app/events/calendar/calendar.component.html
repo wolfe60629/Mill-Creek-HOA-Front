@@ -1,18 +1,9 @@
-<div #fullCalModal id="fullCalModal" class="modal">
-  <div class="modal-dialog">
-    <div class="modal-header">
-      <h5 #modalTitle id="modalTitle" class="center modal-title"></h5>
-    </div>
-    <div class="modal-content">
-      <div #modalBody id="modalBody" class="modal-body">
-        <p>Date:<br><span style="padding-left:15px;" #modalDate></span></p>
-        <p>Location:<br><span style="padding-left:15px;" #modalLocation></span></p>
-        <p>Description:<br><span style="padding-left:15px;" #modalDescription></span></p>
-      </div>
-    </div>
-  </div>
+<div class="calendar-wrap">
+  <p class="calendar-hint">Click an event to see when it is, where it meets, and what it is about.</p>
+
+  <full-calendar
+    #calendar
+    class="community-calendar"
+    [options]="calendarOptions">
+  </full-calendar>
 </div>
-
-
-<full-calendar #calendar id= "calendar" deepChangeDetection="true" [options]="this.calendarOptions"></full-calendar>
-

@@ -1,30 +1,114 @@
-<!-- The Modal -->
-<div *ngIf="showUploadModal" id="myModal" class="modal" style='display: block' xmlns="http://www.w3.org/1999/html">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span (click)="setShowUploadModal(false)" class="close">&times;</span>
-        <p>{{fileToUpload.name}}</p>
-        <div class = "modal-inputs">
-          <div class="radioGroup">
-            <p-radioButton inputId="MeetingMinutes" name="category" value="Meeting Minutes" [(ngModel)]="categoryType"></p-radioButton>
-            <label for="MeetingMinutes">Meeting Minutes</label>
-
-            <p-radioButton inputId="Bylaws" name="category" value="Bylaws" [(ngModel)]="categoryType"></p-radioButton>
-            <label for="Bylaws">Bylaws</label>
-
-            <p-radioButton inputId="Other" name="category" value="Other" [(ngModel)]="categoryType"></p-radioButton>
-            <label for="Other">Other</label>
-          </div>
-
-            <input [(ngModel)]="documentName" id = "name" inputmode="text" placeholder="Document Name" required="true" autocomplete="off"/>
-        <input [(ngModel)]="description" id = "description" inputmode="text" placeholder="Description" required="true" autocomplete="off"/>
-
-            <p-autoComplete *ngIf="categoryType==='Other'" [(ngModel)]="category.name" [suggestions]="output" (completeMethod)="search($event)"
-                            placeholder="Enter a Category"></p-autoComplete>
-
-            <input id="year" *ngIf="categoryType==='Meeting Minutes'" [(ngModel)]="category.name" type="number"  minLength="4" maxlength="4"
-                            placeholder="Meeting Year"/>
-        </div>
-        <button class="btn blue" (click)="onSubmit()">Submit</button>
+<p-dialog
+  header="Upload document"
+  [(visible)]="visible"
+  appendTo="body"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [blockScroll]="true"
+  [closable]="!uploading"
+  [closeOnEscape]="!uploading"
+  [style]="{ width: 'min(520px, 94vw)' }"
+  styleClass="doc-upload-dialog"
+  (onHide)="onClose()">
+  <div class="doc-upload-form">
+    <div class="doc-upload-file">
+      <span class="doc-upload-file-icon" aria-hidden="true">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </span>
+      <div class="doc-upload-file-copy">
+        <p class="doc-upload-file-name">{{ file.name }}</p>
+        <p class="doc-upload-file-meta">{{ formatFileSize(file.size) }} · PDF</p>
+      </div>
     </div>
-</div>
+
+    <div class="doc-upload-field">
+      <label class="doc-upload-label" for="doc-upload-name">Document name</label>
+      <input
+        id="doc-upload-name"
+        class="doc-upload-input"
+        type="text"
+        [(ngModel)]="documentName"
+        placeholder="e.g. April board meeting minutes"
+        autocomplete="off"
+        [disabled]="uploading" />
+    </div>
+
+    <div class="doc-upload-field">
+      <label class="doc-upload-label" for="doc-upload-description">Description</label>
+      <textarea
+        id="doc-upload-description"
+        class="doc-upload-input doc-upload-textarea"
+        rows="3"
+        [(ngModel)]="description"
+        placeholder="Brief summary for residents browsing documents"
+        [disabled]="uploading"></textarea>
+    </div>
+
+    <fieldset class="doc-upload-fieldset">
+      <legend class="doc-upload-label">Category</legend>
+      <div class="doc-upload-category-options">
+        <label
+          *ngFor="let option of categoryTypes"
+          class="doc-upload-category-option"
+          [class.doc-upload-category-option--active]="categoryType === option.value">
+          <input
+            type="radio"
+            name="docCategoryType"
+            [value]="option.value"
+            [(ngModel)]="categoryType"
+            [disabled]="uploading" />
+          <span>{{ option.label }}</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="doc-upload-field" *ngIf="categoryType === 'Meeting Minutes'">
+      <label class="doc-upload-label" for="doc-upload-year">Meeting year</label>
+      <input
+        id="doc-upload-year"
+        class="doc-upload-input"
+        type="number"
+        min="1990"
+        max="2099"
+        [(ngModel)]="meetingYear"
+        placeholder="2026"
+        inputmode="numeric"
+        [disabled]="uploading" />
+    </div>
+
+    <div class="doc-upload-field" *ngIf="categoryType === 'Other'">
+      <label class="doc-upload-label" for="doc-upload-category">Category name</label>
+      <p-autoComplete
+        inputId="doc-upload-category"
+        [(ngModel)]="customCategory"
+        [suggestions]="categorySuggestions"
+        (completeMethod)="onCategorySearch($event)"
+        placeholder="e.g. Community Information"
+        styleClass="doc-upload-autocomplete"
+        inputStyleClass="doc-upload-input"
+        [disabled]="uploading"
+        [forceSelection]="false"
+        [dropdown]="true">
+      </p-autoComplete>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="doc-upload-btn doc-upload-btn--ghost"
+      [disabled]="uploading"
+      (click)="onClose()">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="doc-upload-btn doc-upload-btn--primary"
+      [disabled]="!canSubmit()"
+      (click)="onSubmit()">
+      {{ uploading ? 'Uploading…' : 'Upload' }}
+    </button>
+  </ng-template>
+</p-dialog>

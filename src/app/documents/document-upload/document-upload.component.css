@@ -1,51 +1,167 @@
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-    max-height: unset;
+.doc-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 45%; /* Could be more or less, depending on screen size */
-    text-align: center;
+.doc-upload-file {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
 }
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+.doc-upload-file-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.doc-upload-file-icon mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
-.modal-inputs {
-    margin-bottom: 10px;
+.doc-upload-file-copy {
+  min-width: 0;
 }
 
-label {
-    margin-right: 20px;
+.doc-upload-file-name {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-word;
 }
 
-p-radioButton {
-    margin-right: 3px;
+.doc-upload-file-meta {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.doc-upload-field,
+.doc-upload-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.doc-upload-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.doc-upload-input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font: 500 0.9375rem var(--font-body);
+  color: var(--color-text);
+  background: var(--color-surface-solid);
+  box-sizing: border-box;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.doc-upload-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-soft);
+}
+
+.doc-upload-input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.doc-upload-textarea {
+  resize: vertical;
+  min-height: 84px;
+  line-height: 1.5;
+}
+
+.doc-upload-category-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.doc-upload-category-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-subtle);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.doc-upload-category-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.doc-upload-category-option--active {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: var(--color-accent-soft);
+  color: var(--color-primary);
+}
+
+.doc-upload-btn {
+  min-height: 36px;
+  padding: 0 0.95rem;
+  border-radius: var(--radius-sm);
+  font: 600 0.875rem var(--font-body);
+  cursor: pointer;
+}
+
+.doc-upload-btn--ghost {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.doc-upload-btn--primary {
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.doc-upload-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+::ng-deep .doc-upload-dialog .p-dialog-content {
+  padding-top: 0.35rem;
+}
+
+::ng-deep .doc-upload-autocomplete,
+::ng-deep .doc-upload-autocomplete .p-autocomplete {
+  width: 100%;
+}
+
+::ng-deep .doc-upload-autocomplete .p-autocomplete-input {
+  width: 100%;
 }

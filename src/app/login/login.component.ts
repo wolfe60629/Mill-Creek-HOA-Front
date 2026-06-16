@@ -26,7 +26,8 @@ export class LoginComponent implements OnInit {
     this.loginService.getAuthToken(this.username, this.password).add( () => {
       // Check to see if token loaded
       if (this.loginService.getAuthorizationHeaderValue()) {
-        this.router.navigate(['/admin']);
+        this.messageService.add({ severity: 'success', summary: 'Signed in', detail: 'Edit content directly on each section.' });
+        this.router.navigate(['/']);
       } else {
         this.messageService.add({severity: 'warn', summary: 'Incorrect Username/Password'});
       }

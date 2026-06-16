@@ -24,8 +24,8 @@ describe('NavigationComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it(`should have variable 'home' not empty`, () => {
-    expect(component.home).toBeTruthy()
-    expect(component.home).toBeDefined()
-  })
+  it('should expose main navigation links', () => {
+    expect(component.mainLinks.length).toBeGreaterThan(0);
+    expect(component.mainLinks.some(link => link.label === 'Contact')).toBeTrue();
+  });
 })

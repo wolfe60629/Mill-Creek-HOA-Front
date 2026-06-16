@@ -1,9 +1,16 @@
-<div class="global-hero-background">
-  <img src="assets/background.png" alt="Mill Creek Community" class="global-background-image">
-  <div class="global-overlay"></div>
-  <div class="global-tech-grid"></div>
+<div class="app-shell">
+  <div class="global-hero-background" aria-hidden="true">
+    <img src="assets/background.png" alt="" class="global-background-image">
+    <div class="global-overlay"></div>
   </div>
-<app-navigation *ngIf="!isHomePage"></app-navigation>
-<p-toast position="bottom-center"></p-toast>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+
+  <app-navigation>
+    <main class="app-main" [class.app-main--scroll]="isScrollSite">
+      <p-toast position="bottom-center"></p-toast>
+      <p-confirmDialog key="confirm"></p-confirmDialog>
+      <router-outlet></router-outlet>
+    </main>
+
+    <app-footer *ngIf="!isScrollSite"></app-footer>
+  </app-navigation>
+</div>
