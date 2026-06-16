@@ -188,6 +188,13 @@ mat-sidenav-container.navbar-container .mat-drawer-content {
     linear-gradient(180deg, rgba(4, 10, 7, 0.82) 0%, rgba(4, 10, 7, 0.55) 40%, rgba(4, 10, 7, 0.78) 100%);
 }
 
+@media (max-width: 959px) {
+  .global-overlay {
+    background:
+      linear-gradient(180deg, rgba(10, 24, 18, 0.36) 0%, rgba(10, 24, 18, 0.08) 40%, rgba(10, 24, 18, 0.26) 100%);
+  }
+}
+
 /* ── Motion ──────────────────────────────────────────────────── */
 @keyframes rise-in {
   from {

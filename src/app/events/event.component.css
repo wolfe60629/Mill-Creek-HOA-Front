@@ -283,6 +283,11 @@
   color: var(--color-text);
 }
 
+::ng-deep .event-detail-dialog .p-dialog-content {
+  overflow-y: auto;
+  max-height: min(60dvh, 520px);
+}
+
 @media (max-width: 900px) {
   .content-grid { grid-template-columns: 1fr; }
 }

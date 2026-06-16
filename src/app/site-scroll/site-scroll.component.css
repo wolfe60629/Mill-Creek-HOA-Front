@@ -552,6 +552,49 @@
 }
 
 @media (max-width: 959px) {
+  .scroll-hero {
+    justify-content: flex-start;
+    min-height: auto;
+    overflow: visible;
+    gap: clamp(1.75rem, 5vw, 2.5rem);
+    padding-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .scroll-hero-overlay {
+    background:
+      radial-gradient(ellipse 85% 75% at 50% 38%, rgba(6, 16, 11, 0.2) 0%, rgba(6, 16, 11, 0.45) 72%),
+      linear-gradient(180deg, rgba(6, 16, 11, 0.28) 0%, rgba(6, 16, 11, 0.08) 45%, rgba(6, 16, 11, 0.34) 100%);
+  }
+
+  .scroll-hero-glow {
+    opacity: 0.65;
+  }
+
+  .scroll-hero-card {
+    flex: 0 0 auto;
+    min-height: calc(100dvh - var(--navbar-height) - 1.5rem);
+    display: flex;
+    align-items: center;
+    background: rgba(8, 20, 14, 0.46);
+  }
+
+  .scroll-hero-inner {
+    width: 100%;
+  }
+
+  .scroll-hero-fade {
+    display: none;
+  }
+
+  .scroll-cue {
+    top: calc(100dvh - var(--navbar-height) - 2.5rem);
+    bottom: auto;
+  }
+
+  .hero-filmstrip {
+    margin-top: 0.25rem;
+  }
+
   .hero-filmstrip-hint {
     display: block;
   }
