@@ -1,120 +1,362 @@
-<!-- Modern Admin Page -->
-<div class="admin-page">
-  <header class="admin-hero">
-    <h1 class="admin-title">Administration</h1>
-    <p class="admin-sub">Manage events & board members</p>
+<div class="admin-page page-container page-enter">
+  <header class="page-banner page-banner--compact">
+    <div class="page-banner-inner admin-banner-inner">
+      <div class="admin-banner-copy">
+        <p class="admin-eyebrow">Board portal</p>
+        <h1 class="page-banner-title">Administration</h1>
+        <p class="page-banner-sub">Manage events, board contacts, and site settings in one place.</p>
+      </div>
 
-    <div class="admin-tabs" role="tablist">
-      <button type="button" class="tab-btn" [class.active]="activeTab==='events'" (click)="setTab('events')" role="tab" aria-selected="{{activeTab==='events'}}">📅 Events</button>
-      <button type="button" class="tab-btn" [class.active]="activeTab==='board'" (click)="setTab('board')" role="tab" aria-selected="{{activeTab==='board'}}">👥 Board</button>
+      <div class="admin-banner-actions">
+        <button type="button" class="ghost-btn" (click)="openSiteSection('top')">
+          <mat-icon aria-hidden="true">open_in_new</mat-icon>
+          View site
+        </button>
+        <a routerLink="/documents" class="ghost-btn ghost-btn--link">
+          <mat-icon aria-hidden="true">description</mat-icon>
+          Documents
+        </a>
+        <button type="button" class="ghost-btn ghost-btn--danger" (click)="logout()">
+          <mat-icon aria-hidden="true">logout</mat-icon>
+          Sign out
+        </button>
+      </div>
     </div>
   </header>
 
-  <div class="tab-panels">
-    <section class="admin-section" aria-labelledby="events-heading" [attr.data-active]="activeTab==='events'">
-      <div class="panel-header">
-        <h2 id="events-heading">Events</h2>
-        <button type="button" class="primary-btn" (click)="addNewEventRow()">➕ Add</button>
-      </div>
-      <div class="data-panel">
-        <p-table [value]="communityEvents" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
-          <ng-template pTemplate="header">
-            <tr>
-              <th id= "community-event-name">Name</th>
-              <th id= "community-event-description">Description</th>
-              <th id= "community-event-location">Location</th>
-              <th id= "community-event-datetime">Date / Time</th>
-              <th id = "community-event-actions" class="actions-col">Actions</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-row>
-            <tr>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.eventName" class="in" placeholder="Title" />
-                <span *ngIf="row.readonly">{{row.eventName || '—'}}</span>
-              </td>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.description" class="in" placeholder="Description" />
-                <span *ngIf="row.readonly" class="muted">{{row.description || '—'}} </span>
-              </td>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.location" class="in" placeholder="Location" />
-                <span *ngIf="row.readonly">{{row.location || '—'}}</span>
-              </td>
-              <td>
-                <div *ngIf="!row.readonly" class="date-stack">
-                  <input type="datetime-local" [(ngModel)]="row.startDate" class="in" />
-                  <input type="datetime-local" [(ngModel)]="row.endDate" class="in" />
-                </div>
-                <div *ngIf="row.readonly" class="date-display small-text">
-                  <div>{{generalService.formatTimeAndDate(row.startDate) || '—'}}</div>
-                  <div *ngIf="row.endDate">→ {{generalService.formatTimeAndDate(row.endDate)}}</div>
-                </div>
-              </td>
-              <td class="actions-col">
-                <div *ngIf="row.readonly" class="row-actions">
-                  <button type="button" class="icon-btn" pTooltip="Edit" (click)="editRow(row)">✏️</button>
-                  <button type="button" class="icon-btn warn" pTooltip="Delete" (click)="onDeleteCommunityEvent(row)">🗑️</button>
-                </div>
-                <div *ngIf="!row.readonly" class="row-actions">
-                  <button type="button" class="icon-btn success" pTooltip="Save" (click)="onEventSave(row)">✔️</button>
-                  <button type="button" class="icon-btn warn" pTooltip="Cancel" (click)="cancelEdit(row)">✖️</button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <div *ngIf="communityEvents?.length===0" class="empty">No events yet.</div>
-      </div>
+  <div class="page-sheet page-sheet--wide">
+    <section class="admin-stats" aria-label="Overview">
+      <button type="button" class="stat-card" (click)="setTab('events', 'all')">
+        <span class="stat-icon" aria-hidden="true"><mat-icon>event</mat-icon></span>
+        <span class="stat-body">
+          <span class="stat-value">{{ communityEvents.length }}</span>
+          <span class="stat-label">Total events</span>
+        </span>
+      </button>
+
+      <button type="button" class="stat-card stat-card--accent" (click)="setTab('events', 'upcoming')">
+        <span class="stat-icon" aria-hidden="true"><mat-icon>upcoming</mat-icon></span>
+        <span class="stat-body">
+          <span class="stat-value">{{ upcomingEventCount }}</span>
+          <span class="stat-label">Upcoming</span>
+        </span>
+      </button>
+
+      <button type="button" class="stat-card" (click)="setTab('board')">
+        <span class="stat-icon" aria-hidden="true"><mat-icon>groups</mat-icon></span>
+        <span class="stat-body">
+          <span class="stat-value">{{ boardMembers.length }}</span>
+          <span class="stat-label">Board contacts</span>
+        </span>
+      </button>
+
+      <a routerLink="/documents" class="stat-card stat-card--link">
+        <span class="stat-icon" aria-hidden="true"><mat-icon>folder_open</mat-icon></span>
+        <span class="stat-body">
+          <span class="stat-value">{{ loadingDocuments ? '…' : documentCount }}</span>
+          <span class="stat-label">Documents</span>
+        </span>
+      </a>
     </section>
 
-    <section class="admin-section" aria-labelledby="board-heading" [attr.data-active]="activeTab==='board'">
-      <div class="panel-header">
-        <h2 id="board-heading">Board Members</h2>
-        <button type="button" class="primary-btn" (click)="addNewBoardMemberRow()">➕ Add</button>
-      </div>
-      <div class="data-panel">
-        <p-table [value]="boardMembers" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
-          <ng-template pTemplate="header">
-            <tr>
-              <th id="board-member-title">Title</th>
-              <th id="board-member-name">Name</th>
-              <th id="board-member-email">Email</th>
-              <th id="board-member-actions" class="actions-col">Actions</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-row>
-            <tr>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.title" class="in" placeholder="Title" />
-                <span *ngIf="row.readonly">{{row.title || '—'}}</span>
-              </td>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.name" class="in" placeholder="Name" />
-                <span *ngIf="row.readonly">{{row.name || '—'}}</span>
-              </td>
-              <td>
-                <input *ngIf="!row.readonly" [(ngModel)]="row.email" class="in" placeholder="Email" />
-                <span *ngIf="row.readonly" class="email">{{row.email || '—'}}</span>
-              </td>
-              <td class="actions-col">
-                <div *ngIf="row.readonly" class="row-actions">
-                  <button type="button" class="icon-btn" pTooltip="Edit" (click)="editRow(row)">✏️</button>
-                  <button type="button" class="icon-btn warn" pTooltip="Delete" (click)="onDeleteBoardMember(row)">🗑️</button>
-                </div>
-                <div *ngIf="!row.readonly" class="row-actions">
-                  <button type="button" class="icon-btn success" pTooltip="Save" (click)="onBoardMemberSave(row)">✔️</button>
-                  <button *ngIf="!row.newMember" type="button" class="icon-btn warn" pTooltip="Cancel" (click)="cancelEdit(row)">✖️</button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <div *ngIf="boardMembers?.length===0" class="empty">No members yet.</div>
-      </div>
+    <section class="admin-quickbar" aria-label="Quick actions">
+      <button type="button" class="quick-chip" (click)="addNewEventRow()">
+        <mat-icon aria-hidden="true">add</mat-icon>
+        New event
+      </button>
+      <a routerLink="/documents" class="quick-chip quick-chip--primary">
+        <mat-icon aria-hidden="true">upload_file</mat-icon>
+        Upload document
+      </a>
+      <button type="button" class="quick-chip" (click)="addNewBoardMemberRow(); setTab('board')">
+        <mat-icon aria-hidden="true">person_add</mat-icon>
+        New board member
+      </button>
+      <button type="button" class="quick-chip" (click)="setTab('settings')">
+        <mat-icon aria-hidden="true">settings</mat-icon>
+        Settings
+      </button>
     </section>
+
+    <header class="admin-hero">
+      <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          [class.active]="activeTab === 'events'"
+          [attr.aria-selected]="activeTab === 'events'"
+          (click)="setTab('events')">
+          Events
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          [class.active]="activeTab === 'board'"
+          [attr.aria-selected]="activeTab === 'board'"
+          (click)="setTab('board')">
+          Board
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          role="tab"
+          [class.active]="activeTab === 'settings'"
+          [attr.aria-selected]="activeTab === 'settings'"
+          (click)="setTab('settings')">
+          Settings
+        </button>
+      </div>
+    </header>
+
+    <div class="tab-panels">
+      <section class="admin-section" aria-labelledby="events-heading" [attr.data-active]="activeTab === 'events'">
+        <div class="panel-header">
+          <div class="panel-heading">
+            <h2 id="events-heading">Events</h2>
+            <p class="panel-hint">Shown on the site under <a routerLink="/events">Events</a>.</p>
+          </div>
+          <button type="button" class="primary-btn" (click)="addNewEventRow()">
+            <mat-icon aria-hidden="true">add</mat-icon>
+            Add event
+          </button>
+        </div>
+
+        <div class="panel-toolbar">
+          <label class="search-field">
+            <mat-icon aria-hidden="true">search</mat-icon>
+            <input type="search" [(ngModel)]="eventsFilter" placeholder="Search events…" />
+          </label>
+
+          <div class="filter-chips" role="group" aria-label="Event filters">
+            <button type="button" class="filter-chip" [class.active]="eventsStatusFilter === 'all'" (click)="eventsStatusFilter = 'all'">All</button>
+            <button type="button" class="filter-chip" [class.active]="eventsStatusFilter === 'upcoming'" (click)="eventsStatusFilter = 'upcoming'">Upcoming</button>
+            <button type="button" class="filter-chip" [class.active]="eventsStatusFilter === 'past'" (click)="eventsStatusFilter = 'past'">Past</button>
+          </div>
+        </div>
+
+        <div class="data-panel">
+          <div *ngIf="loadingEvents" class="panel-loading">
+            <p-progressSpinner strokeWidth="4" ariaLabel="Loading events"></p-progressSpinner>
+          </div>
+
+          <p-table *ngIf="!loadingEvents" [value]="filteredEvents" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Date / Time</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr [class.row-editing]="!row.readonly">
+                <td>
+                  <span class="status-pill" [class.status-pill--upcoming]="isUpcoming(row)" [class.status-pill--past]="isPast(row)">
+                    {{ eventStatusLabel(row) }}
+                  </span>
+                </td>
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.eventName" class="in" placeholder="Title" />
+                  <span *ngIf="row.readonly">{{ row.eventName || '—' }}</span>
+                </td>
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.description" class="in" placeholder="Description" />
+                  <span *ngIf="row.readonly" class="muted">{{ row.description || '—' }}</span>
+                </td>
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.location" class="in" placeholder="Location" />
+                  <span *ngIf="row.readonly">{{ row.location || '—' }}</span>
+                </td>
+                <td>
+                  <div *ngIf="!row.readonly" class="date-stack">
+                    <label class="field-label">Start</label>
+                    <input type="datetime-local" [(ngModel)]="row.startDate" class="in" />
+                    <label class="field-label">End</label>
+                    <input type="datetime-local" [(ngModel)]="row.endDate" class="in" />
+                  </div>
+                  <div *ngIf="row.readonly" class="date-display small-text">
+                    <div>{{ generalService.formatTimeAndDate(row.startDate) || '—' }}</div>
+                    <div *ngIf="row.endDate">→ {{ generalService.formatTimeAndDate(row.endDate) }}</div>
+                  </div>
+                </td>
+                <td class="actions-col">
+                  <div *ngIf="row.readonly" class="row-actions">
+                    <button type="button" class="icon-btn" pTooltip="Edit" aria-label="Edit" (click)="editRow(row)">
+                      <mat-icon aria-hidden="true">edit</mat-icon>
+                    </button>
+                    <button type="button" class="icon-btn warn" pTooltip="Delete" aria-label="Delete" (click)="onDeleteCommunityEvent(row)">
+                      <mat-icon aria-hidden="true">delete</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="!row.readonly" class="row-actions">
+                    <button type="button" class="icon-btn success" pTooltip="Save" aria-label="Save" (click)="onEventSave(row)">
+                      <mat-icon aria-hidden="true">check</mat-icon>
+                    </button>
+                    <button type="button" class="icon-btn warn" pTooltip="Cancel" aria-label="Cancel" (click)="cancelEdit(row)">
+                      <mat-icon aria-hidden="true">close</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+          <div *ngIf="!loadingEvents && filteredEvents.length === 0" class="empty-state">
+            <mat-icon aria-hidden="true">event_busy</mat-icon>
+            <p>{{ communityEvents.length === 0 ? 'No events yet. Add your first community event.' : 'No events match your search or filter.' }}</p>
+            <button *ngIf="communityEvents.length === 0" type="button" class="primary-btn" (click)="addNewEventRow()">Add event</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-section" aria-labelledby="board-heading" [attr.data-active]="activeTab === 'board'">
+        <div class="panel-header">
+          <div class="panel-heading">
+            <h2 id="board-heading">Board Members</h2>
+            <p class="panel-hint">Shown on the site under <a routerLink="/contact">Contact</a>.</p>
+          </div>
+          <button type="button" class="primary-btn" (click)="addNewBoardMemberRow()">
+            <mat-icon aria-hidden="true">add</mat-icon>
+            Add member
+          </button>
+        </div>
+
+        <div class="panel-toolbar">
+          <label class="search-field">
+            <mat-icon aria-hidden="true">search</mat-icon>
+            <input type="search" [(ngModel)]="boardFilter" placeholder="Search board members…" />
+          </label>
+        </div>
+
+        <div class="data-panel">
+          <div *ngIf="loadingBoard" class="panel-loading">
+            <p-progressSpinner strokeWidth="4" ariaLabel="Loading board members"></p-progressSpinner>
+          </div>
+
+          <p-table *ngIf="!loadingBoard" [value]="filteredBoardMembers" [autoLayout]="true" class="clean-table" [trackBy]="trackByFn">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Title</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr [class.row-editing]="!row.readonly">
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.title" class="in" placeholder="Title" />
+                  <span *ngIf="row.readonly">{{ row.title || '—' }}</span>
+                </td>
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.name" class="in" placeholder="Name" />
+                  <span *ngIf="row.readonly">{{ row.name || '—' }}</span>
+                </td>
+                <td>
+                  <input *ngIf="!row.readonly" [(ngModel)]="row.email" class="in" placeholder="Email" type="email" />
+                  <span *ngIf="row.readonly" class="email">{{ row.email || '—' }}</span>
+                </td>
+                <td class="actions-col">
+                  <div *ngIf="row.readonly" class="row-actions">
+                    <button type="button" class="icon-btn" pTooltip="Edit" aria-label="Edit" (click)="editRow(row)">
+                      <mat-icon aria-hidden="true">edit</mat-icon>
+                    </button>
+                    <button type="button" class="icon-btn warn" pTooltip="Delete" aria-label="Delete" (click)="onDeleteBoardMember(row)">
+                      <mat-icon aria-hidden="true">delete</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="!row.readonly" class="row-actions">
+                    <button type="button" class="icon-btn success" pTooltip="Save" aria-label="Save" (click)="onBoardMemberSave(row)">
+                      <mat-icon aria-hidden="true">check</mat-icon>
+                    </button>
+                    <button type="button" class="icon-btn warn" pTooltip="Cancel" aria-label="Cancel" (click)="cancelEdit(row)">
+                      <mat-icon aria-hidden="true">close</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+
+          <div *ngIf="!loadingBoard && filteredBoardMembers.length === 0" class="empty-state">
+            <mat-icon aria-hidden="true">group_off</mat-icon>
+            <p>{{ boardMembers.length === 0 ? 'No board contacts yet. Add the first one.' : 'No board members match your search.' }}</p>
+            <button *ngIf="boardMembers.length === 0" type="button" class="primary-btn" (click)="addNewBoardMemberRow()">Add member</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-section" aria-labelledby="settings-heading" [attr.data-active]="activeTab === 'settings'">
+        <div class="panel-header">
+          <div class="panel-heading">
+            <h2 id="settings-heading">Settings</h2>
+            <p class="panel-hint">Site-wide options used by the public Documents section.</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <article class="settings-card">
+            <div class="settings-card-header">
+              <span class="settings-card-icon" aria-hidden="true"><mat-icon>mail</mat-icon></span>
+              <div>
+                <h3>Document request email</h3>
+                <p>Residents’ document requests are sent to this address.</p>
+              </div>
+            </div>
+
+            <div *ngIf="loadingSettings" class="panel-loading panel-loading--compact">
+              <p-progressSpinner strokeWidth="4" ariaLabel="Loading settings"></p-progressSpinner>
+            </div>
+
+            <div *ngIf="!loadingSettings" class="settings-card-body">
+              <div *ngIf="!isRequestEmailEdit" class="settings-readonly">
+                <span class="settings-value">{{ requestEmail.value || 'Not configured' }}</span>
+                <button type="button" class="secondary-btn" (click)="startRequestEmailEdit()">
+                  <mat-icon aria-hidden="true">edit</mat-icon>
+                  Edit
+                </button>
+              </div>
+
+              <div *ngIf="isRequestEmailEdit" class="settings-edit">
+                <label class="field-label" for="request-email">Notification email</label>
+                <input
+                  id="request-email"
+                  type="email"
+                  class="in"
+                  [(ngModel)]="requestEmail.value"
+                  placeholder="hoa@example.com" />
+                <div class="settings-edit-actions">
+                  <button type="button" class="primary-btn" [disabled]="savingSettings" (click)="saveRequestEmail()">
+                    <mat-icon aria-hidden="true">save</mat-icon>
+                    Save
+                  </button>
+                  <button type="button" class="ghost-btn" [disabled]="savingSettings" (click)="cancelRequestEmailEdit()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="settings-card settings-card--muted">
+            <div class="settings-card-header">
+              <span class="settings-card-icon" aria-hidden="true"><mat-icon>info</mat-icon></span>
+              <div>
+                <h3>Document uploads</h3>
+                <p>PDF uploads are managed from the public Documents page while you are signed in.</p>
+              </div>
+            </div>
+            <a routerLink="/documents" class="secondary-btn secondary-btn--link">
+              <mat-icon aria-hidden="true">open_in_new</mat-icon>
+              Go to Documents
+            </a>
+          </article>
+        </div>
+      </section>
+    </div>
   </div>
 </div>
 
-
-
+<p-confirmDialog [key]="confirmationDialogKey"></p-confirmDialog>

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs';
-import {Title} from '@angular/platform-browser';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+import { ThemeService } from './services/theme.service';
 
 declare var gtag;
 
@@ -11,9 +12,14 @@ declare var gtag;
     standalone: false
 })
 export class AppComponent {
-    isHomePage: boolean;
+    isScrollSite = true;
 
-    constructor(titleService: Title, router: Router) {
+    private readonly utilityPaths = ['/login', '/logout'];
+
+    constructor(titleService: Title, router: Router, themeService: ThemeService) {
+     themeService.init();
+     this.isScrollSite = this.isScrollPath(router.url);
+
      const navEndEvents = router.events.pipe(
           filter(event => event instanceof NavigationEnd),
       );
@@ -23,19 +29,10 @@ export class AppComponent {
          gtag('config', 'G-GHEE5RV5RQ' , {
              'page_path': event.urlAfterRedirects
          });
+         this.isScrollSite = this.isScrollPath(event.urlAfterRedirects);
      });
-
-        // Listen for route changes to update the `isHomePage` flag
-        router.events
-          .pipe(filter(event => event instanceof NavigationEnd))
-          .subscribe((event: NavigationEnd) => {
-              // Set `isHomePage` to true if the current route is the home page ('/')
-              this.isHomePage = event.urlAfterRedirects === '/';
-          });
     }
 
-    // collect that title data properties from all child routes
-    // there might be a better way but this worked for me
     getTitle(state, parent) {
         const data = [];
         if (parent && parent.snapshot.data && parent.snapshot.data.title) {
@@ -48,4 +45,8 @@ export class AppComponent {
         return data;
     }
 
+    private isScrollPath(url: string): boolean {
+      const path = url.split('?')[0].split('#')[0] || '/';
+      return !this.utilityPaths.some(prefix => path.startsWith(prefix));
+    }
 }

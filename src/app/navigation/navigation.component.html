@@ -1,63 +1,151 @@
-<mat-sidenav-container class="navbar-container navbar-fixed">
-  <!-- Sidebar for Mobile (Initially hidden on large screens) -->
-  <mat-sidenav #sidenav mode="over" position="start" class="sidenav-menu" [opened]="false" [fixedInViewport]="true" [fixedTopGap]="70">
-    <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/home" (click)="sidenav.close()">Home</a>
-      <a mat-list-item routerLink="/about" (click)="sidenav.close()">About</a>
-      <a mat-list-item routerLink="/amenities" (click)="sidenav.close()">Amenities</a>
-      <a mat-list-item routerLink="/events" (click)="sidenav.close()">Events</a>
-      <a mat-list-item routerLink="/documents" (click)="sidenav.close()">Documents</a>
-      <a mat-list-item href="https://hms-inc.net/" (click)="sidenav.close()">ARC Requests</a>
-      <a mat-list-item routerLink="/contact" (click)="sidenav.close()">Connect</a>
-      <a mat-list-item href="https://hms.cincwebaxis.com/account/loginmodernthemes" (click)="sidenav.close()">Resident Portal</a>
+<mat-sidenav-container class="navbar-container">
+  <mat-sidenav
+    #sidenav
+    mode="over"
+    position="start"
+    class="sidenav-menu"
+    [opened]="false"
+    [fixedInViewport]="true"
+    [fixedTopGap]="64">
+    <div class="sidenav-header">
+      <button type="button" class="sidenav-brand-btn" (click)="goHome()">
+        <img src="assets/icon.png" alt="" class="sidenav-logo" aria-hidden="true" />
+        <span class="sidenav-brand-text">
+          <span class="sidenav-sub">Community Association</span>
+        </span>
+      </button>
+    </div>
+
+    <mat-nav-list class="nav-list" aria-label="Site navigation">
+      <a
+        mat-list-item
+        *ngFor="let link of mainLinks"
+        [href]="link.external || ('#' + link.homeSection)"
+        [attr.target]="link.external ? '_blank' : null"
+        [attr.rel]="link.external ? 'noopener noreferrer' : null"
+        [class.active-link]="isLinkActive(link)"
+        (click)="navigate(link, $event)">
+        <span class="sidenav-item">
+          <mat-icon aria-hidden="true">{{ link.icon }}</mat-icon>
+          <span class="sidenav-item-label">{{ link.label }}</span>
+          <mat-icon *ngIf="link.external" class="sidenav-external" aria-hidden="true">open_in_new</mat-icon>
+        </span>
+      </a>
     </mat-nav-list>
+
+    <div class="sidenav-residents">
+      <span class="sidenav-residents-label">For Residents</span>
+      <a
+        mat-list-item
+        [href]="residentLoginUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="portal-link"
+        (click)="closeMenuFromLink()">
+        <span class="sidenav-item">
+          <mat-icon aria-hidden="true">login</mat-icon>
+          <span class="sidenav-item-label">Resident Login</span>
+          <mat-icon class="sidenav-external" aria-hidden="true">open_in_new</mat-icon>
+        </span>
+      </a>
+    </div>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <!-- Top Navbar -->
-    <mat-toolbar class="navbar z-depth-0 white" [style.height]="'var(--navbar-height)'">
-      <!-- Mobile Menu Icon -->
-      <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn">
-        <mat-icon>menu</mat-icon>
-      </button>
 
-      <!-- Desktop Menu -->
-      <div class="menu-container">
-        <ul class="navbar-links">
-          <li [ngClass]="route === '/home' ? 'active' : ''">
-            <a routerLink="/home" class="black-text text-darken-3">Home</a>
-          </li>
-          <li [ngClass]="route === '/about' ? 'active' : ''">
-            <a routerLink="/about" class="black-text text-darken-3">About</a>
-          </li>
-          <li [ngClass]="route === '/amenities' ? 'active' : ''">
-            <a routerLink="/amenities" class="black-text text-darken-3">Amenities</a>
-          </li>
-          <li [ngClass]="route === '/events' ? 'active' : ''">
-            <a routerLink="/events" class="black-text text-darken-3">Events</a>
-          </li>
-          <li [ngClass]="route === '/documents' ? 'active' : ''">
-            <a routerLink="/documents" class="black-text text-darken-3">Documents</a>
-          </li>
-          <li><a href="https://hms-inc.net/" class="black-text text-darken-3">ARC Requests</a></li>
-          <li [ngClass]="route === '/contact' ? 'active' : ''">
-            <a routerLink="/contact" class="black-text text-darken-3">Board Members</a>
-          </li>
-          <li><a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="black-text text-darken-3">Resident Portal</a></li>
-        </ul>
+  <mat-sidenav-content class="site-shell-content">
+    <header class="site-header">
+      <mat-toolbar class="navbar" [class.is-scrolled]="navScrolled">
+      <div class="navbar-inner">
+        <div class="navbar-start">
+          <button mat-icon-button (click)="sidenav.toggle()" class="mobile-menu-btn" aria-label="Open menu">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
+
+        <nav class="menu-container" aria-label="Main navigation">
+          <ul class="navbar-links">
+            <li
+              *ngFor="let link of mainLinks"
+              [class.active]="isLinkActive(link)"
+              [class.nav-external]="!!link.external"
+              [class.nav-home]="link.homeSection === 'top'">
+              <a
+                [href]="link.external || ('#' + link.homeSection)"
+                [attr.target]="link.external ? '_blank' : null"
+                [attr.rel]="link.external ? 'noopener noreferrer' : null"
+                (click)="navigate(link, $event)">
+                {{ link.label }}
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="navbar-actions">
+          <a
+            [href]="residentLoginUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="portal-btn">
+            Resident Login
+          </a>
+          <button
+            mat-icon-button
+            type="button"
+            *ngIf="!isAdmin"
+            class="board-signin-btn"
+            title="Board sign-in"
+            aria-label="Board sign-in"
+            (click)="openBoardSignIn()">
+            <mat-icon aria-hidden="true">badge</mat-icon>
+          </button>
+          <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin" class="user-menu-btn" aria-label="User menu">
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu" class="user-profile-menu">
+            <button mat-menu-item (click)="openSettings()">
+              <mat-icon>settings</mat-icon>
+              <span>Site settings</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Sign out</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
-
-      <!-- User Icon Menu -->
-      <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="isAdmin" class="user-menu-btn">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-      <mat-menu  #userMenu="matMenu">
-        <button mat-menu-item (click)="openAdmin()">
-          <mat-icon>admin_panel_settings</mat-icon> Admin Panel
-        </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon> Logout
-        </button>
-      </mat-menu>
     </mat-toolbar>
+    </header>
+
+    <div class="site-page">
+      <ng-content></ng-content>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<p-dialog
+  header="Site settings"
+  [(visible)]="showSettingsDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: 'min(480px, 92vw)' }"
+  styleClass="site-settings-dialog">
+  <div *ngIf="loadingSettings" class="settings-dialog-loading">
+    <p-progressSpinner strokeWidth="4" ariaLabel="Loading settings"></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!loadingSettings" class="settings-dialog-body">
+    <label class="settings-dialog-label" for="request-email-input">Document request email</label>
+    <p class="settings-dialog-hint">Residents’ document requests are sent to this address.</p>
+    <input
+      id="request-email-input"
+      type="email"
+      class="settings-dialog-input"
+      [(ngModel)]="requestEmail.value"
+      placeholder="hoa@example.com" />
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button type="button" class="settings-dialog-btn settings-dialog-btn--ghost" [disabled]="savingSettings" (click)="closeSettings()">Cancel</button>
+    <button type="button" class="settings-dialog-btn settings-dialog-btn--primary" [disabled]="savingSettings || loadingSettings" (click)="saveSettings()">Save</button>
+  </ng-template>
+</p-dialog>

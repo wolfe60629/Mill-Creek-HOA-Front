@@ -1,64 +1,109 @@
-<div class="contact-container">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">Contact Us</h1>
-      <p class="hero-subtitle">Get in touch with our community leaders</p>
-    </div>
-  </div>
-
-  <!-- Contact Information -->
-  <div class="content-section">
-    <div class="container">
-      <!-- Board Members -->
-      <div class="contact-section">
-        <h2 class="section-title">Board Members</h2>
-        <div class="contacts-grid">
-          <div 
-            *ngFor="let contact of contacts; let i = index"
-            class="contact-card"
-            [style.animation-delay]="(0.2 * i) + 's'"
-          >
-            <div class="contact-icon">
-              <span class="icon">{{ getIcon(contact.icon) }}</span>
-            </div>
-            <div class="contact-info">
-              <h3 class="contact-name">{{ contact.name }}</h3>
-              <p class="contact-title">{{ contact.title }}</p>
-              <a 
-                href="mailto:{{ contact.email }}" 
-                class="contact-email"
-                [title]="contact.email"
-              >
-                {{ contact.email }}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Links -->
-      <div class="contact-section">
-        <h2 class="section-title">Quick Links</h2>
-        <div class="links-grid">
-          <a 
-            *ngFor="let staticPage of staticPages; let i = index"
-            href="{{ staticPage.href }}"
-            target="_blank"
-            class="link-card"
-            [style.animation-delay]="(0.2 * i) + 's'"
-          >
-            <div class="link-icon">
-              <span class="icon">{{ getIcon(staticPage.icon) }}</span>
-            </div>
-            <div class="link-content">
-              <h3 class="link-name">{{ staticPage.name }}</h3>
-              <p class="link-description">{{ staticPage.title }}</p>
-            </div>
-            <div class="link-arrow">→</div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="scroll-panel glass-panel page-sheet--wide" appScrollReveal>
+  <div class="contact-layout">
+    <section class="contact-block" appScrollReveal>
+      <div class="contact-block-head">
+        <mat-icon aria-hidden="true">groups</mat-icon>
+        <h3 class="contact-block-title">Board of Directors</h3>
+        <span *ngIf="isAdmin" class="admin-badge">Board edit mode</span>
+        <button *ngIf="isAdmin && !showAddForm" type="button" class="contact-add-btn" (click)="openAddForm()">
+          <mat-icon aria-hidden="true">person_add</mat-icon>
+          Add member
+        </button>
+      </div>
+
+      <div *ngIf="isAdmin && showAddForm" class="contact-admin-form admin-form">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-input" placeholder="e.g. President" [(ngModel)]="newTitle" />
+        <label class="form-label">Name</label>
+        <input type="text" class="form-input" placeholder="Full name" [(ngModel)]="newName" />
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="email@example.com" [(ngModel)]="newEmail" />
+        <div class="form-actions">
+          <button type="button" class="save-btn" (click)="saveNewContact()">Save</button>
+          <button type="button" class="cancel-btn" (click)="cancelAddForm()">Cancel</button>
+        </div>
+      </div>
+
+      <div class="contacts-grid" *ngIf="contacts.length > 0; else noBoard">
+        <article
+          *ngFor="let contact of contacts; let i = index"
+          class="contact-card"
+          [class.contact-card--editing]="isEditing(contact)"
+          appScrollReveal
+          [scrollRevealDelay]="i * 70">
+          <ng-container *ngIf="!isEditing(contact); else editContactForm">
+            <div class="contact-avatar">
+              <mat-icon aria-hidden="true">person</mat-icon>
+            </div>
+            <div class="contact-info">
+              <h4 class="contact-name">{{ contact.name }}</h4>
+              <p class="contact-title">{{ contact.title }}</p>
+              <a
+                href="mailto:{{ contact.email }}"
+                class="contact-email"
+                [title]="contact.email">
+                <mat-icon aria-hidden="true">mail</mat-icon>
+                <span class="contact-email-text">{{ contact.email }}</span>
+              </a>
+            </div>
+            <div *ngIf="isAdmin" class="inline-actions">
+              <button type="button" class="inline-action-btn" pTooltip="Edit contact" aria-label="Edit contact" (click)="startEdit(contact)">
+                <mat-icon aria-hidden="true">edit</mat-icon>
+              </button>
+              <button type="button" class="inline-action-btn inline-action-btn--danger" pTooltip="Delete contact" aria-label="Delete contact" (click)="confirmDeleteContact(contact)">
+                <mat-icon aria-hidden="true">delete_outline</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #editContactForm>
+            <div class="contact-admin-form admin-form contact-edit-form">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-input" [(ngModel)]="editTitle" />
+              <label class="form-label">Name</label>
+              <input type="text" class="form-input" [(ngModel)]="editName" />
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" [(ngModel)]="editEmail" />
+              <div class="form-actions">
+                <button type="button" class="save-btn" (click)="saveEdit(contact)">Save</button>
+                <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+              </div>
+            </div>
+          </ng-template>
+        </article>
+      </div>
+
+      <ng-template #noBoard>
+        <p class="contact-empty">Board contact information will be posted here.</p>
+        <button *ngIf="isAdmin" type="button" class="save-btn save-btn--centered" (click)="openAddForm()">Add first board member</button>
+      </ng-template>
+    </section>
+
+    <section class="contact-block" appScrollReveal [scrollRevealDelay]="80">
+      <div class="contact-block-head">
+        <mat-icon aria-hidden="true">login</mat-icon>
+        <h3 class="contact-block-title">For Residents</h3>
+      </div>
+
+      <div class="resident-links">
+        <a
+          *ngFor="let link of resourceLinks; let i = index"
+          [href]="link.href"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="resident-link"
+          appScrollReveal
+          [scrollRevealDelay]="i * 80">
+          <span class="resident-link-icon">
+            <mat-icon aria-hidden="true">{{ link.icon }}</mat-icon>
+          </span>
+          <span class="resident-link-body">
+            <span class="resident-link-name">{{ link.name }}</span>
+            <span class="resident-link-desc">{{ link.description }}</span>
+          </span>
+          <mat-icon class="resident-link-arrow" aria-hidden="true">open_in_new</mat-icon>
+        </a>
+      </div>
+    </section>
+  </div>
+</div>

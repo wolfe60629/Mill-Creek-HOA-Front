@@ -1,87 +1,126 @@
-<div class="home-container">
-  <!-- Full-screen background image -->
-  <div class="hero-background">
-    <img src="assets/background.png" alt="Mill Creek Community" class="background-image">
-    <div class="overlay"></div>
-    <div class="tech-grid"></div>
-  </div>
-
-  <!-- Hero content -->
-  <div class="hero-content">
-    <div class="hero-text">
-      <div class="title-container">
-        <h1 class="hero-title">{{ titleName }}</h1>
-        <div class="title-accent"></div>
+<div class="home page-enter">
+  <section class="home-hero">
+    <div class="home-hero-inner">
+      <div class="home-hero-brand">
+        <img src="assets/icon.png" alt="" class="home-logo" aria-hidden="true" />
+        <div class="home-hero-text">
+          <p class="home-eyebrow">Cherokee County, Georgia</p>
+          <h1 class="home-title">Mill Creek Community Association</h1>
+          <p class="home-tagline">Amenities, events, and HOA resources—run by your neighbors.</p>
+        </div>
+      </div>
+      <div class="home-hero-actions">
+        <a href="#about" class="btn btn-hero-primary">About the Community</a>
+        <a href="#amenities" class="btn btn-hero-ghost">Explore Amenities</a>
       </div>
     </div>
+  </section>
 
-    <!-- High-tech navigation section -->
-    <div class="nav-section">
-      <div class="nav-links single-line">
-        <!-- Navigation buttons -->
-        <a href="/about" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">🏠</span>
-          </div>
-          <span class="link-text">About</span>
-        </a>
-
-        <a href="/amenities" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">⭐</span>
-          </div>
-          <span class="link-text">Amenities</span>
-        </a>
-
-        <a href="/events" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">📋</span>
-          </div>
-          <span class="link-text">Events</span>
-        </a>
-
-        <a href="/documents" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">📁</span>
-          </div>
-          <span class="link-text">Documents</span>
-        </a>
-
-        <a href="https://hms-inc.net/" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">🔧</span>
-          </div>
-          <span class="link-text">ARC Portal</span>
-        </a>
-
-        <a href="/contact" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">💬</span>
-          </div>
-          <span class="link-text">Connect</span>
-        </a>
-
-        <a href="https://hms.cincwebaxis.com/account/loginmodernthemes" class="nav-link">
-          <div class="link-icon">
-            <div class="icon-bg"></div>
-            <span class="icon-symbol">🔑</span>
-          </div>
-          <span class="link-text">Resident Hub</span>
-        </a>
+  <div class="home-scroll">
+    <section class="home-section" id="explore">
+      <div class="home-panel glass-panel" appScrollReveal>
+        <nav class="home-explore" aria-label="Quick links">
+          <a routerLink="/documents" class="home-explore-link">
+            <mat-icon aria-hidden="true">description</mat-icon>
+            <span>Documents</span>
+          </a>
+          <a routerLink="/events" class="home-explore-link">
+            <mat-icon aria-hidden="true">event</mat-icon>
+            <span>Events</span>
+          </a>
+          <a routerLink="/contact" class="home-explore-link">
+            <mat-icon aria-hidden="true">mail</mat-icon>
+            <span>Contact</span>
+          </a>
+        </nav>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Admin link -->
-  <div class="admin-link">
-    <a href="/admin" title="Admin Access">
-      <div class="admin-icon">⚙️</div>
-    </a>
+    <section class="home-section" id="about">
+      <div class="home-panel glass-panel" appScrollReveal>
+        <div class="home-section-head">
+          <h2 class="home-section-title">About Mill Creek</h2>
+          <a routerLink="/about" class="home-link-more">Full story <mat-icon aria-hidden="true">arrow_forward</mat-icon></a>
+        </div>
+        <div class="home-about-grid">
+          <div
+            *ngFor="let item of aboutHighlights; let i = index"
+            class="home-about-card"
+            appScrollReveal
+            [scrollRevealDelay]="i * 90">
+            <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.text }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" id="amenities">
+      <div class="home-panel glass-panel" appScrollReveal>
+        <div class="home-section-head">
+          <h2 class="home-section-title">Amenities</h2>
+          <a routerLink="/amenities" class="home-link-more">View details <mat-icon aria-hidden="true">arrow_forward</mat-icon></a>
+        </div>
+        <div class="home-amenity-grid">
+          <a
+            *ngFor="let amenity of amenityPreviews; let i = index"
+            routerLink="/amenities"
+            class="home-amenity-card"
+            appScrollReveal
+            [scrollRevealDelay]="i * 90">
+            <img [src]="amenity.image" alt="" class="home-amenity-icon" aria-hidden="true" />
+            <span class="home-amenity-title">{{ amenity.title }}</span>
+            <span class="home-amenity-detail">{{ amenity.detail }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" id="events">
+      <div class="home-panel glass-panel" appScrollReveal>
+        <section class="home-events" *ngIf="eventsLoaded && upcomingEvents.length > 0" aria-labelledby="events-heading">
+          <div class="home-section-head">
+            <h2 id="events-heading" class="home-section-title">Upcoming Events</h2>
+            <a routerLink="/events" class="home-link-more">View calendar <mat-icon aria-hidden="true">arrow_forward</mat-icon></a>
+          </div>
+          <ul class="home-events-list">
+            <li *ngFor="let event of upcomingEvents; let i = index">
+              <a
+                routerLink="/events"
+                class="home-event-item"
+                appScrollReveal
+                [scrollRevealDelay]="i * 70">
+                <span class="home-event-date">
+                  <span class="home-event-day">{{ event.startDate.getDate() }}</span>
+                  <span class="home-event-month">{{ monthNames[event.startDate.getMonth()] }}</span>
+                </span>
+                <span class="home-event-details">
+                  <span class="home-event-name">{{ event.eventName }}</span>
+                  <span class="home-event-time">{{ generalService.formatTime(event.startDate) }}<span *ngIf="event.location"> · {{ event.location }}</span></span>
+                </span>
+                <mat-icon class="home-event-arrow" aria-hidden="true">chevron_right</mat-icon>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <div class="home-events-empty" *ngIf="eventsLoaded && upcomingEvents.length === 0">
+          <mat-icon aria-hidden="true">event</mat-icon>
+          <p>No upcoming events right now. <a routerLink="/events">Browse the calendar</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" id="contact">
+      <div class="home-panel glass-panel home-panel--cta" appScrollReveal>
+        <h2 class="home-section-title">Get in Touch</h2>
+        <p class="home-cta-text">Questions for the board, HOA documents, or resident portals — we've got you covered.</p>
+        <div class="home-cta-actions">
+          <a routerLink="/contact" class="btn btn-primary">Contact the Board</a>
+          <a routerLink="/documents" class="btn btn-outline">Documents</a>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

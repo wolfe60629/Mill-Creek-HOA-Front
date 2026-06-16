@@ -20,6 +20,14 @@ export class DocumentsService {
      return this.httpSvc.post(this.host + '/new', doc);
   }
 
+  public updateDocument(document: Doc): Observable<Object> {
+    return this.httpSvc.post(this.host + '/update', {
+      id: document.id,
+      friendlyName: document.friendlyName,
+      description: document.description,
+    });
+  }
+
   public getAllDocuments() {
      return this.httpSvc.get(this.host + '');
   }

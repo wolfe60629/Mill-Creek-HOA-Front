@@ -1,144 +1,98 @@
-
-@media (min-width: 1024px) {
-    .card-content:hover {
-        color: #000000 !important;
-    //background-color: var(--color-primary) !important;
-    }
+.login-page {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem var(--page-padding);
 }
 
-.inner {
-    background-color: #ffffffe0;
-    border-radius: 25px;
-    width: 98%;
-    transform: translate(0%,30px);
-    padding: 10px 10px 30px 30px;
-    box-shadow: 0 0 100px 11px #0006;
-    overflow-wrap: break-word;
-    margin:auto;
+.login-card {
+  background: var(--color-surface-elevated);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem 2rem;
+}
+
+.login-title {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0 0 2rem;
 }
 
 .form-group {
-    margin-bottom:10px;
+  margin-bottom: 1rem;
 }
 
-.card-container {
-    #display: flex;
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4rem;
 }
 
-@media only screen and (min-width: 993px) {
-    .container {
-        width: 85%;
-    }
+.login-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg-subtle);
+  transition: border-color var(--transition);
+  box-sizing: border-box;
 }
 
-
-.main {
-    background-color: rgba(255,255,255,.8);
-    width: 400px;
-    height: 330px;
-    margin: auto;
-    border-radius: 10px;
-    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
-    transform: translate(4%,30px);
-    color: #000000;
+.login-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
 }
 
-.sign {
-    padding-top: 40px;
-    color: #000000;
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: bold;
-    font-size: 23px;
-    margin-bottom: 30px;
+.submit-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background var(--transition);
 }
 
-.un {
-    width: 76%;
-    color: rgb(38, 50, 56);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: rgba(136, 126, 126, 0.04);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    box-sizing: border-box;
-    border: 2px solid rgba(0, 0, 0, 0.02);
-    margin-bottom: 50px;
-    margin-left: 46px;
-    text-align: center;
-    margin-bottom: 27px;
-    font-family: 'Ubuntu', sans-serif;
+.submit-btn:hover {
+  background: var(--color-primary-light);
 }
 
-form.form1 {
-    padding-top: 40px;
+.login-error {
+  color: #e63946;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 1rem;
 }
 
-.pass {
-    width: 76%;
-    color: rgb(38, 50, 56);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1px;
-    background: rgba(136, 126, 126, 0.04);
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    box-sizing: border-box;
-    border: 2px solid rgba(0, 0, 0, 0.02);
-    margin-bottom: 50px;
-    margin-left: 46px;
-    text-align: center;
-    margin-bottom: 27px;
-    font-family: 'Ubuntu', sans-serif;
+@media (max-width: 480px) {
+  .login-card { padding: 2rem 1.5rem; }
 }
-
-
-.un:focus, .pass:focus {
-    border: 2px solid rgba(0, 0, 0, 0.18) !important;
-
-}
-
-.submit {
-    cursor: pointer;
-    border-radius: 5em;
-    color: #fff;
-    background: linear-gradient(to right, #073566, #362fa5);
-    border: 0;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    font-family: 'Ubuntu', sans-serif;
-    margin-left: 35%;
-    font-size: 13px;
-    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
-}
-
-
-a {
-    text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
-    color: #000000;
-    text-decoration: none
-}
-
-.outer {
-    background: url(src/assets/background.png) no-repeat;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    min-height: 1000px;
-}
-
-
-
-@media (max-width: 600px) {
-    .main {
-        border-radius: 0px;
-    }
-}
-
-

@@ -9,9 +9,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { NavigationComponent } from './navigation/navigation.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { ContactComponent } from './contact/contact.component';
-import { AboutComponent } from './about/about.component';
 import { FooterComponent } from './footer/footer.component';
-import { HomeComponent } from './home/home.component';
+import { SiteScrollComponent } from './site-scroll/site-scroll.component';
 import {environment} from '../environments/environment.prod';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { AccordionModule } from 'primeng/accordion';
@@ -30,7 +29,6 @@ import {EventComponent} from './events/event.component';
 import { AmenitiesComponent } from './amenities/amenities.component';
 import { LoginComponent } from './login/login.component';
 import {TokenInterceptor} from './services/TokenInterceptor';
-import { AdminComponent } from './admin/admin.component';
 import { LogoutComponent } from './logout/logout.component';
 import {TableModule} from 'primeng/table';
 import {ListboxModule} from 'primeng/listbox';
@@ -51,16 +49,17 @@ import { MatToolbar } from '@angular/material/toolbar'
 import { MatIconButton } from '@angular/material/button'
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav'
 import { MatListItem, MatNavList } from '@angular/material/list'
-import { NgIf } from '@angular/common'
+import { NgFor, NgIf } from '@angular/common'
+import { ScrollRevealDirective } from './directives/scroll-reveal.directive';
 
 const appRoutes: Routes = [
-  { path: '', component: HomeComponent, data: { title: 'Mill Creek Community | Home' } },
-  { path: 'about', component: AboutComponent, data: { title: 'Mill Creek Community | About' } },
-  { path: 'admin', component: AdminComponent, data: { title: 'Mill Creek Community | Admin' } },
-  { path: 'documents', component: DocumentsComponent, data: { title: 'Mill Creek Community | Documents' } },
-  { path: 'contact', component: ContactComponent, data: { title: 'Mill Creek Community | Board Members' } },
-  { path: 'events', component: EventComponent, data: { title: 'Mill Creek Community | Events' } },
-  { path: 'amenities', component: AmenitiesComponent, data: { title: 'Mill Creek Community | Amenities' } },
+  { path: '', component: SiteScrollComponent, data: { title: 'Mill Creek Community | Home' } },
+  { path: 'about', redirectTo: '', pathMatch: 'full' },
+  { path: 'amenities', component: SiteScrollComponent, data: { title: 'Mill Creek Community | Amenities', section: 'amenities' } },
+  { path: 'events', component: SiteScrollComponent, data: { title: 'Mill Creek Community | Events', section: 'events' } },
+  { path: 'documents', component: SiteScrollComponent, data: { title: 'Mill Creek Community | Documents', section: 'documents' } },
+  { path: 'contact', component: SiteScrollComponent, data: { title: 'Mill Creek Community | Contact', section: 'contact' } },
+  { path: 'admin', redirectTo: '', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, data: { title: 'Mill Creek Community | Login' } },
   { path: 'logout', component: LogoutComponent, data: { title: 'Mill Creek Community | Logout' } },
   { path: '**', redirectTo: '', pathMatch: 'full', data: { title: '404 Page Not Found' } },
@@ -73,21 +72,24 @@ const appRoutes: Routes = [
     DocumentsComponent,
     ContactComponent,
     FooterComponent,
-    HomeComponent,
-    AboutComponent,
+    SiteScrollComponent,
     DocumentUploadComponent,
     ViewerComponent,
     EventComponent,
     AmenitiesComponent,
     LoginComponent,
-    AdminComponent,
     LogoutComponent,
     CalendarComponent,
+    ScrollRevealDirective,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,  // Ensure animations are loaded before PrimeNG components
-    RouterModule.forRoot(appRoutes, { enableTracing: false }),
+    RouterModule.forRoot(appRoutes, {
+      enableTracing: false,
+      anchorScrolling: 'disabled',
+      scrollOffset: [0, 72],
+    }),
     FormsModule,
     AccordionModule,
     ButtonModule,
@@ -118,6 +120,7 @@ const appRoutes: Routes = [
     MatNavList,
     MatSidenavContainer,
     MatListItem,
+    NgFor,
     NgIf,
   ],
   providers: [

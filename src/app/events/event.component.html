@@ -1,61 +1,97 @@
-<div class="events-container">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">Events</h1>
-      <p class="hero-subtitle">Stay informed about upcoming activities</p>
-    </div>
-  </div>
-
-  <!-- Main Content -->
+<div class="scroll-panel glass-panel page-sheet--wide" appScrollReveal>
   <div class="content-section">
     <div class="container">
       <div class="content-grid">
-        <!-- Left Column - Calendar -->
         <div class="left-column">
-          <div class="calendar-card">
+          <div class="calendar-card" appScrollReveal [scrollRevealDelay]="0">
             <h3 class="section-title">Calendar</h3>
             <div class="calendar-section">
-              <app-calendar></app-calendar>
+              <app-calendar #calendar (eventOpen)="openEventDetailFromCalendar($event)"></app-calendar>
             </div>
           </div>
         </div>
 
-        <!-- Right Column - Events List -->
         <div class="right-column">
-          <div class="events-card">
-            <h3 class="section-title">Upcoming Events</h3>
-            <!-- Admin quick-add -->
+          <div class="events-card" appScrollReveal [scrollRevealDelay]="100">
+            <div class="events-card-head">
+              <h3 class="section-title">Upcoming Events</h3>
+              <span *ngIf="isAdmin" class="admin-badge">Board edit mode</span>
+            </div>
+
             <div *ngIf="isAdmin" class="quick-add">
-              <button *ngIf="!showAddForm" class="add-btn" (click)="openAddEvent()">+ Add Event</button>
-              <div *ngIf="showAddForm" class="add-form">
-                <input type="text" class="form-input" placeholder="Event name" [(ngModel)]="newEventName" />
-                <input type="text" class="form-input" placeholder="Location (optional)" [(ngModel)]="newEventLocation" />
-                <textarea rows="2" class="form-input" placeholder="Description (optional)" [(ngModel)]="newEventDescription"></textarea>
-                <label class="form-label">Start</label>
+              <button *ngIf="!showAddForm" type="button" class="add-btn" (click)="openAddEvent()">
+                <mat-icon aria-hidden="true">add</mat-icon>
+                Add event
+              </button>
+              <div *ngIf="showAddForm" class="add-form admin-form">
+                <input type="text" class="form-input" placeholder="e.g. Pool Party" [(ngModel)]="newEventName" />
+                <label class="form-label">Where (optional)</label>
+                <input type="text" class="form-input" placeholder="e.g. The Manor Pool" [(ngModel)]="newEventLocation" />
+                <label class="form-label">About (optional)</label>
+                <textarea rows="2" class="form-input" placeholder="What residents should know about this event" [(ngModel)]="newEventDescription"></textarea>
+                <label class="form-label">When — start</label>
                 <input type="datetime-local" class="form-input" [(ngModel)]="newEventStart" />
-                <label class="form-label">End (optional)</label>
+                <label class="form-label">When — end (optional)</label>
                 <input type="datetime-local" class="form-input" [(ngModel)]="newEventEnd" />
                 <div class="form-actions">
-                  <button class="save-btn" (click)="saveNewEvent()">Save</button>
-                  <button class="cancel-btn" (click)="cancelAddEvent()">Cancel</button>
+                  <button type="button" class="save-btn" (click)="saveNewEvent()">Save</button>
+                  <button type="button" class="cancel-btn" (click)="cancelAddEvent()">Cancel</button>
                 </div>
               </div>
             </div>
+
             <div class="events-list" *ngIf="events && events.length > 0">
-              <div *ngFor="let event of events" class="event-item">
-                <div class="event-date">
-                  <div class="date-number">{{event.startDate.getDate()}}</div>
-                  <div class="date-month">{{monthNames[event.startDate.getMonth()]}}</div>
-                </div>
-                <div class="event-details">
-                  <h4 class="event-name">{{event.eventName}}</h4>
-                  <p class="event-time">{{generalService.formatTime(event.startDate)}}</p>
-                </div>
+              <div *ngFor="let event of events" class="event-item" [class.event-item--editing]="isEditing(event)">
+                <ng-container *ngIf="!isEditing(event); else editEventForm">
+                  <button type="button" class="event-item-main" (click)="openEventDetail(event)">
+                    <div class="event-date">
+                      <div class="date-number">{{ event.startDate.getDate() }}</div>
+                      <div class="date-month">{{ monthNames[event.startDate.getMonth()] }}</div>
+                    </div>
+                    <div class="event-details">
+                      <h4 class="event-name">{{ event.eventName }}</h4>
+                      <p class="event-time">
+                        {{ generalService.formatTime(event.startDate) }}
+                        <span *ngIf="event.location"> · {{ event.location }}</span>
+                      </p>
+                      <p *ngIf="event.description" class="event-description">{{ event.description }}</p>
+                    </div>
+                    <mat-icon class="event-item-chevron" aria-hidden="true">chevron_right</mat-icon>
+                  </button>
+                  <div *ngIf="isAdmin" class="inline-actions">
+                    <button type="button" class="inline-action-btn" pTooltip="Edit event" aria-label="Edit event" (click)="startEdit(event); $event.stopPropagation()">
+                      <mat-icon aria-hidden="true">edit</mat-icon>
+                    </button>
+                    <button type="button" class="inline-action-btn inline-action-btn--danger" pTooltip="Delete event" aria-label="Delete event" (click)="confirmDeleteEvent(event); $event.stopPropagation()">
+                      <mat-icon aria-hidden="true">delete_outline</mat-icon>
+                    </button>
+                  </div>
+                </ng-container>
+
+                <ng-template #editEventForm>
+                  <div class="add-form admin-form event-edit-form">
+                    <label class="form-label">Event name</label>
+                    <input type="text" class="form-input" [(ngModel)]="editEventName" />
+                    <label class="form-label">Where (optional)</label>
+                    <input type="text" class="form-input" [(ngModel)]="editEventLocation" />
+                    <label class="form-label">About (optional)</label>
+                    <textarea rows="2" class="form-input" [(ngModel)]="editEventDescription"></textarea>
+                    <label class="form-label">When — start</label>
+                    <input type="datetime-local" class="form-input" [(ngModel)]="editEventStart" />
+                    <label class="form-label">When — end (optional)</label>
+                    <input type="datetime-local" class="form-input" [(ngModel)]="editEventEnd" />
+                    <div class="form-actions">
+                      <button type="button" class="save-btn" (click)="saveEdit(event)">Save</button>
+                      <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+                    </div>
+                  </div>
+                </ng-template>
               </div>
             </div>
+
             <div class="no-events" *ngIf="!events || events.length === 0">
-              <p>No upcoming events scheduled</p>
+              <p>No upcoming events scheduled.</p>
+              <button *ngIf="isAdmin" type="button" class="add-btn add-btn--inline" (click)="openAddEvent()">Add the first event</button>
             </div>
           </div>
         </div>
@@ -63,3 +99,32 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  [header]="eventDetail?.title || 'Event details'"
+  [(visible)]="showEventDetailModal"
+  appendTo="body"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [style]="{ width: 'min(520px, 92vw)' }"
+  styleClass="event-detail-dialog"
+  (onHide)="closeEventDetail()">
+  <dl *ngIf="eventDetail" class="event-detail-list">
+    <div class="event-detail-row">
+      <dt><mat-icon aria-hidden="true">schedule</mat-icon> When</dt>
+      <dd>{{ eventDetail.when }}</dd>
+    </div>
+    <div class="event-detail-row">
+      <dt><mat-icon aria-hidden="true">place</mat-icon> Where</dt>
+      <dd>{{ eventDetail.location || 'Location not specified' }}</dd>
+    </div>
+    <div class="event-detail-row">
+      <dt><mat-icon aria-hidden="true">info</mat-icon> About</dt>
+      <dd>{{ eventDetail.description || 'No additional details' }}</dd>
+    </div>
+  </dl>
+</p-dialog>

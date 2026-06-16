@@ -1,104 +1,103 @@
-import {Component, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Calendar, CalendarOptions, EventInput} from '@fullcalendar/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import {EventService} from '../../services/event.service';
-import {GeneralService} from '../../services/general.service';
+import { EventService } from '../../services/event.service';
+import { GeneralService } from '../../services/general.service';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { CommunityEvent } from '../../types/communityEvent';
 
-declare var $: any;
+export interface EventDetailView {
+  title: string;
+  when: string;
+  location: string;
+  description: string;
+}
 
 @Component({
-    selector: 'app-calendar',
-    templateUrl: './calendar.component.html',
-    styleUrls: ['./calendar.component.css'],
-    standalone: false
+  selector: 'app-calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.css'],
+  standalone: false,
 })
-export class CalendarComponent implements OnInit {
-  calendarOptions: CalendarOptions;
+export class CalendarComponent implements OnInit, AfterViewInit {
+  @Output() eventOpen = new EventEmitter<EventDetailView>();
   @ViewChild('calendar') calendarComponent: FullCalendarComponent;
-  @ViewChild('fullCalModal') fullCalModal: ElementRef;
-  @ViewChild('modalTitle') modalTitle: ElementRef;
-  @ViewChild('modalDescription') modalDescription: ElementRef;
-  @ViewChild('modalLocation') modalLocation: ElementRef;
-  @ViewChild('modalDate') modalDate: ElementRef;
-  communityEvents = [];
 
-  constructor(private eventService: EventService, private generalService: GeneralService) { }
+  calendarOptions: CalendarOptions;
+
+  constructor(
+    private eventService: EventService,
+    private generalService: GeneralService,
+  ) {}
 
   ngOnInit(): void {
-    // Fetch all events on initialization
-    this.eventService.getAllEvents().subscribe((events) => {
-      const eventInput: EventInput[] = events.map(event => {
-        return {
-          id: event.id,
-          title: event.eventName,
-          start: new Date(event.startDate),
-          end: new Date(event.endDate),
-          description: event.description,
-          location: event.location
-        };
-      });
-
-      this.communityEvents.push(...eventInput);
-    });
-
     this.calendarOptions = {
-      editable: true,
+      editable: false,
+      selectable: false,
       themeSystem: 'standard',
+      height: 'auto',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',
-        right: ''
+        right: '',
       },
       locale: 'en',
-      // add other plugins
-      plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, resourceTimeGridPlugin],
-      schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
-      dateClick: this.getAppointmentsForSpecificDate.bind(this),
-      events: this.communityEvents,
-      eventMouseEnter: (event: EventInput) => {
-        // Show Modal
-        this.fullCalModal.nativeElement.style.display = 'unset';
-        this.modalTitle.nativeElement.innerText = event.event.title;
-        const startDate = event.event._instance.range.start;
-        const endDate  = event.event._instance.range.end;
-
-        // Add description and location of event
-        if (event.event.extendedProps.description) {
-          this.modalDescription.nativeElement.innerText = event.event.extendedProps.description;
-        } else {
-          this.modalDescription.nativeElement.innerText = 'No description of this event';
-        }
-
-        if (event.event.extendedProps.location) {
-          this.modalLocation.nativeElement.innerText = event.event.extendedProps.location;
-        } else {
-          this.modalLocation.nativeElement.innerText = 'A location has not been set';
-        }
-
-        this.modalDate.nativeElement.innerText =  this.generalService.formatUTCTimeAndUTCDate(startDate);
-        if (endDate) {
-          this.modalDate.nativeElement.innerText += ' - ' + this.generalService.formatUTCTimeAndUTCDate(endDate);
-        }
-      },
-      eventMouseLeave: (event: EventInput) => {this.closeModel(event)}
+      plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
+      initialView: 'dayGridMonth',
+      events: [],
+      eventClick: this.onEventClick.bind(this),
+      eventDisplay: 'block',
+      dayMaxEvents: 3,
     };
   }
 
-  getAppointmentsForSpecificDate(arg) {
-    console.log(arg);
+  ngAfterViewInit(): void {
+    this.refreshEvents();
   }
 
-  closeModel(event) {
-      if (!this.fullCalModal.nativeElement.matches(':hover')) {
-        this.fullCalModal.nativeElement.style.display = 'none';
-      }
+  refreshEvents(): void {
+    this.eventService.getAllEvents().subscribe(events => {
+      this.applyEvents(Array.isArray(events) ? events : []);
+    });
+  }
 
-      this.fullCalModal.nativeElement.addEventListener('mouseleave', e => {
-        this.fullCalModal.nativeElement.style.display = 'none';
-      });
+  onEventClick(arg: EventClickArg): void {
+    const startDate = arg.event.start;
+    const endDate = arg.event.end;
+    let when = startDate
+      ? this.generalService.formatTimeAndDate(startDate)
+      : 'Date not set';
+
+    if (endDate) {
+      when += ' – ' + this.generalService.formatTimeAndDate(endDate);
+    }
+
+    this.eventOpen.emit({
+      title: arg.event.title,
+      when,
+      location: arg.event.extendedProps['location'] || '',
+      description: arg.event.extendedProps['description'] || '',
+    });
+  }
+
+  private applyEvents(events: CommunityEvent[]): void {
+    const eventInput: EventInput[] = events.map(event => ({
+      id: String(event.id),
+      title: event.eventName,
+      start: new Date(event.startDate),
+      end: event.endDate ? new Date(event.endDate) : undefined,
+      extendedProps: {
+        description: event.description ?? '',
+        location: event.location ?? '',
+      },
+    }));
+
+    const api = this.calendarComponent?.getApi();
+    if (api) {
+      api.removeAllEvents();
+      api.addEventSource(eventInput);
+    }
   }
 }

@@ -1,0 +1,150 @@
+<div class="scroll-site page-enter">
+  <section class="scroll-hero" id="top" aria-label="Welcome">
+    <div class="scroll-hero-overlay" aria-hidden="true"></div>
+    <div class="scroll-hero-glow" aria-hidden="true"></div>
+
+    <div class="scroll-hero-card">
+      <div class="scroll-hero-inner">
+        <div class="scroll-hero-brand">
+          <div class="scroll-hero-copy">
+            <p class="scroll-hero-eyebrow">Cherokee County, Georgia</p>
+            <h1 class="scroll-hero-title">Mill Creek Community Association</h1>
+            <p class="scroll-hero-lead">
+              Amenities, events, and HOA resources—run by your neighbors.
+            </p>
+          </div>
+        </div>
+
+        <div class="scroll-hero-actions">
+          <a href="#amenities" class="btn btn-hero-primary">See Amenities</a>
+          <a href="#events" class="btn btn-hero-ghost">View Events</a>
+        </div>
+
+        <div class="scroll-hero-community" aria-label="Neighborhood chat">
+          <div class="scroll-hero-community-links">
+            <a
+              href="https://www.facebook.com/groups/407921640614324"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hero-social-btn hero-social-btn--facebook"
+              aria-label="Mill Creek on Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/millcreekcommunityhoa"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hero-social-btn hero-social-btn--instagram"
+              aria-label="Mill Creek on Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-filmstrip" aria-label="Community photos">
+      <div class="hero-filmstrip-head">
+        <div class="hero-filmstrip-copy">
+          <p class="hero-filmstrip-eyebrow">Life at Mill Creek</p>
+          <p class="hero-filmstrip-title">Pools, parks, and places to gather</p>
+        </div>
+        <a href="#amenities" class="hero-filmstrip-link">See amenities</a>
+      </div>
+
+      <div class="hero-filmstrip-track" tabindex="0" role="list" aria-label="Amenity photos">
+        <button
+          *ngFor="let photo of heroGallery"
+          type="button"
+          class="hero-filmstrip-card"
+          role="listitem"
+          [attr.aria-label]="'View larger photo: ' + photo.label"
+          [disabled]="!photo.src"
+          (click)="openPhotoLightbox(photo)">
+          <img
+            *ngIf="photo.src"
+            [src]="photo.src"
+            [alt]="photo.alt"
+            loading="lazy"
+            (error)="onGalleryImageError(photo)" />
+          <div *ngIf="!photo.src" class="hero-filmstrip-placeholder" aria-hidden="true">
+            <mat-icon>{{ photo.icon }}</mat-icon>
+          </div>
+          <span class="hero-filmstrip-caption">{{ photo.label }}</span>
+        </button>
+      </div>
+
+      <p class="hero-filmstrip-hint" aria-hidden="true">Swipe to browse</p>
+
+      <a
+        [href]="directionsUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hero-filmstrip-directions">
+        <mat-icon aria-hidden="true">near_me</mat-icon>
+        Get directions to Mill Creek
+      </a>
+    </div>
+
+    <div class="scroll-hero-fade" aria-hidden="true"></div>
+    <a href="#amenities" class="scroll-cue" aria-label="Scroll to explore">
+      <span class="scroll-cue-text">Explore</span>
+      <mat-icon aria-hidden="true">expand_more</mat-icon>
+    </a>
+  </section>
+
+  <div class="scroll-body">
+    <section id="amenities" class="scroll-section">
+      <header class="scroll-section-header" appScrollReveal>
+        <p class="scroll-section-eyebrow">Where We Gather</p>
+        <h2 class="scroll-section-title">Amenities</h2>
+      </header>
+      <app-amenities></app-amenities>
+    </section>
+
+    <section id="events" class="scroll-section">
+      <header class="scroll-section-header" appScrollReveal>
+        <p class="scroll-section-eyebrow">What's Happening</p>
+        <h2 class="scroll-section-title">Events</h2>
+      </header>
+      <app-events></app-events>
+    </section>
+
+    <section id="documents" class="scroll-section">
+      <header class="scroll-section-header" appScrollReveal>
+        <p class="scroll-section-eyebrow">Resources</p>
+        <h2 class="scroll-section-title">Documents</h2>
+        <p class="scroll-section-lead">Bylaws, forms, and HOA records for residents.</p>
+      </header>
+      <app-documents></app-documents>
+    </section>
+
+    <section id="contact" class="scroll-section scroll-section--last">
+      <header class="scroll-section-header" appScrollReveal>
+        <p class="scroll-section-eyebrow">Reach Out</p>
+        <h2 class="scroll-section-title">Contact</h2>
+      </header>
+      <app-contact></app-contact>
+    </section>
+  </div>
+
+  <app-footer></app-footer>
+</div>
+
+<div
+  *ngIf="showPhotoLightbox && selectedPhoto?.src"
+  class="hero-photo-overlay"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="selectedPhoto!.alt"
+  (click)="closePhotoLightbox()">
+  <img
+    class="hero-photo-expanded"
+    [src]="selectedPhoto!.src"
+    [alt]="selectedPhoto!.alt"
+    (click)="$event.stopPropagation()" />
+</div>

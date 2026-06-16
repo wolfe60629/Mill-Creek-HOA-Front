@@ -1,98 +1,134 @@
-<div class="documents-container">
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-content">
-      <h1 class="hero-title">Documents</h1>
-      <p class="hero-subtitle">Access important information and resources</p>
-    </div>
-  </div>
-
-  <!-- Main Content -->
-  <div class="content-section">
-    <div class="container">
-      <!-- File Upload (Admin Only) -->
-      <div class="upload-section" *ngIf="isAdmin">
-        <div class="upload-card">
-          <h3 class="section-title">Upload Document</h3>
-          <div class="file-upload">
-            <input type="file"
-                   accept="application/pdf"
-                   id="file"
-                   #fileInput
-                   (change)="handleFileInput(fileInput.files)"
-                   class="file-input">
-            <label for="file" class="file-label">
-              <span class="upload-icon">📄</span>
-              <span class="upload-text">Choose PDF File</span>
-            </label>
+<div class="scroll-panel glass-panel page-sheet--wide" appScrollReveal>
+  <div class="docs-layout">
+    <div class="docs-upload" *ngIf="isAdmin" appScrollReveal>
+      <div class="docs-upload-inner">
+        <mat-icon class="docs-upload-icon" aria-hidden="true">cloud_upload</mat-icon>
+        <div class="docs-upload-copy">
+          <div class="docs-upload-head">
+            <h3 class="docs-upload-title">Upload a document</h3>
+            <span class="admin-badge">Board edit mode</span>
           </div>
+          <p class="docs-upload-hint">PDF only · 5 MB max</p>
+        </div>
+        <div class="file-upload">
+          <input
+            type="file"
+            accept="application/pdf"
+            id="file"
+            #fileInput
+            (change)="handleFileInput(fileInput.files)"
+            class="file-input">
+          <label for="file" class="file-label">Choose file</label>
         </div>
       </div>
+    </div>
 
-      <!-- Document Categories -->
-      <div class="documents-section" *ngIf="documents.length > 0">
-        <div class="documents-card">
-          <h3 class="section-title">Document Library</h3>
-          <p-accordion class="modern-accordion">
-            <p-accordionTab *ngFor="let currCategory of listOfCategories; let j=index" 
-                           [header]="currCategory" 
-                           [selected]="j==0">
-              <div class="documents-grid">
-                <ng-container *ngFor="let document of documents">
-                  <div *ngIf="document.category == currCategory"
-                       class="document-item"
-                       (click)="showFile(document.id)">
-                    <div class="document-icon">📋</div>
-                    <div class="document-content">
-                      <h4 class="document-title">{{ document.friendlyName }}</h4>
-                      <p class="document-description">{{ document.description }}</p>
-                    </div>
-                    <div class="document-actions">
-                      <button *ngIf="isAdmin" 
-                              class="delete-btn" 
-                              pTooltip="Delete Document" 
-                              (click)="onDelete(document)">
-                        🗑️
-                      </button>
-                      <div class="document-arrow">→</div>
-                    </div>
-                  </div>
-                </ng-container>
+    <div class="docs-categories" *ngIf="documents.length > 0">
+      <section
+        *ngFor="let category of listOfCategories; let j = index"
+        class="docs-category"
+        [class.docs-category--open]="isCategoryExpanded(category)"
+        appScrollReveal
+        [scrollRevealDelay]="j * 70">
+        <button
+          type="button"
+          class="docs-category-head"
+          (click)="toggleCategory(category)"
+          [attr.aria-expanded]="isCategoryExpanded(category)">
+          <mat-icon class="docs-category-folder" aria-hidden="true">folder_open</mat-icon>
+          <h3 class="docs-category-title">{{ category }}</h3>
+          <span class="docs-category-count">{{ documentsForCategory(category).length }}</span>
+          <mat-icon class="docs-category-chevron" aria-hidden="true">
+            {{ isCategoryExpanded(category) ? 'expand_less' : 'expand_more' }}
+          </mat-icon>
+        </button>
+
+        <ul class="docs-list" *ngIf="isCategoryExpanded(category)">
+          <li
+            *ngFor="let document of documentsForCategory(category)"
+            class="docs-item"
+            [class.docs-item--editing]="documentEditingEnabled && isEditing(document)">
+            <ng-container *ngIf="!documentEditingEnabled || !isEditing(document); else editDocForm">
+              <div class="docs-item-main">
+                <button
+                  type="button"
+                  class="docs-row"
+                  (click)="showFile(document.id)">
+                  <span class="docs-row-icon" aria-hidden="true">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                  </span>
+                  <span class="docs-row-body">
+                    <span class="docs-row-title">{{ document.friendlyName }}</span>
+                    <span class="docs-row-desc" *ngIf="document.description">{{ document.description }}</span>
+                  </span>
+                  <mat-icon class="docs-row-arrow" aria-hidden="true">chevron_right</mat-icon>
+                </button>
+                <div *ngIf="isAdmin" class="inline-actions">
+                  <button
+                    *ngIf="documentEditingEnabled"
+                    type="button"
+                    class="inline-action-btn"
+                    pTooltip="Edit document"
+                    aria-label="Edit document"
+                    (click)="onEditClick($event, document)">
+                    <mat-icon aria-hidden="true">edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-action-btn inline-action-btn--danger"
+                    pTooltip="Delete document"
+                    aria-label="Delete document"
+                    (click)="onDeleteClick($event, document)">
+                    <mat-icon aria-hidden="true">delete_outline</mat-icon>
+                  </button>
+                </div>
               </div>
-            </p-accordionTab>
-          </p-accordion>
-        </div>
-      </div>
+            </ng-container>
 
-      <!-- No Documents Message -->
-      <div class="no-documents" *ngIf="documents.length === 0">
-        <div class="no-documents-card">
-          <div class="no-documents-icon">📚</div>
-          <h3>No Documents Available</h3>
-          <p>Check back later for community documents and resources.</p>
-        </div>
-      </div>
+            <ng-template #editDocForm>
+              <div class="docs-edit-form admin-form">
+                <label class="form-label" for="doc-edit-name-{{ document.id }}">Document name</label>
+                <input
+                  id="doc-edit-name-{{ document.id }}"
+                  type="text"
+                  class="form-input"
+                  [(ngModel)]="editFriendlyName" />
+                <label class="form-label" for="doc-edit-desc-{{ document.id }}">Description</label>
+                <textarea
+                  id="doc-edit-desc-{{ document.id }}"
+                  rows="2"
+                  class="form-input"
+                  [(ngModel)]="editDescription"></textarea>
+                <div class="form-actions">
+                  <button type="button" class="save-btn" (click)="saveEdit(document)">Save</button>
+                  <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="docs-empty" *ngIf="documents.length === 0" appScrollReveal>
+      <mat-icon aria-hidden="true">description</mat-icon>
+      <h3>No documents yet</h3>
+      <p>HOA bylaws, forms, and community records will appear here when published.</p>
     </div>
   </div>
 </div>
 
-<!-- Document Upload Modal -->
-<app-document-upload *ngIf="fileToUpload!=null" 
-                     [fileToUpload]="fileToUpload" 
-                     [showUploadModal]="showUploadModal">
+<app-document-upload
+  *ngIf="showUploadModal && fileToUpload"
+  [file]="fileToUpload"
+  [categoryOptions]="listOfCategories"
+  (uploaded)="onDocumentUploaded()"
+  (closed)="closeUploadModal()">
 </app-document-upload>
 
-<!-- Document Viewer Modal with Backdrop -->
-<div class="modal-backdrop" [class.active]="showViewerModal" (click)="showViewerModal = false"></div>
-<app-viewer [class.active]="showViewerModal" 
-            [(showViewerModal)]="showViewerModal" 
-            [(manifestHtml)]="mainfestHtml">
+<app-viewer
+  *ngIf="showViewerModal"
+  [(showViewerModal)]="showViewerModal"
+  [(manifestHtml)]="mainfestHtml"
+  [documentTitle]="viewerDocumentTitle">
 </app-viewer>
-
-<!-- Confirm Dialog -->
-<p-confirmDialog key="confirm">
-  <input type="text">
-</p-confirmDialog>
-
-
-
