@@ -572,14 +572,10 @@
 
   .scroll-hero-card {
     flex: 0 0 auto;
-    min-height: calc(100dvh - var(--navbar-height) - 1.5rem);
     display: flex;
     align-items: center;
+    min-height: calc(100dvh - var(--navbar-height) - 1.5rem);
     background: rgba(8, 20, 14, 0.46);
-  }
-
-  .scroll-hero-inner {
-    width: 100%;
   }
 
   .scroll-hero-fade {
